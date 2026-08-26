@@ -52,11 +52,20 @@
         {%- endif -%}
       </a>
 
-      {%- if menu != blank -%}
-        <nav class="header-nav-desktop" aria-label="{{ 'header.primary_navigation' | t }}">
+      <nav class="header-nav-desktop" aria-label="Primary navigation">
+        {%- if menu != blank -%}
           {%- render 'header-menu-desktop', menu: menu, section_id: section.id -%}
-        </nav>
-      {%- endif -%}
+        {%- else -%}
+          <ul class="header-nav-desktop__list header-nav-desktop__list--fallback list-unstyled">
+            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?sort_by=created-descending">New</a></div></li>
+            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}">Shop</a></div></li>
+            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.collections_url }}">Designers</a></div></li>
+            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Clothing">Clothing</a></div></li>
+            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Footwear">Footwear</a></div></li>
+            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="/pages/features">Features</a></div></li>
+          </ul>
+        {%- endif -%}
+      </nav>
 
       <div class="site-header__utility">
         <a class="site-header__trigger site-header__trigger--search" href="{{ routes.search_url }}">
@@ -71,11 +80,11 @@
             <span class="visually-hidden">{{ 'header.account' | t }}</span>
           </a>
         {%- endif -%}
-        <a class="site-header__trigger site-header__trigger--cart" href="{{ routes.cart_url }}" data-header-cart-trigger>
+        <a class="site-header__trigger site-header__trigger--cart" href="{{ routes.cart_url }}" data-header-cart-trigger aria-label="Bag, {{ cart_count }} items">
           {%- render 'icon', name: 'bag' -%}
           <span class="site-header__utility-label">Bag</span>
           <span class="visually-hidden">{% if cart_count > 0 %}{{ 'header.cart_count' | t: count: cart_count }}{% else %}{{ 'header.cart' | t }}{% endif %}</span>
-          <span class="site-header__cart-count{% if cart_count == 0 %} is-empty{% endif %}" data-header-cart-count aria-hidden="true">{{ cart_count }}</span>
+          <span class="site-header__cart-count" data-header-cart-count aria-hidden="true">{{ cart_count }}</span>
         </a>
       </div>
     </div>
@@ -91,7 +100,22 @@
         </div>
         <button type="button" class="site-header__trigger header-drawer__close no-js-hidden" aria-label="{{ 'header.close_menu' | t }}" data-header-drawer-close>{%- render 'icon', name: 'close' -%}</button>
       </div>
-      {%- if menu != blank -%}<nav class="header-drawer__nav" aria-label="{{ 'header.primary_navigation' | t }}">{%- render 'header-menu-mobile', menu: menu, section_id: section.id -%}</nav>{%- endif -%}
+
+      <nav class="header-drawer__nav" aria-label="Primary navigation">
+        {%- if menu != blank -%}
+          {%- render 'header-menu-mobile', menu: menu, section_id: section.id -%}
+        {%- else -%}
+          <ul class="header-nav-mobile__list header-nav-mobile__list--fallback list-unstyled">
+            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?sort_by=created-descending">New</a></div></li>
+            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}">Shop</a></div></li>
+            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.collections_url }}">Designers</a></div></li>
+            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Clothing">Clothing</a></div></li>
+            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Footwear">Footwear</a></div></li>
+            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="/pages/features">Features</a></div></li>
+          </ul>
+        {%- endif -%}
+      </nav>
+
       {%- if section.settings.utility_link_label != blank and utility_url != blank -%}
         <div class="header-drawer__seller">
           <a class="header-drawer__seller-link" href="{{ utility_url | escape }}">
