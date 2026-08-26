@@ -3,23 +3,13 @@
     "hero": {
       "type": "sp-hero",
       "settings": {
-        "eyebrow": "Chicago — Rare goods",
-        "heading": "SOLE\nPARADISE",
-        "copy": "Rare designer pieces, landed in Chicago. New arrivals, pre-owned grails and one-off finds.",
-        "button_label": "Enter Paradise",
-        "index_label": "CHICAGO / 001"
+        "eyebrow": "One of one pieces · Curated daily",
+        "heading": "CHICAGO\nTO THE WORLD.",
+        "copy": "Rare designer, archive and pre-owned pieces selected in Chicago.",
+        "button_label": "Shop new arrivals",
+        "index_label": "SOLE PARADISE / CHICAGO",
+        "footer_label": "WORLDWIDE SHIPPING"
       }
-    },
-    "trust": {
-      "type": "sp-trust-strip",
-      "blocks": {
-        "auth": {"type":"item","settings":{"title":"Authenticated","text":"Every piece inspected before listing"}},
-        "one": {"type":"item","settings":{"title":"1 of 1 inventory","text":"When it's gone, it's gone"}},
-        "chi": {"type":"item","settings":{"title":"Chicago based","text":"Local pickup and personal service"}},
-        "ship": {"type":"item","settings":{"title":"Secure shipping","text":"Rare pieces delivered with care"}}
-      },
-      "block_order": ["auth","one","chi","ship"],
-      "settings": {}
     },
     "feed": {
       "type": "sp-from-feed",
@@ -35,10 +25,10 @@
     "edit": {
       "type": "sp-paradise-edit",
       "settings": {
-        "eyebrow": "Paradise Edit 001",
-        "heading": "CHICAGO\nAFTER DARK.",
-        "copy": "A rotating editorial of rare pieces, city nights and the people who wear them.",
-        "issue_label": "ISSUE 001",
+        "eyebrow": "Paradise Edit 002",
+        "heading": "LATE SUMMER\nIN CHICAGO.",
+        "copy": "A curation of pieces that define the city right now.",
+        "issue_label": "ISSUE 002",
         "location_label": "CHICAGO / ILLINOIS",
         "button_label": "Shop the edit"
       }
@@ -55,7 +45,7 @@
         "eyebrow": "Paradise Selects",
         "heading": "WHAT WE'D\nTAKE HOME.",
         "copy": "A rotating selection of pieces the Sole Paradise team would keep for themselves.",
-        "link_label": "Shop staff picks"
+        "link_label": "View all selects"
       }
     },
     "arrivals": {
@@ -65,6 +55,20 @@
         "heading": "New arrivals",
         "limit": 8,
         "show_secondary_image": true
+      }
+    },
+    "features": {
+      "type": "sp-features",
+      "blocks": {
+        "one": {"type":"feature","settings":{"label":"Paradise Edit","title":"The Chrome Hearts Edit","copy":"Pieces we are feeling right now, documented from the floor.","link_label":"Read the story"}},
+        "two": {"type":"feature","settings":{"label":"Unboxed","title":"What Came Through This Week","copy":"A quick rotation of the rarest pieces to land in Chicago.","link_label":"See the rotation"}},
+        "three": {"type":"feature","settings":{"label":"Chicago / Editorial","title":"After Dark","copy":"How the city wears archive designer after the sun goes down.","link_label":"View editorial"}}
+      },
+      "block_order": ["one","two","three"],
+      "settings": {
+        "eyebrow": "Paradise Features",
+        "heading": "THE STORIES\nBEHIND THE PIECES.",
+        "copy": "Editorials, staff rotations and archive stories from the Sole Paradise floor."
       }
     },
     "brands": {
@@ -79,6 +83,17 @@
       },
       "block_order": ["ch","rick","amiri","bal","gallery","saint"],
       "settings": {"eyebrow":"The labels","heading":"Brands in Paradise"}
+    },
+    "trust": {
+      "type": "sp-trust-strip",
+      "blocks": {
+        "auth": {"type":"item","settings":{"title":"Authenticated","text":"Every piece inspected before listing"}},
+        "one": {"type":"item","settings":{"title":"1 of 1 inventory","text":"When it's gone, it's gone"}},
+        "chi": {"type":"item","settings":{"title":"Chicago based","text":"Local pickup and personal service"}},
+        "ship": {"type":"item","settings":{"title":"Secure shipping","text":"Rare pieces delivered with care"}}
+      },
+      "block_order": ["auth","one","chi","ship"],
+      "settings": {}
     },
     "seller": {
       "type": "sp-seller-cta",
@@ -100,5 +115,5 @@
       }
     }
   },
-  "order": ["hero","feed","edit","selects","arrivals","brands","trust","seller","archive"]
+  "order": ["hero","feed","edit","selects","arrivals","features","brands","trust","seller","archive"]
 }
