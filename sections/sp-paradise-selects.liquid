@@ -1,0 +1,47 @@
+<section class="sp-selects sp-section">
+  <div class="page-width section-spacing">
+    <div class="sp-section-head" data-sp-reveal>
+      <div>
+        <p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="sp-section-title">{{ section.settings.heading | newline_to_br }}</h2>
+      </div>
+      {%- if section.settings.copy != blank -%}<p class="sp-selects__copy">{{ section.settings.copy | escape }}</p>{%- endif -%}
+    </div>
+
+    <div class="sp-selects__grid">
+      {%- for block in section.blocks -%}
+        {%- assign product = block.settings.product -%}
+        <div class="sp-selects__item sp-selects__item--{{ forloop.index }}" {{ block.shopify_attributes }} data-sp-reveal>
+          {%- if product != blank -%}
+            <span class="sp-selects__index">0{{ forloop.index }}</span>
+            {%- render 'product-card', product: product, heading_tag: 'h3', image_loading: 'lazy', fetch_priority: 'auto', image_sizes: '(min-width: 1000px) 35vw, 50vw', show_vendor: true, show_secondary_image: true, show_badges: false -%}
+          {%- else -%}
+            <div class="sp-selects__placeholder">Select a piece</div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.collection != blank -%}
+      <div class="sp-selects__footer"><a class="sp-link" href="{{ section.settings.collection.url }}">{{ section.settings.link_label | escape }}</a></div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name":"Paradise Selects",
+  "tag":"section",
+  "class":"sp-selects-section",
+  "settings":[
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Paradise Selects"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"WHAT WE'D\nTAKE HOME."},
+    {"type":"textarea","id":"copy","label":"Copy","default":"A rotating selection of pieces the Sole Paradise team would keep for themselves."},
+    {"type":"collection","id":"collection","label":"Optional destination collection"},
+    {"type":"text","id":"link_label","label":"Link label","default":"Shop staff picks"}
+  ],
+  "blocks":[{"type":"piece","name":"Selected piece","limit":3,"settings":[{"type":"product","id":"product","label":"Product"}]}],
+  "max_blocks":3,
+  "presets":[{"name":"Paradise Selects","blocks":[{"type":"piece"},{"type":"piece"},{"type":"piece"}]}]
+}
+{% endschema %}
