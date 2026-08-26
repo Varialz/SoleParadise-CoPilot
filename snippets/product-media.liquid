@@ -1,0 +1,21 @@
+{%- liquid
+  assign media_loading = media_loading | default: 'lazy'
+  assign media_priority = media_priority | default: 'auto'
+  assign media_sizes = media_sizes | default: '100vw'
+  assign media_alt = media.alt
+  if media_alt == blank
+    assign media_alt = product.title
+  endif
+-%}
+{%- case media.media_type -%}
+  {%- when 'image' -%}
+    {{ media | image_url: width: 1600 | image_tag: loading: media_loading, fetchpriority: media_priority, sizes: media_sizes, widths: '360,480,640,840,1080,1400,1600', class: 'product-media__image', alt: media_alt }}
+  {%- when 'video' -%}
+    {{ media | video_tag: controls: true, preload: 'none', image_size: '1600x', class: 'product-media__video' }}
+  {%- when 'external_video' -%}
+    <div class="product-media__external-video">{{ media | external_video_tag: class: 'product-media__iframe', loading: 'lazy' }}</div>
+  {%- when 'model' -%}
+    <div class="product-media__model">{{ media | model_viewer_tag: class: 'product-media__model-viewer', reveal: 'interaction', toggleable: true }}</div>
+  {%- else -%}
+    {%- if media.preview_image -%}{{ media.preview_image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: media_sizes, widths: '360,480,640,840,1080,1200', class: 'product-media__image', alt: media_alt }}{%- endif -%}
+{%- endcase -%}
