@@ -1,0 +1,34 @@
+<ul class="header-nav-desktop__list list-unstyled">
+  {%- for link in menu.links -%}
+    {%- assign has_children = false -%}
+    {%- if link.links.size > 0 -%}{%- assign has_children = true -%}{%- endif -%}
+    {%- assign panel_id = 'header-panel-' | append: section_id | append: '-' | append: forloop.index -%}
+    <li class="header-nav-desktop__item">
+      <div class="header-nav-desktop__item-row">
+        <a href="{{ link.url | escape }}" class="header-nav-desktop__link"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+        {%- if has_children -%}
+          <button type="button" class="header-nav-desktop__disclosure no-js-hidden" aria-expanded="false" aria-controls="{{ panel_id }}" data-header-submenu-toggle data-label-closed="{{ 'header.open_submenu' | t: title: link.title | escape }}" data-label-open="{{ 'header.close_submenu' | t: title: link.title | escape }}">
+            {%- render 'icon', name: 'chevron-down', size: 16 -%}
+            <span class="visually-hidden" data-header-submenu-label>{{ 'header.open_submenu' | t: title: link.title | escape }}</span>
+          </button>
+        {%- endif -%}
+      </div>
+      {%- if has_children -%}
+        <div id="{{ panel_id }}" class="header-nav-desktop__panel" data-header-submenu-panel>
+          <ul class="header-nav-desktop__panel-list list-unstyled">
+            {%- for child in link.links -%}
+              <li class="header-nav-desktop__panel-item">
+                <a href="{{ child.url | escape }}" class="header-nav-desktop__panel-link"{% if child.active %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                {%- if child.links.size > 0 -%}
+                  <ul class="header-nav-desktop__panel-sublist list-unstyled">
+                    {%- for grandchild in child.links -%}<li><a href="{{ grandchild.url | escape }}" class="header-nav-desktop__panel-sublink"{% if grandchild.active %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a></li>{%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </li>
+  {%- endfor -%}
+</ul>
