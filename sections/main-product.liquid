@@ -40,22 +40,37 @@
     assign has_archive_details = true
   endif
 -%}
-<div class="product page-width section-spacing{% if from_feed %} product--archive{% endif %}" data-product-section data-section-id="{{ section.id }}" data-product-url="{{ product.url | escape }}" data-error-message="{{ 'products.page.update_error' | t | escape }}">
+<div class="product product--boutique page-width section-spacing{% if from_feed %} product--archive{% endif %}" data-product-section data-sp-product-section data-section-id="{{ section.id }}" data-product-url="{{ product.url | escape }}" data-error-message="{{ 'products.page.update_error' | t | escape }}">
   <div class="product__layout">
-    <div class="product__media-column">{%- render 'product-media-gallery', product: product, active_media_id: active_media_id, section_id: section.id -%}</div>
-    <div class="product__info-column">
+    <div class="product__media-column" data-sp-product-gallery>
+      <div class="product__media-label">
+        <span>Documentation</span>
+        <span>{{ product.media.size }} media</span>
+      </div>
+      {%- render 'product-media-gallery', product: product, active_media_id: active_media_id, section_id: section.id -%}
+    </div>
+
+    <div class="product__info-column" data-sp-product-info>
+      <div class="product__retailer-kicker" data-sp-product-reveal>
+        <span>Sole Paradise</span>
+        <span>Chicago / Rare goods</span>
+      </div>
+
       {%- if from_feed -%}
-        <div class="product__archive-kicker">
+        <div class="product__archive-kicker" data-sp-product-reveal>
           <span>From the feed</span>
           <span>{% if archive_id != blank %}{{ archive_id | escape }}{% else %}1 of 1{% endif %}</span>
         </div>
       {%- endif -%}
-      {%- if section.settings.show_vendor and product.vendor != blank -%}<p class="product__vendor">{{ product.vendor | escape }}</p>{%- endif -%}
-      <h1 class="product__title">{{ product.title | escape }}</h1>
-      <div class="product__price" data-product-price>{%- if has_variant -%}{%- render 'product-price', product: product, variant: selected_variant -%}{%- else -%}<p class="price price--unavailable">{{ 'products.page.price_unavailable' | t }}</p>{%- endif -%}</div>
+
+      <div class="product__identity" data-sp-product-reveal>
+        {%- if section.settings.show_vendor and product.vendor != blank -%}<p class="product__vendor">{{ product.vendor | escape }}</p>{%- endif -%}
+        <h1 class="product__title">{{ product.title | escape }}</h1>
+        <div class="product__price" data-product-price>{%- if has_variant -%}{%- render 'product-price', product: product, variant: selected_variant -%}{%- else -%}<p class="price price--unavailable">{{ 'products.page.price_unavailable' | t }}</p>{%- endif -%}</div>
+      </div>
 
       {%- if from_feed and has_archive_details -%}
-        <section class="product__archive-panel" aria-labelledby="ArchiveDetails-{{ section.id }}">
+        <section class="product__archive-panel" aria-labelledby="ArchiveDetails-{{ section.id }}" data-sp-product-reveal>
           <div class="product__archive-panel-head">
             <p class="sp-kicker">Archive details</p>
             <h2 id="ArchiveDetails-{{ section.id }}">The piece, documented.</h2>
@@ -78,12 +93,21 @@
         </section>
       {%- endif -%}
 
-      <p class="product__availability" data-product-availability><span class="visually-hidden">{{ 'products.page.availability' | t }}</span>{%- if is_available -%}<span class="product__availability-state product__availability-state--available">{{ 'products.page.available' | t }}</span>{%- elsif has_variant -%}<span class="product__availability-state product__availability-state--sold-out">{{ 'products.page.sold_out' | t }}</span>{%- else -%}<span class="product__availability-state product__availability-state--unavailable">{{ 'products.page.unavailable' | t }}</span>{%- endif -%}</p>
-      <p class="visually-hidden" aria-live="polite" data-product-live-region></p>
-      {%- render 'product-variant-picker', product: product, section_id: section.id -%}
-      <p class="product__error" role="alert" data-product-error hidden></p>
-      {%- render 'product-form', product: product, selected_variant: selected_variant, section_id: section.id, show_quantity: section.settings.show_quantity_selector, show_dynamic_checkout: section.settings.enable_dynamic_checkout -%}
-      <div class="product__blocks">
+      <div class="product__purchase" data-sp-product-reveal>
+        <p class="product__availability" data-product-availability><span class="visually-hidden">{{ 'products.page.availability' | t }}</span>{%- if is_available -%}<span class="product__availability-state product__availability-state--available">{{ 'products.page.available' | t }}</span>{%- elsif has_variant -%}<span class="product__availability-state product__availability-state--sold-out">{{ 'products.page.sold_out' | t }}</span>{%- else -%}<span class="product__availability-state product__availability-state--unavailable">{{ 'products.page.unavailable' | t }}</span>{%- endif -%}</p>
+        <p class="visually-hidden" aria-live="polite" data-product-live-region></p>
+        {%- render 'product-variant-picker', product: product, section_id: section.id -%}
+        <p class="product__error" role="alert" data-product-error hidden></p>
+        {%- render 'product-form', product: product, selected_variant: selected_variant, section_id: section.id, show_quantity: section.settings.show_quantity_selector, show_dynamic_checkout: section.settings.enable_dynamic_checkout -%}
+      </div>
+
+      <div class="product__service-line" data-sp-product-reveal aria-label="Sole Paradise service standards">
+        <span>Inspected in Chicago</span>
+        <span>Secure shipping</span>
+        <span>Rare inventory</span>
+      </div>
+
+      <div class="product__blocks" data-sp-product-reveal>
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when 'description' -%}{%- if product.description != blank -%}<div class="product__description rte" {{ block.shopify_attributes }}>{{ product.description }}</div>{%- endif -%}
