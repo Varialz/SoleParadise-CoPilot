@@ -21,6 +21,17 @@
       "block_order": ["auth","one","chi","ship"],
       "settings": {}
     },
+    "feed": {
+      "type": "sp-from-feed",
+      "settings": {
+        "eyebrow": "From the feed",
+        "heading": "Shop the post",
+        "copy": "The same one-off pieces posted in Chicago, documented and ready to shop.",
+        "limit": 6,
+        "instagram_label": "@soleparadise.chicago",
+        "show_collection_link": true
+      }
+    },
     "arrivals": {
       "type": "sp-featured-collection",
       "settings": {
@@ -44,5 +55,5 @@
       "settings": {"eyebrow":"The labels","heading":"Brands in Paradise"}
     }
   },
-  "order": ["hero","trust","arrivals","brands"]
+  "order": ["hero","trust","feed","arrivals","brands"]
 }
