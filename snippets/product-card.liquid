@@ -1,0 +1,88 @@
+{%- comment -%}
+  Canonical product summary card inherited from the LacedUpChicago commerce foundation.
+  Sole Paradise presentation is layered through assets/product-card.css and assets/sole-paradise.css.
+{%- endcomment -%}
+{%- liquid
+  assign card_heading_tag = heading_tag
+  unless card_heading_tag == 'h2' or card_heading_tag == 'h3' or card_heading_tag == 'h4'
+    assign card_heading_tag = 'h3'
+  endunless
+  assign card_image_loading = image_loading
+  unless card_image_loading == 'eager' or card_image_loading == 'lazy'
+    assign card_image_loading = 'lazy'
+  endunless
+  assign card_fetch_priority = fetch_priority
+  unless card_fetch_priority == 'high' or card_fetch_priority == 'low' or card_fetch_priority == 'auto'
+    assign card_fetch_priority = 'auto'
+  endunless
+  assign card_image_sizes = image_sizes | default: '100vw'
+  assign image_widths = '240,360,480,640,800,960'
+  assign card_show_vendor = true
+  if show_vendor == false
+    assign card_show_vendor = false
+  endif
+  assign card_show_badges = true
+  if show_badges == false
+    assign card_show_badges = false
+  endif
+-%}
+
+{%- if product == blank -%}
+  <article class="product-card product-card--placeholder" data-sp-reveal>
+    <div class="product-card__media">{{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder-svg' }}</div>
+    <div class="product-card__information">
+      <{{ card_heading_tag }} class="product-card__title">{{ 'products.card.placeholder_title' | t }}</{{ card_heading_tag }}>
+    </div>
+  </article>
+{%- else -%}
+  {%- liquid
+    if collection != blank
+      assign product_url = product.url | within: collection
+    else
+      assign product_url = product.url
+    endif
+    assign featured_image = product.featured_image
+    assign secondary_image = product.images[1]
+    assign image_alt = ''
+    if featured_image.alt != blank and featured_image.alt != product.title
+      assign image_alt = featured_image.alt
+    endif
+    assign on_sale = false
+    if product.available
+      for variant in product.variants
+        if variant.available and variant.compare_at_price > variant.price
+          assign on_sale = true
+          break
+        endif
+      endfor
+    endif
+    assign render_secondary_image = false
+    if show_secondary_image == true and secondary_image != blank
+      assign render_secondary_image = true
+    endif
+  -%}
+  <article class="product-card" data-sp-reveal>
+    <div class="product-card__media{% if render_secondary_image %} product-card__media--has-secondary{% endif %}">
+      {%- if card_show_badges -%}
+        {%- unless product.available -%}
+          <span class="product-card__badge product-card__badge--sold-out">{{ 'products.card.sold_out' | t }}</span>
+        {%- else -%}
+          {%- if on_sale -%}<span class="product-card__badge product-card__badge--sale">{{ 'products.card.sale' | t }}</span>{%- endif -%}
+        {%- endunless -%}
+      {%- endif -%}
+      {%- if featured_image != blank -%}
+        {{ featured_image | image_url: width: 960 | image_tag: loading: card_image_loading, fetchpriority: card_fetch_priority, sizes: card_image_sizes, widths: image_widths, class: 'product-card__image product-card__image--primary', alt: image_alt }}
+        {%- if render_secondary_image -%}
+          {{ secondary_image | image_url: width: 960 | image_tag: loading: 'lazy', sizes: card_image_sizes, widths: image_widths, class: 'product-card__image product-card__image--secondary', alt: '' }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder-svg' }}
+      {%- endif -%}
+    </div>
+    <div class="product-card__information">
+      {%- if card_show_vendor and product.vendor != blank -%}<p class="product-card__vendor">{{ product.vendor | escape }}</p>{%- endif -%}
+      <{{ card_heading_tag }} class="product-card__title"><a class="product-card__link" href="{{ product_url | escape }}">{{ product.title | escape }}</a></{{ card_heading_tag }}>
+      {%- render 'product-price', product: product -%}
+    </div>
+  </article>
+{%- endif -%}
