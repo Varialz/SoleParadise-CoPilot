@@ -74,6 +74,11 @@
     assign archive_size = product.metafields.custom.size.value | default: product.metafields.custom.size
     assign condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition
     assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
+
+    assign has_archive_meta = false
+    if archive_size != blank or condition != blank or item_state != blank
+      assign has_archive_meta = true
+    endif
   -%}
 
   <article class="product-card{% if from_feed %} product-card--archive{% endif %}" data-sp-reveal>
@@ -106,7 +111,7 @@
       {%- if card_show_vendor and product.vendor != blank -%}<p class="product-card__vendor">{{ product.vendor | escape }}</p>{%- endif -%}
       <{{ card_heading_tag }} class="product-card__title"><a class="product-card__link" href="{{ product_url | escape }}">{{ product.title | escape }}</a></{{ card_heading_tag }}>
 
-      {%- if from_feed and (archive_size != blank or condition != blank or item_state != blank) -%}
+      {%- if from_feed and has_archive_meta -%}
         <p class="product-card__archive-meta">
           {%- if archive_size != blank -%}<span>{{ archive_size | escape }}</span>{%- endif -%}
           {%- if condition != blank -%}<span>{{ condition | escape }}</span>{%- endif -%}
