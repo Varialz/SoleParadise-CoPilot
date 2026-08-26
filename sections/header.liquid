@@ -24,7 +24,7 @@
     }
   {%- endstyle -%}
 {%- endif -%}
-<header class="site-header{% if overlay_header %} site-header--overlay{% endif %}" data-header{% if overlay_header %} data-header-overlay{% endif %}>
+<header class="site-header{% if overlay_header %} site-header--overlay{% endif %}{% unless section.settings.show_utility_bar %} site-header--no-utility{% endunless %}" data-header{% if overlay_header %} data-header-overlay{% endif %}>
   {%- if section.settings.show_utility_bar -%}
     <div class="site-header__utility-bar">
       <div class="page-width site-header__utility-bar-inner">
