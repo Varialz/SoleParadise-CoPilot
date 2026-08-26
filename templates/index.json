@@ -65,6 +65,15 @@
       "block_order": ["ch","rick","amiri","bal","gallery","saint"],
       "settings": {"eyebrow":"The labels","heading":"Brands in Paradise"}
     },
+    "seller": {
+      "type": "sp-seller-cta",
+      "settings": {
+        "eyebrow": "Your closet / our floor",
+        "heading": "SELL TO\nPARADISE.",
+        "copy": "Send us the piece once. Show us the photos. Choose cash, trade or consignment.",
+        "link_label": "Start a submission"
+      }
+    },
     "archive": {
       "type": "sp-sold-archive",
       "settings": {
@@ -76,5 +85,5 @@
       }
     }
   },
-  "order": ["hero","trust","feed","edit","arrivals","brands","archive"]
+  "order": ["hero","trust","feed","edit","arrivals","brands","seller","archive"]
 }
