@@ -6,6 +6,10 @@
   if shop.customer_accounts_enabled
     assign show_account = true
   endif
+  assign utility_url = section.settings.utility_link
+  if utility_url == blank and section.settings.utility_link_label != blank
+    assign utility_url = '/pages/sell-to-paradise'
+  endif
 -%}
 {%- if sticky -%}
   {%- style -%}
@@ -21,8 +25,8 @@
     <div class="site-header__utility-bar">
       <div class="page-width site-header__utility-bar-inner">
         <p>{{ section.settings.utility_text | escape }}</p>
-        {%- if section.settings.utility_link_label != blank and section.settings.utility_link != blank -%}
-          <a href="{{ section.settings.utility_link }}">{{ section.settings.utility_link_label | escape }}</a>
+        {%- if section.settings.utility_link_label != blank and utility_url != blank -%}
+          <a href="{{ utility_url | escape }}">{{ section.settings.utility_link_label | escape }}</a>
         {%- endif -%}
       </div>
     </div>
@@ -71,6 +75,14 @@
         <button type="button" class="site-header__trigger header-drawer__close no-js-hidden" aria-label="{{ 'header.close_menu' | t }}" data-header-drawer-close>{%- render 'icon', name: 'close' -%}</button>
       </div>
       {%- if menu != blank -%}<nav class="header-drawer__nav" aria-label="{{ 'header.primary_navigation' | t }}">{%- render 'header-menu-mobile', menu: menu, section_id: section.id -%}</nav>{%- endif -%}
+      {%- if section.settings.utility_link_label != blank and utility_url != blank -%}
+        <div class="header-drawer__seller">
+          <a class="header-drawer__seller-link" href="{{ utility_url | escape }}">
+            <span>{{ section.settings.utility_link_label | escape }}</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      {%- endif -%}
       <div class="header-drawer__footer">
         <span>Chicago based</span>
         <span>Worldwide shipping</span>
@@ -91,7 +103,7 @@
     {"type":"checkbox","id":"show_utility_bar","label":"Show utility bar","default":true},
     {"type":"text","id":"utility_text","label":"Utility text","default":"Chicago based · Worldwide shipping · Authenticated"},
     {"type":"text","id":"utility_link_label","label":"Utility link label","default":"Sell to Paradise"},
-    {"type":"url","id":"utility_link","label":"Utility link"}
+    {"type":"url","id":"utility_link","label":"Utility link","info":"If blank, Sell to Paradise falls back to /pages/sell-to-paradise."}
   ],
   "enabled_on":{"groups":["header"]}
 }
