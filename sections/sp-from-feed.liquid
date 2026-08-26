@@ -7,9 +7,9 @@
   endif
   assign product_limit = section.settings.limit | default: 6
 -%}
-<section class="sp-section sp-feed section-spacing" data-sp-feed>
+<section class="sp-section sp-feed sp-feed--media section-spacing" data-sp-feed>
   <div class="page-width">
-    <header class="sp-section-head" data-sp-reveal>
+    <header class="sp-section-head sp-feed__head" data-sp-reveal>
       <div>
         {%- if section.settings.eyebrow != blank -%}<p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
         <h2 class="sp-section-title">{{ section.settings.heading | escape }}</h2>
@@ -26,21 +26,46 @@
       {%- if request.design_mode and using_fallback_collection -%}
         <p class="sp-editor-note">Theme setup: showing All products until a dedicated From the Feed collection is selected.</p>
       {%- endif -%}
-      <div class="sp-feed__grid">
+
+      <div class="sp-feed-media" data-sp-feed-grid>
         {%- for product in feed_collection.products limit: product_limit -%}
-          <div class="sp-feed__item">
-            {%- render 'product-card',
-              product: product,
-              collection: feed_collection,
-              heading_tag: 'h3',
-              image_loading: 'lazy',
-              fetch_priority: 'auto',
-              image_sizes: '(min-width: 1000px) 20vw, (min-width: 750px) 33vw, 50vw',
-              show_vendor: true,
-              show_secondary_image: true,
-              show_badges: true
+          {%- if product.featured_image != blank -%}
+            {%- liquid
+              assign archive_size = product.metafields.custom.size.value | default: product.metafields.custom.size
+              assign condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition
+              assign item_state = product.metafields.custom.item_state.value | default: product.metafields.custom.item_state
+              assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
+              assign tile_alt = product.featured_image.alt | default: product.title
             -%}
-          </div>
+            <article class="sp-feed-tile" data-sp-feed-tile>
+              <a class="sp-feed-tile__link" href="{{ product.url | escape }}" aria-label="View {{ product.title | escape }}">
+                <figure class="sp-feed-tile__media" data-sp-feed-media>
+                  {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360,540,720,900,1200', sizes: '(min-width: 1200px) 20vw, (min-width: 750px) 33vw, 50vw', class: 'sp-feed-tile__image', alt: tile_alt }}
+                </figure>
+                <div class="sp-feed-tile__meta">
+                  <div>
+                    {%- if product.vendor != blank -%}<span class="sp-feed-tile__vendor">{{ product.vendor | escape }}</span>{%- endif -%}
+                    <h3>{{ product.title | escape }}</h3>
+                  </div>
+                  <div class="sp-feed-tile__price">{%- render 'product-price', product: product -%}</div>
+                </div>
+              </a>
+              <button
+                class="sp-feed-tile__quick no-js-hidden"
+                type="button"
+                data-quick-view-trigger
+                data-product-url="{{ product.url | escape }}"
+                data-archive="{% if product.tags contains 'FROM-FEED' %}true{% else %}false{% endif %}"
+                {% if archive_id != blank %}data-archive-id="{{ archive_id | escape }}"{% endif %}
+                {% if archive_size != blank %}data-size="{{ archive_size | escape }}"{% endif %}
+                {% if condition != blank %}data-condition="{{ condition | escape }}"{% endif %}
+                {% if item_state != blank %}data-item-state="{{ item_state | escape }}"{% endif %}
+                aria-label="Quick view {{ product.title | escape }}"
+                aria-haspopup="dialog"
+                aria-controls="SoleParadiseQuickView"
+              >Quick view</button>
+            </article>
+          {%- endif -%}
         {%- endfor -%}
       </div>
 
@@ -51,7 +76,7 @@
       {%- endif -%}
     {%- elsif request.design_mode -%}
       <div class="sp-feed__empty" data-sp-reveal>
-        <p>Add products to Shopify, then select the automatic <strong>From the Feed</strong> collection in this section.</p>
+        <p>Add products with real photography, then select the automatic <strong>From the Feed</strong> collection in this section.</p>
       </div>
     {%- endif -%}
   </div>
@@ -63,7 +88,7 @@
   "settings": [
     {"type":"text","id":"eyebrow","label":"Eyebrow","default":"From the feed"},
     {"type":"text","id":"heading","label":"Heading","default":"Shop the post"},
-    {"type":"textarea","id":"copy","label":"Intro","default":"The same one-off pieces posted in Chicago, documented and ready to shop."},
+    {"type":"textarea","id":"copy","label":"Intro","default":"Fresh arrivals, one-offs and details straight from the floor."},
     {"type":"collection","id":"collection","label":"From the Feed collection"},
     {"type":"range","id":"limit","label":"Products to show","min":3,"max":12,"step":1,"default":6},
     {"type":"url","id":"instagram_url","label":"Instagram profile URL"},
