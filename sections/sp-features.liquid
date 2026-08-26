@@ -29,9 +29,9 @@
           endif
         -%}
         <article class="sp-features__card sp-features__card--{{ forloop.index }}" {{ block.shopify_attributes }} data-sp-reveal>
-          <a class="sp-features__media" href="{{ feature_url | escape }}" aria-label="{{ block.settings.title | escape }}">
+          <a class="sp-features__media" href="{{ feature_url | escape }}" aria-label="{{ block.settings.title | escape }}" data-sp-editorial-media>
             {%- if feature_image != blank -%}
-              {{ feature_image | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 1000px) 40vw, 100vw', widths: '480,720,960,1200,1400', alt: feature_image.alt }}
+              {{ feature_image | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 1000px) 40vw, 100vw', widths: '480,720,960,1200,1400', class: 'sp-features__image', alt: feature_image.alt }}
             {%- else -%}
               <span class="sp-features__fallback" aria-hidden="true">SOLE PARADISE / CHICAGO</span>
             {%- endif -%}
