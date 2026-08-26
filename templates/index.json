@@ -32,6 +32,17 @@
         "show_collection_link": true
       }
     },
+    "edit": {
+      "type": "sp-paradise-edit",
+      "settings": {
+        "eyebrow": "Paradise Edit 001",
+        "heading": "CHICAGO\nAFTER DARK.",
+        "copy": "A rotating editorial of rare pieces, city nights and the people who wear them.",
+        "issue_label": "ISSUE 001",
+        "location_label": "CHICAGO / ILLINOIS",
+        "button_label": "Shop the edit"
+      }
+    },
     "arrivals": {
       "type": "sp-featured-collection",
       "settings": {
@@ -53,7 +64,17 @@
       },
       "block_order": ["ch","rick","amiri","bal","gallery","saint"],
       "settings": {"eyebrow":"The labels","heading":"Brands in Paradise"}
+    },
+    "archive": {
+      "type": "sp-sold-archive",
+      "settings": {
+        "eyebrow": "Paradise Archive",
+        "heading": "GONE, NOT\nFORGOTTEN.",
+        "copy": "Past one-of-one pieces stay visible as proof of what moves through Paradise.",
+        "limit": 6,
+        "show_collection_link": true
+      }
     }
   },
-  "order": ["hero","trust","feed","arrivals","brands"]
+  "order": ["hero","trust","feed","edit","arrivals","brands","archive"]
 }
