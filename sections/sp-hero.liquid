@@ -10,8 +10,8 @@
     endif
   endif
 -%}
-<section class="sp-hero sp-hero--editorial" data-sp-section>
-  <div class="sp-hero__media" data-sp-parallax>
+<section class="sp-hero sp-hero--editorial" data-sp-section data-sp-hero>
+  <div class="sp-hero__media" data-sp-hero-media>
     {%- if hero_image != blank -%}
       <picture>
         {%- if section.settings.mobile_image != blank -%}
@@ -21,7 +21,7 @@
             sizes="100vw"
           >
         {%- endif -%}
-        {{ hero_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', alt: hero_image.alt }}
+        {{ hero_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: hero_image.alt }}
       </picture>
       {%- if request.design_mode and using_inventory_image -%}<span class="sp-hero__setup">Using the first product image until campaign art is assigned</span>{%- endif -%}
     {%- else -%}
