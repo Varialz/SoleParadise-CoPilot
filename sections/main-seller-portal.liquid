@@ -1,0 +1,146 @@
+{{ 'seller-portal.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'seller-portal.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign intake_variant = blank
+  if section.settings.intake_product != blank
+    assign intake_variant = section.settings.intake_product.selected_or_first_available_variant
+  endif
+-%}
+
+<section class="seller-portal" data-seller-portal data-intake-variant-id="{% if intake_variant %}{{ intake_variant.id }}{% endif %}">
+  <div class="seller-portal__hero page-width">
+    <div class="seller-portal__hero-copy" data-sp-reveal>
+      <p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>
+      <h1>{{ section.settings.heading | newline_to_br }}</h1>
+      <p>{{ section.settings.copy | escape }}</p>
+    </div>
+    <div class="seller-portal__hero-note" data-sp-reveal>
+      <span>Chicago / Seller intake</span>
+      <strong>YOUR CLOSET.<br>OUR FLOOR.</strong>
+    </div>
+  </div>
+
+  <div class="seller-portal__shell page-width">
+    <nav class="seller-portal__progress" aria-label="Submission progress">
+      <button type="button" class="is-active" data-seller-step-nav="0"><span>01</span> Piece</button>
+      <button type="button" data-seller-step-nav="1"><span>02</span> Photos</button>
+      <button type="button" data-seller-step-nav="2"><span>03</span> Details</button>
+      <button type="button" data-seller-step-nav="3"><span>04</span> Contact</button>
+    </nav>
+
+    {%- form 'contact', id: 'SellerPortalForm', class: 'seller-portal__form' -%}
+      <input type="hidden" name="contact[subject]" value="Sell to Paradise submission">
+      <input type="hidden" name="contact[Submission type]" data-summary-field="submission_type">
+      <input type="hidden" name="contact[Brand]" data-summary-field="brand">
+      <input type="hidden" name="contact[Item]" data-summary-field="item">
+      <input type="hidden" name="contact[Size]" data-summary-field="size">
+      <input type="hidden" name="contact[Condition]" data-summary-field="condition">
+      <textarea name="contact[Photo URLs]" data-photo-urls hidden></textarea>
+
+      {%- if form.posted_successfully? -%}
+        <div class="seller-portal__success" tabindex="-1">
+          <p class="sp-kicker">Submission received</p>
+          <h2>WELCOME TO PARADISE.</h2>
+          <p>We have your piece details. The team will review the submission and follow up using the contact information provided.</p>
+        </div>
+      {%- else -%}
+        {%- if form.errors -%}
+          <div class="seller-portal__errors" role="alert">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+
+        <div class="seller-portal__step is-active" data-seller-step="0">
+          <div class="seller-portal__step-head">
+            <span>01</span>
+            <div><p class="sp-kicker">The piece</p><h2>WHAT ARE YOU BRINGING US?</h2></div>
+          </div>
+          <div class="seller-portal__fields seller-portal__fields--two">
+            <label><span>Brand</span><input type="text" data-field="brand" autocomplete="off" required placeholder="Chrome Hearts"></label>
+            <label><span>Item</span><input type="text" data-field="item" autocomplete="off" required placeholder="Matty Boy Hoodie"></label>
+            <label><span>Size</span><input type="text" data-field="size" autocomplete="off" placeholder="Large / 34 / OS"></label>
+            <label><span>Condition</span><select data-field="condition" required><option value="">Select condition</option><option>10 / 10 — Like new</option><option>9 / 10 — Excellent</option><option>8 / 10 — Very good</option><option>7 / 10 — Worn</option><option>6 / 10 or below — Heavy wear</option></select></label>
+          </div>
+
+          <fieldset class="seller-portal__choice-group">
+            <legend>How do you want to move it?</legend>
+            <label><input type="radio" name="seller-intent" value="Sell" data-field="submission_type" required><span><strong>SELL</strong><small>Get a cash offer.</small></span></label>
+            <label><input type="radio" name="seller-intent" value="Trade" data-field="submission_type"><span><strong>TRADE</strong><small>Get more value toward another piece.</small></span></label>
+            <label><input type="radio" name="seller-intent" value="Consign" data-field="submission_type"><span><strong>CONSIGN</strong><small>Let us sell it for you.</small></span></label>
+          </fieldset>
+        </div>
+
+        <div class="seller-portal__step" data-seller-step="1" hidden>
+          <div class="seller-portal__step-head">
+            <span>02</span>
+            <div><p class="sp-kicker">Show us everything</p><h2>GOOD PHOTOS GET FASTER OFFERS.</h2><p>Include the front, back, tags, details and any flaws. Product photos only—please do not upload IDs or personal documents.</p></div>
+          </div>
+
+          <label class="seller-portal__dropzone" for="SellerPhotos">
+            <input id="SellerPhotos" type="file" accept="image/*" multiple data-seller-photos>
+            <span class="seller-portal__dropzone-mark">+</span>
+            <strong>DROP YOUR PHOTOS HERE</strong>
+            <span>or tap to choose from camera roll</span>
+            <small>Up to 12 photos · JPG, PNG, HEIC/WebP where supported</small>
+          </label>
+          <div class="seller-portal__photo-grid" data-photo-grid aria-live="polite"></div>
+          <p class="seller-portal__photo-note" data-photo-note>0 / 12 photos selected</p>
+        </div>
+
+        <div class="seller-portal__step" data-seller-step="2" hidden>
+          <div class="seller-portal__step-head">
+            <span>03</span>
+            <div><p class="sp-kicker">The details</p><h2>TELL US WHAT THE PHOTOS CAN'T.</h2></div>
+          </div>
+          <div class="seller-portal__fields">
+            <label><span>Flaws / condition notes</span><textarea name="contact[Condition notes]" rows="5" placeholder="Light cracking on front print, minor heel drag, missing original box..."></textarea></label>
+            <label><span>What are you hoping to get?</span><input type="text" name="contact[Expected value]" inputmode="decimal" placeholder="$650"></label>
+            <label><span>Instagram @ (optional)</span><input type="text" name="contact[Instagram]" autocomplete="off" placeholder="@username"></label>
+          </div>
+        </div>
+
+        <div class="seller-portal__step" data-seller-step="3" hidden>
+          <div class="seller-portal__step-head">
+            <span>04</span>
+            <div><p class="sp-kicker">Contact</p><h2>WHERE SHOULD WE SEND THE OFFER?</h2></div>
+          </div>
+          <div class="seller-portal__fields seller-portal__fields--two">
+            <label><span>Name</span><input type="text" name="contact[name]" autocomplete="name" required></label>
+            <label><span>Email</span><input type="email" name="contact[email]" autocomplete="email" required></label>
+            <label><span>Phone</span><input type="tel" name="contact[phone]" autocomplete="tel"></label>
+            <label><span>Preferred contact</span><select name="contact[Preferred contact]"><option>Email</option><option>Text</option><option>Phone call</option><option>Instagram DM</option></select></label>
+          </div>
+
+          <div class="seller-portal__review" data-seller-review></div>
+
+          <label class="seller-portal__consent">
+            <input type="checkbox" required>
+            <span>I confirm the item is mine to sell and the information/photos I submitted are accurate to the best of my knowledge.</span>
+          </label>
+
+          <div class="seller-portal__upload-status" data-upload-status role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="seller-portal__actions">
+          <button type="button" class="seller-portal__back" data-seller-back hidden>← Back</button>
+          <button type="button" class="seller-portal__next" data-seller-next>Continue →</button>
+          <button type="submit" class="seller-portal__submit" data-seller-submit hidden>Submit piece →</button>
+        </div>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Seller portal",
+  "tag": "section",
+  "class": "seller-portal-section",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Sell to Paradise"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"YOUR CLOSET.\nOUR FLOOR."},
+    {"type":"textarea","id":"copy","label":"Intro copy","default":"Submit your designer piece for a cash offer, trade value or consignment review."},
+    {"type":"product","id":"intake_product","label":"Hidden intake product","info":"Optional for now. Assign the dedicated $0 hidden intake product when testing the Shopify photo-upload relay."}
+  ],
+  "enabled_on": {"templates":["page"]}
+}
+{% endschema %}
