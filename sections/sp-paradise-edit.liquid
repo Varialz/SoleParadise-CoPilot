@@ -25,7 +25,7 @@
     assign edit_url = routes.all_products_collection_url
   endif
 -%}
-<section class="sp-section sp-edit" id="ParadiseEdit-{{ section.id }}">
+<section class="sp-section sp-edit" id="ParadiseEdit-{{ section.id }}" data-sp-editorial>
   <div class="page-width section-spacing">
     <div class="sp-edit__top" data-sp-reveal>
       <div>
@@ -45,8 +45,8 @@
     <div class="sp-edit__composition">
       <div class="sp-edit__campaign" data-sp-reveal>
         {%- if campaign_image != blank -%}
-          <div class="sp-edit__campaign-media" data-sp-parallax>
-            {{ campaign_image | image_url: width: 1800 | image_tag: loading: 'lazy', widths: '640,960,1280,1600,1800', sizes: '(min-width: 990px) 58vw, 100vw', alt: campaign_image.alt }}
+          <div class="sp-edit__campaign-media" data-sp-editorial-media>
+            {{ campaign_image | image_url: width: 1800 | image_tag: loading: 'lazy', widths: '640,960,1280,1600,1800', sizes: '(min-width: 990px) 58vw, 100vw', class: 'sp-edit__campaign-image', alt: campaign_image.alt }}
           </div>
         {%- else -%}
           <div class="sp-edit__campaign-media sp-edit__campaign-fallback" aria-label="Sole Paradise editorial placeholder">
@@ -60,7 +60,7 @@
         </div>
       </div>
 
-      <div class="sp-edit__shop" data-sp-reveal>
+      <div class="sp-edit__shop" data-sp-product-grid>
         {%- if primary_product != blank -%}
           <div class="sp-edit__product sp-edit__product--primary">
             {%- render 'product-card', product: primary_product, show_secondary_image: true, show_badges: true, show_vendor: true, heading_tag: 'h3', image_sizes: '(min-width: 990px) 28vw, 50vw' -%}
