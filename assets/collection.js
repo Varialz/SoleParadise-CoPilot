@@ -9,6 +9,8 @@
     const drawer = section.querySelector('[data-collection-drawer]');
     const trigger = section.querySelector('[data-collection-drawer-open]');
     const panel = section.querySelector('[data-collection-drawer-panel]');
+    const backdrop = section.querySelector('[data-collection-drawer-backdrop]');
+    window.SoleParadiseMotion?.animateDrawer?.(panel, backdrop, false);
     if (drawer) drawer.classList.remove('is-open');
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
     if (panel) {
@@ -25,6 +27,7 @@
     const drawer = section.querySelector('[data-collection-drawer]');
     const trigger = section.querySelector('[data-collection-drawer-open]');
     const panel = section.querySelector('[data-collection-drawer-panel]');
+    const backdrop = section.querySelector('[data-collection-drawer-backdrop]');
     if (!drawer || !trigger || !panel) return;
     drawer.classList.add('is-open');
     trigger.setAttribute('aria-expanded', 'true');
@@ -32,6 +35,7 @@
     panel.setAttribute('aria-modal', 'true');
     document.documentElement.classList.add('collection-scroll-lock');
     activeSection = section;
+    window.SoleParadiseMotion?.animateDrawer?.(panel, backdrop, true);
     panel.focus();
   }
 
@@ -63,9 +67,6 @@
   });
 
   window.theme = window.theme || {};
-  if (window.theme.onSectionLoad) {
-    window.theme.onSectionLoad('[data-collection]', init);
-  } else {
-    document.querySelectorAll('[data-collection]').forEach(init);
-  }
+  if (window.theme.onSectionLoad) window.theme.onSectionLoad('[data-collection]', init);
+  else document.querySelectorAll('[data-collection]').forEach(init);
 })();
