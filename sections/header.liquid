@@ -17,36 +17,49 @@
   {%- endstyle -%}
 {%- endif -%}
 <header class="site-header" data-header>
-  <div class="site-header__row page-width">
-    <button type="button" class="site-header__trigger site-header__trigger--menu no-js-hidden" aria-expanded="false" aria-controls="header-drawer-{{ section.id }}" data-header-drawer-open>
-      {%- render 'icon', name: 'menu' -%}
-      <span class="visually-hidden">{{ 'header.menu' | t }}</span>
-    </button>
+  {%- if section.settings.show_utility_bar -%}
+    <div class="site-header__utility-bar">
+      <div class="page-width site-header__utility-bar-inner">
+        <p>{{ section.settings.utility_text | escape }}</p>
+        {%- if section.settings.utility_link_label != blank and section.settings.utility_link != blank -%}
+          <a href="{{ section.settings.utility_link }}">{{ section.settings.utility_link_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
 
-    <a class="site-header__logo" href="{{ routes.root_url }}">
-      {%- if settings.logo -%}
-        <img src="{{ settings.logo | image_url: width: settings.logo_width | times: 2 }}" alt="{{ shop.name | escape }}" width="{{ settings.logo_width }}" height="{{ settings.logo_width | divided_by: settings.logo.aspect_ratio }}" loading="eager">
-      {%- else -%}
-        <span class="site-header__wordmark">{{ shop.name | escape }}</span>
-      {%- endif -%}
-    </a>
+  <div class="site-header__main">
+    <div class="site-header__row page-width">
+      <button type="button" class="site-header__trigger site-header__trigger--menu no-js-hidden" aria-expanded="false" aria-controls="header-drawer-{{ section.id }}" data-header-drawer-open>
+        {%- render 'icon', name: 'menu' -%}
+        <span class="visually-hidden">{{ 'header.menu' | t }}</span>
+      </button>
 
-    {%- if menu != blank -%}
-      <nav class="header-nav-desktop" aria-label="{{ 'header.primary_navigation' | t }}">
-        {%- render 'header-menu-desktop', menu: menu, section_id: section.id -%}
-      </nav>
-    {%- endif -%}
-
-    <div class="site-header__utility">
-      <a class="site-header__trigger site-header__trigger--search" href="{{ routes.search_url }}">{%- render 'icon', name: 'search' -%}<span class="visually-hidden">{{ 'header.search' | t }}</span></a>
-      {%- if show_account -%}
-        <a class="site-header__trigger site-header__trigger--account" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">{%- render 'icon', name: 'account' -%}<span class="visually-hidden">{{ 'header.account' | t }}</span></a>
-      {%- endif -%}
-      <a class="site-header__trigger site-header__trigger--cart" href="{{ routes.cart_url }}" data-header-cart-trigger>
-        {%- render 'icon', name: 'bag' -%}
-        <span class="visually-hidden">{% if cart_count > 0 %}{{ 'header.cart_count' | t: count: cart_count }}{% else %}{{ 'header.cart' | t }}{% endif %}</span>
-        {%- if cart_count > 0 -%}<span class="site-header__cart-count" data-header-cart-count aria-hidden="true">{{ cart_count }}</span>{%- endif -%}
+      <a class="site-header__logo" href="{{ routes.root_url }}">
+        {%- if settings.logo -%}
+          <img src="{{ settings.logo | image_url: width: settings.logo_width | times: 2 }}" alt="{{ shop.name | escape }}" width="{{ settings.logo_width }}" height="{{ settings.logo_width | divided_by: settings.logo.aspect_ratio }}" loading="eager">
+        {%- else -%}
+          <span class="site-header__wordmark">{{ shop.name | escape }}</span>
+        {%- endif -%}
       </a>
+
+      {%- if menu != blank -%}
+        <nav class="header-nav-desktop" aria-label="{{ 'header.primary_navigation' | t }}">
+          {%- render 'header-menu-desktop', menu: menu, section_id: section.id -%}
+        </nav>
+      {%- endif -%}
+
+      <div class="site-header__utility">
+        <a class="site-header__trigger site-header__trigger--search" href="{{ routes.search_url }}">{%- render 'icon', name: 'search' -%}<span class="visually-hidden">{{ 'header.search' | t }}</span></a>
+        {%- if show_account -%}
+          <a class="site-header__trigger site-header__trigger--account" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">{%- render 'icon', name: 'account' -%}<span class="visually-hidden">{{ 'header.account' | t }}</span></a>
+        {%- endif -%}
+        <a class="site-header__trigger site-header__trigger--cart" href="{{ routes.cart_url }}" data-header-cart-trigger>
+          {%- render 'icon', name: 'bag' -%}
+          <span class="visually-hidden">{% if cart_count > 0 %}{{ 'header.cart_count' | t: count: cart_count }}{% else %}{{ 'header.cart' | t }}{% endif %}</span>
+          {%- if cart_count > 0 -%}<span class="site-header__cart-count" data-header-cart-count aria-hidden="true">{{ cart_count }}</span>{%- endif -%}
+        </a>
+      </div>
     </div>
   </div>
 
@@ -58,6 +71,10 @@
         <button type="button" class="site-header__trigger header-drawer__close no-js-hidden" aria-label="{{ 'header.close_menu' | t }}" data-header-drawer-close>{%- render 'icon', name: 'close' -%}</button>
       </div>
       {%- if menu != blank -%}<nav class="header-drawer__nav" aria-label="{{ 'header.primary_navigation' | t }}">{%- render 'header-menu-mobile', menu: menu, section_id: section.id -%}</nav>{%- endif -%}
+      <div class="header-drawer__footer">
+        <span>Chicago based</span>
+        <span>Worldwide shipping</span>
+      </div>
       {%- if show_account -%}
         <div class="header-drawer__utility"><a class="header-drawer__utility-link" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">{%- render 'icon', name: 'account' -%}{% if customer %}{{ 'header.account' | t }}{% else %}{{ 'header.sign_in' | t }}{% endif %}</a></div>
       {%- endif -%}
@@ -70,7 +87,11 @@
   "name":"Header",
   "settings":[
     {"type":"link_list","id":"menu","label":"Primary menu","default":"main-menu"},
-    {"type":"checkbox","id":"enable_sticky_header","label":"Enable sticky header","default":true}
+    {"type":"checkbox","id":"enable_sticky_header","label":"Enable sticky header","default":true},
+    {"type":"checkbox","id":"show_utility_bar","label":"Show utility bar","default":true},
+    {"type":"text","id":"utility_text","label":"Utility text","default":"Chicago based · Worldwide shipping · Authenticated"},
+    {"type":"text","id":"utility_link_label","label":"Utility link label","default":"Sell to Paradise"},
+    {"type":"url","id":"utility_link","label":"Utility link"}
   ],
   "enabled_on":{"groups":["header"]}
 }
