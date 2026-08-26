@@ -2,33 +2,42 @@
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion) return;
 
-  const start = () => {
+  const initialized = new WeakSet();
+
+  const animateScope = (scope = document) => {
     if (!window.gsap) return;
 
     const gsap = window.gsap;
     if (window.ScrollTrigger) gsap.registerPlugin(window.ScrollTrigger);
 
-    gsap.from('[data-sp-hero-line]', {
-      yPercent: 115,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.08,
-      ease: 'power3.out'
+    scope.querySelectorAll?.('[data-sp-hero-line]').forEach((element, index) => {
+      if (initialized.has(element)) return;
+      initialized.add(element);
+      gsap.from(element, {
+        yPercent: 115,
+        opacity: 0,
+        duration: 1,
+        delay: index * 0.08,
+        ease: 'power3.out'
+      });
     });
 
-    const horizon = document.querySelector('[data-sp-horizon]');
-    if (horizon) {
-      gsap.fromTo(horizon, { scaleX: 0 }, {
+    scope.querySelectorAll?.('[data-sp-horizon]').forEach((element) => {
+      if (initialized.has(element)) return;
+      initialized.add(element);
+      gsap.fromTo(element, { scaleX: 0 }, {
         scaleX: 1,
         duration: 1.3,
         delay: 0.15,
         ease: 'power3.inOut'
       });
-    }
+    });
 
     if (!window.ScrollTrigger) return;
 
-    gsap.utils.toArray('[data-sp-reveal]').forEach((element) => {
+    scope.querySelectorAll?.('[data-sp-reveal]').forEach((element) => {
+      if (initialized.has(element)) return;
+      initialized.add(element);
       gsap.from(element, {
         y: 28,
         opacity: 0,
@@ -42,7 +51,9 @@
       });
     });
 
-    gsap.utils.toArray('[data-sp-parallax]').forEach((element) => {
+    scope.querySelectorAll?.('[data-sp-parallax]').forEach((element) => {
+      if (initialized.has(element)) return;
+      initialized.add(element);
       gsap.to(element, {
         yPercent: -6,
         ease: 'none',
@@ -54,11 +65,19 @@
         }
       });
     });
+
+    window.ScrollTrigger.refresh();
   };
+
+  const start = () => animateScope(document);
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start, { once: true });
   } else {
     start();
   }
+
+  document.addEventListener('shopify:section:load', (event) => {
+    animateScope(event.target);
+  });
 })();
