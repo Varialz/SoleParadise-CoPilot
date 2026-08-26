@@ -26,10 +26,12 @@
           {%- case block.type -%}
             {%- when 'menu' -%}
               {%- assign footer_menu = block.settings.menu -%}
+              {%- assign footer_nav_label = block.settings.heading -%}
+              {%- if footer_nav_label == blank -%}{%- assign footer_nav_label = 'footer.navigation_fallback' | t -%}{%- endif -%}
               {%- if footer_menu != blank and footer_menu.links.size > 0 -%}
                 <div class="footer-block footer-block--menu" {{ block.shopify_attributes }}>
                   {%- if block.settings.heading != blank -%}<h2 class="footer-block__heading">{{ block.settings.heading | escape }}</h2>{%- endif -%}
-                  <nav class="footer-block__nav" aria-label="{{ block.settings.heading | default: 'footer.navigation_fallback' | t | escape }}"><ul class="footer-block__list list-unstyled">{%- for link in footer_menu.links -%}<li><a href="{{ link.url | escape }}" class="footer-block__link"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>{%- endfor -%}</ul></nav>
+                  <nav class="footer-block__nav" aria-label="{{ footer_nav_label | escape }}"><ul class="footer-block__list list-unstyled">{%- for link in footer_menu.links -%}<li><a href="{{ link.url | escape }}" class="footer-block__link"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>{%- endfor -%}</ul></nav>
                 </div>
               {%- endif -%}
 
