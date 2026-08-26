@@ -1,0 +1,9 @@
+{%- if paginate.pages > 1 -%}
+<nav class="pagination" aria-label="{{ 'collection.pagination.label' | t }}">
+  <div class="pagination__inner">
+    {%- if paginate.previous -%}<a class="pagination__link pagination__link--previous" href="{{ paginate.previous.url }}">← <span>{{ 'collection.pagination.previous' | t }}</span></a>{%- endif -%}
+    <span class="pagination__status">{{ 'collection.pagination.page' | t: number: paginate.current_page }} / {{ paginate.pages }}</span>
+    {%- if paginate.next -%}<a class="pagination__link pagination__link--next" href="{{ paginate.next.url }}"><span>{{ 'collection.pagination.next' | t }}</span> →</a>{%- endif -%}
+  </div>
+</nav>
+{%- endif -%}
