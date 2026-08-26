@@ -23,13 +23,11 @@
     let currentStep = 0;
     let selectedFiles = [];
     let uploading = false;
+    let lastDirection = 1;
 
     const escapeHtml = (value = '') => String(value)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
+      .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 
     const getFieldValue = (name) => {
       const fields = [...portal.querySelectorAll(`[data-field="${name}"]`)];
@@ -51,16 +49,10 @@
       for (const field of required) {
         if (field.type === 'radio') {
           const group = [...step.querySelectorAll(`[name="${field.name}"]`)];
-          if (!group.some((item) => item.checked)) {
-            field.focus();
-            return false;
-          }
+          if (!group.some((item) => item.checked)) { field.focus(); return false; }
           continue;
         }
-        if (!field.checkValidity()) {
-          field.reportValidity();
-          return false;
-        }
+        if (!field.checkValidity()) { field.reportValidity(); return false; }
       }
       if (stepIndex === 1 && selectedFiles.length < 1) {
         photoNote.textContent = 'Add at least one product photo before continuing.';
@@ -71,10 +63,12 @@
     };
 
     const renderStep = () => {
+      let activeStep = null;
       steps.forEach((step, index) => {
         const active = index === currentStep;
         step.classList.toggle('is-active', active);
         step.hidden = !active;
+        if (active) activeStep = step;
       });
       navButtons.forEach((button, index) => {
         button.classList.toggle('is-active', index === currentStep);
@@ -84,6 +78,7 @@
       nextButton.hidden = currentStep === steps.length - 1;
       submitButton.hidden = currentStep !== steps.length - 1;
       if (currentStep === steps.length - 1) renderReview();
+      window.SoleParadiseMotion?.animateSellerStep?.(activeStep, lastDirection);
       portal.querySelector('.seller-portal__shell')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
@@ -102,19 +97,11 @@
         card.draggable = true;
         card.dataset.photoIndex = index;
         const url = URL.createObjectURL(file);
-        card.innerHTML = `
-          <div class="seller-portal__photo-image"><img src="${url}" alt="Selected product photo ${index + 1}"></div>
-          <div class="seller-portal__photo-bar">
-            <span>${String(index + 1).padStart(2, '0')}</span>
-            <div>
-              <button type="button" data-photo-move="up" aria-label="Move photo ${index + 1} earlier">←</button>
-              <button type="button" data-photo-move="down" aria-label="Move photo ${index + 1} later">→</button>
-              <button type="button" data-photo-remove aria-label="Remove photo ${index + 1}">×</button>
-            </div>
-          </div>`;
+        card.innerHTML = `<div class="seller-portal__photo-image"><img src="${url}" alt="Selected product photo ${index + 1}"></div><div class="seller-portal__photo-bar"><span>${String(index + 1).padStart(2, '0')}</span><div><button type="button" data-photo-move="up" aria-label="Move photo ${index + 1} earlier">←</button><button type="button" data-photo-move="down" aria-label="Move photo ${index + 1} later">→</button><button type="button" data-photo-remove aria-label="Remove photo ${index + 1}">×</button></div></div>`;
         card.querySelector('img').addEventListener('load', () => URL.revokeObjectURL(url), { once: true });
         photoGrid.appendChild(card);
       });
+      if (window.gsap && selectedFiles.length) window.gsap.from(photoGrid.children, { opacity: 0, y: 12, duration: .35, stagger: .04, ease: 'power2.out' });
       photoNote.textContent = `${selectedFiles.length} / 12 photos selected`;
       rebuildInputFiles();
     };
@@ -129,147 +116,43 @@
 
     const renderReview = () => {
       syncHiddenFields();
-      const rows = [
-        ['Intent', getFieldValue('submission_type')],
-        ['Brand', getFieldValue('brand')],
-        ['Piece', getFieldValue('item')],
-        ['Size', getFieldValue('size') || 'Not provided'],
-        ['Condition', getFieldValue('condition')],
-        ['Photos', `${selectedFiles.length} selected`]
-      ];
-      review.innerHTML = `<p class="sp-kicker">Review</p><div class="seller-portal__review-grid">${rows.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('')}</div>`;
+      const rows = [['Intent',getFieldValue('submission_type')],['Brand',getFieldValue('brand')],['Piece',getFieldValue('item')],['Size',getFieldValue('size')||'Not provided'],['Condition',getFieldValue('condition')],['Photos',`${selectedFiles.length} selected`]];
+      review.innerHTML = `<p class="sp-kicker">Review</p><div class="seller-portal__review-grid">${rows.map(([label,value])=>`<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('')}</div>`;
     };
 
     const uploadPhotosToShopify = async () => {
       if (!selectedFiles.length) return [];
       if (!intakeVariantId) throw new Error('Photo intake is not configured yet. Please contact Sole Paradise before submitting.');
-
       const data = new FormData();
-      data.append('id', intakeVariantId);
-      data.append('quantity', '1');
-      data.append('properties[_Seller intake]', 'Sell to Paradise');
-      selectedFiles.forEach((file, index) => {
-        data.append(`properties[Photo ${String(index + 1).padStart(2, '0')}]`, file, file.name);
-      });
-
-      const response = await fetch(`${window.Shopify?.routes?.root || '/'}cart/add.js`, {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: data
-      });
-      if (!response.ok) throw new Error('We could not upload the photos to Shopify. Please try again.');
-
-      const item = await response.json();
-      const urls = Object.entries(item.properties || {})
-        .filter(([key]) => key.startsWith('Photo '))
-        .map(([key, value]) => `${key}: ${value}`);
-
-      if (item.key) {
-        fetch(`${window.Shopify?.routes?.root || '/'}cart/change.js`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ id: item.key, quantity: 0 })
-        }).catch(() => {});
-      }
-
-      if (!urls.length) throw new Error('Shopify accepted the upload, but no photo links were returned. Please try again.');
+      data.append('id', intakeVariantId); data.append('quantity','1'); data.append('properties[_Seller intake]','Sell to Paradise');
+      selectedFiles.forEach((file,index)=>data.append(`properties[Photo ${String(index+1).padStart(2,'0')}]`,file,file.name));
+      const response = await fetch(`${window.Shopify?.routes?.root || '/'}cart/add.js`,{method:'POST',headers:{Accept:'application/json'},body:data});
+      if(!response.ok) throw new Error('We could not upload the photos to Shopify. Please try again.');
+      const item=await response.json();
+      const urls=Object.entries(item.properties||{}).filter(([key])=>key.startsWith('Photo ')).map(([key,value])=>`${key}: ${value}`);
+      if(item.key) fetch(`${window.Shopify?.routes?.root || '/'}cart/change.js`,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({id:item.key,quantity:0})}).catch(()=>{});
+      if(!urls.length) throw new Error('Shopify accepted the upload, but no photo links were returned. Please try again.');
       return urls;
     };
 
-    nextButton?.addEventListener('click', () => {
-      if (!validateStep(currentStep)) return;
-      syncHiddenFields();
-      currentStep = Math.min(currentStep + 1, steps.length - 1);
-      renderStep();
-    });
+    nextButton?.addEventListener('click',()=>{if(!validateStep(currentStep))return;syncHiddenFields();lastDirection=1;currentStep=Math.min(currentStep+1,steps.length-1);renderStep();});
+    backButton?.addEventListener('click',()=>{lastDirection=-1;currentStep=Math.max(currentStep-1,0);renderStep();});
+    navButtons.forEach((button,index)=>button.addEventListener('click',()=>{if(index>currentStep)return;lastDirection=index<currentStep?-1:1;currentStep=index;renderStep();}));
+    photoInput?.addEventListener('change',(event)=>{selectedFiles=[];addFiles(event.target.files||[]);});
 
-    backButton?.addEventListener('click', () => {
-      currentStep = Math.max(currentStep - 1, 0);
-      renderStep();
-    });
+    const dropzone=portal.querySelector('.seller-portal__dropzone');
+    ['dragenter','dragover'].forEach((eventName)=>dropzone?.addEventListener(eventName,(event)=>{event.preventDefault();dropzone.classList.add('is-dragging');}));
+    ['dragleave','drop'].forEach((eventName)=>dropzone?.addEventListener(eventName,(event)=>{event.preventDefault();dropzone.classList.remove('is-dragging');}));
+    dropzone?.addEventListener('drop',(event)=>addFiles(event.dataTransfer?.files||[]));
 
-    navButtons.forEach((button, index) => {
-      button.addEventListener('click', () => {
-        if (index > currentStep) return;
-        currentStep = index;
-        renderStep();
-      });
-    });
+    photoGrid?.addEventListener('click',(event)=>{const card=event.target.closest('[data-photo-index]');if(!card)return;const index=Number(card.dataset.photoIndex);if(event.target.closest('[data-photo-remove]'))selectedFiles.splice(index,1);if(event.target.closest('[data-photo-move="up"]')&&index>0)[selectedFiles[index-1],selectedFiles[index]]=[selectedFiles[index],selectedFiles[index-1]];if(event.target.closest('[data-photo-move="down"]')&&index<selectedFiles.length-1)[selectedFiles[index+1],selectedFiles[index]]=[selectedFiles[index],selectedFiles[index+1]];renderPhotos();});
 
-    photoInput?.addEventListener('change', (event) => {
-      selectedFiles = [];
-      addFiles(event.target.files || []);
-    });
+    let draggedIndex=null;
+    photoGrid?.addEventListener('dragstart',(event)=>{const card=event.target.closest('[data-photo-index]');if(!card)return;draggedIndex=Number(card.dataset.photoIndex);card.classList.add('is-dragging');});
+    photoGrid?.addEventListener('dragover',(event)=>event.preventDefault());
+    photoGrid?.addEventListener('drop',(event)=>{event.preventDefault();const target=event.target.closest('[data-photo-index]');if(target&&draggedIndex!==null){const targetIndex=Number(target.dataset.photoIndex);const[moved]=selectedFiles.splice(draggedIndex,1);selectedFiles.splice(targetIndex,0,moved);renderPhotos();}draggedIndex=null;});
 
-    const dropzone = portal.querySelector('.seller-portal__dropzone');
-    ['dragenter', 'dragover'].forEach((eventName) => dropzone?.addEventListener(eventName, (event) => {
-      event.preventDefault();
-      dropzone.classList.add('is-dragging');
-    }));
-    ['dragleave', 'drop'].forEach((eventName) => dropzone?.addEventListener(eventName, (event) => {
-      event.preventDefault();
-      dropzone.classList.remove('is-dragging');
-    }));
-    dropzone?.addEventListener('drop', (event) => addFiles(event.dataTransfer?.files || []));
-
-    photoGrid?.addEventListener('click', (event) => {
-      const card = event.target.closest('[data-photo-index]');
-      if (!card) return;
-      const index = Number(card.dataset.photoIndex);
-      if (event.target.closest('[data-photo-remove]')) selectedFiles.splice(index, 1);
-      if (event.target.closest('[data-photo-move="up"]') && index > 0) [selectedFiles[index - 1], selectedFiles[index]] = [selectedFiles[index], selectedFiles[index - 1]];
-      if (event.target.closest('[data-photo-move="down"]') && index < selectedFiles.length - 1) [selectedFiles[index + 1], selectedFiles[index]] = [selectedFiles[index], selectedFiles[index + 1]];
-      renderPhotos();
-    });
-
-    let draggedIndex = null;
-    photoGrid?.addEventListener('dragstart', (event) => {
-      const card = event.target.closest('[data-photo-index]');
-      if (!card) return;
-      draggedIndex = Number(card.dataset.photoIndex);
-      card.classList.add('is-dragging');
-    });
-    photoGrid?.addEventListener('dragover', (event) => event.preventDefault());
-    photoGrid?.addEventListener('drop', (event) => {
-      event.preventDefault();
-      const target = event.target.closest('[data-photo-index]');
-      if (target && draggedIndex !== null) {
-        const targetIndex = Number(target.dataset.photoIndex);
-        const [moved] = selectedFiles.splice(draggedIndex, 1);
-        selectedFiles.splice(targetIndex, 0, moved);
-        renderPhotos();
-      }
-      draggedIndex = null;
-    });
-
-    form.addEventListener('submit', async (event) => {
-      if (uploading) {
-        event.preventDefault();
-        return;
-      }
-      if (!validateStep(currentStep)) {
-        event.preventDefault();
-        return;
-      }
-      syncHiddenFields();
-
-      if (!selectedFiles.length) return;
-      event.preventDefault();
-      uploading = true;
-      submitButton.disabled = true;
-      uploadStatus.textContent = 'Uploading your photos securely through Shopify…';
-
-      try {
-        const urls = await uploadPhotosToShopify();
-        photoUrlsField.value = urls.join('\n');
-        uploadStatus.textContent = 'Photos uploaded. Sending your submission…';
-        HTMLFormElement.prototype.submit.call(form);
-      } catch (error) {
-        uploadStatus.textContent = error.message || 'Something went wrong. Your submission was not sent.';
-        submitButton.disabled = false;
-        uploading = false;
-      }
-    });
+    form.addEventListener('submit',async(event)=>{if(uploading){event.preventDefault();return;}if(!validateStep(currentStep)){event.preventDefault();return;}syncHiddenFields();if(!selectedFiles.length)return;event.preventDefault();uploading=true;submitButton.disabled=true;uploadStatus.textContent='Uploading your photos securely through Shopify…';try{const urls=await uploadPhotosToShopify();photoUrlsField.value=urls.join('\n');uploadStatus.textContent='Photos uploaded. Sending your submission…';HTMLFormElement.prototype.submit.call(form);}catch(error){uploadStatus.textContent=error.message||'Something went wrong. Your submission was not sent.';submitButton.disabled=false;uploading=false;}});
 
     renderStep();
   });
