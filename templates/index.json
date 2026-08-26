@@ -16,10 +16,19 @@
       "settings": {
         "eyebrow": "From the feed",
         "heading": "Shop the post",
-        "copy": "The same one-off pieces posted in Chicago, documented and ready to shop.",
+        "copy": "Fresh arrivals, one-offs and details straight from the floor.",
         "limit": 6,
         "instagram_label": "@soleparadise.chicago",
         "show_collection_link": true
+      }
+    },
+    "arrivals": {
+      "type": "sp-featured-collection",
+      "settings": {
+        "eyebrow": "Just in",
+        "heading": "New arrivals",
+        "limit": 8,
+        "show_secondary_image": true
       }
     },
     "edit": {
@@ -27,48 +36,24 @@
       "settings": {
         "eyebrow": "Paradise Edit 002",
         "heading": "LATE SUMMER\nIN CHICAGO.",
-        "copy": "A curation of pieces that define the city right now.",
+        "copy": "A rotation from the floor, photographed and worn in Chicago.",
         "issue_label": "ISSUE 002",
         "location_label": "CHICAGO / ILLINOIS",
         "button_label": "Shop the edit"
       }
     },
-    "selects": {
-      "type": "sp-paradise-selects",
-      "blocks": {
-        "one": {"type":"piece","settings":{}},
-        "two": {"type":"piece","settings":{}},
-        "three": {"type":"piece","settings":{}}
-      },
-      "block_order": ["one","two","three"],
-      "settings": {
-        "eyebrow": "Paradise Selects",
-        "heading": "WHAT WE'D\nTAKE HOME.",
-        "copy": "A rotating selection of pieces the Sole Paradise team would keep for themselves.",
-        "link_label": "View all selects"
-      }
-    },
-    "arrivals": {
-      "type": "sp-featured-collection",
-      "settings": {
-        "eyebrow": "Freshly landed",
-        "heading": "New arrivals",
-        "limit": 8,
-        "show_secondary_image": true
-      }
-    },
     "features": {
       "type": "sp-features",
       "blocks": {
-        "one": {"type":"feature","settings":{"label":"Paradise Edit","title":"The Chrome Hearts Edit","copy":"Pieces we are feeling right now, documented from the floor.","link_label":"Read the story"}},
-        "two": {"type":"feature","settings":{"label":"Unboxed","title":"What Came Through This Week","copy":"A quick rotation of the rarest pieces to land in Chicago.","link_label":"See the rotation"}},
-        "three": {"type":"feature","settings":{"label":"Chicago / Editorial","title":"After Dark","copy":"How the city wears archive designer after the sun goes down.","link_label":"View editorial"}}
+        "one": {"type":"feature","settings":{"label":"Paradise Edit","title":"The Chrome Hearts Edit","copy":"Pieces on the floor right now.","link_label":"View the edit"}},
+        "two": {"type":"feature","settings":{"label":"Unboxed","title":"This Week's Rotation","copy":"New arrivals worth a closer look.","link_label":"Shop arrivals"}},
+        "three": {"type":"feature","settings":{"label":"Chicago / Editorial","title":"After Dark","copy":"Archive designer in the city.","link_label":"View editorial"}}
       },
       "block_order": ["one","two","three"],
       "settings": {
         "eyebrow": "Paradise Features",
-        "heading": "THE STORIES\nBEHIND THE PIECES.",
-        "copy": "Editorials, staff rotations and archive stories from the Sole Paradise floor."
+        "heading": "FROM THE FLOOR.",
+        "copy": "Edits, arrivals and stories around the pieces."
       }
     },
     "brands": {
@@ -82,25 +67,14 @@
         "saint": {"type":"brand","settings":{"name":"Saint Mxxxxxx"}}
       },
       "block_order": ["ch","rick","amiri","bal","gallery","saint"],
-      "settings": {"eyebrow":"The labels","heading":"Brands in Paradise"}
-    },
-    "trust": {
-      "type": "sp-trust-strip",
-      "blocks": {
-        "auth": {"type":"item","settings":{"title":"Authenticated","text":"Every piece inspected before listing"}},
-        "one": {"type":"item","settings":{"title":"1 of 1 inventory","text":"When it's gone, it's gone"}},
-        "chi": {"type":"item","settings":{"title":"Chicago based","text":"Local pickup and personal service"}},
-        "ship": {"type":"item","settings":{"title":"Secure shipping","text":"Rare pieces delivered with care"}}
-      },
-      "block_order": ["auth","one","chi","ship"],
-      "settings": {}
+      "settings": {"eyebrow":"Designers","heading":"Shop by designer"}
     },
     "seller": {
       "type": "sp-seller-cta",
       "settings": {
-        "eyebrow": "Your closet / our floor",
+        "eyebrow": "Sell / Trade / Consign",
         "heading": "SELL TO\nPARADISE.",
-        "copy": "Send us the piece once. Show us the photos. Choose cash, trade or consignment.",
+        "copy": "Send the piece once, show us the details, and choose how you want to move it.",
         "link_label": "Start a submission"
       }
     },
@@ -115,5 +89,5 @@
       }
     }
   },
-  "order": ["hero","feed","edit","selects","arrivals","features","brands","trust","seller","archive"]
+  "order": ["hero","feed","arrivals","edit","features","brands","seller","archive"]
 }
