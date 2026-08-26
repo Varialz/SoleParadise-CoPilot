@@ -1,6 +1,18 @@
+{%- liquid
+  assign hero_image = section.settings.image
+  assign using_inventory_image = false
+  assign fallback_collection = collections['all']
+  if hero_image == blank and fallback_collection != blank and fallback_collection.products_count > 0
+    assign fallback_product = fallback_collection.products.first
+    if fallback_product.featured_image != blank
+      assign hero_image = fallback_product.featured_image
+      assign using_inventory_image = true
+    endif
+  endif
+-%}
 <section class="sp-hero sp-hero--editorial" data-sp-section>
   <div class="sp-hero__media" data-sp-parallax>
-    {%- if section.settings.image != blank -%}
+    {%- if hero_image != blank -%}
       <picture>
         {%- if section.settings.mobile_image != blank -%}
           <source
@@ -9,10 +21,11 @@
             sizes="100vw"
           >
         {%- endif -%}
-        {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', alt: section.settings.image.alt }}
+        {{ hero_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', alt: hero_image.alt }}
       </picture>
+      {%- if request.design_mode and using_inventory_image -%}<span class="sp-hero__setup">Using the first product image until campaign art is assigned</span>{%- endif -%}
     {%- else -%}
-      {{ 'lifestyle-1' | placeholder_svg_tag: 'sp-hero__placeholder' }}
+      <div class="sp-hero__fallback" aria-hidden="true"><span>SOLE PARADISE</span><strong>CHICAGO / RARE GOODS</strong></div>
     {%- endif -%}
   </div>
   <div class="sp-hero__veil" aria-hidden="true"></div>
@@ -29,7 +42,7 @@
             assign hero_url = section.settings.button_link
           endif
         -%}
-        <a class="sp-hero__button" href="{{ hero_url }}" data-sp-hero-line>{{ section.settings.button_label | escape }}</a>
+        <a class="sp-hero__button" href="{{ hero_url | escape }}" data-sp-hero-line>{{ section.settings.button_label | escape }}</a>
       {%- endif -%}
     </div>
   </div>
@@ -45,8 +58,8 @@
 {
   "name":"SP — Hero",
   "settings":[
-    {"type":"image_picker","id":"image","label":"Campaign image"},
-    {"type":"image_picker","id":"mobile_image","label":"Mobile campaign image","info":"Optional portrait crop for phones. Desktop image is used when blank."},
+    {"type":"image_picker","id":"image","label":"Campaign image","info":"If blank, the theme borrows the first product image until campaign art is assigned."},
+    {"type":"image_picker","id":"mobile_image","label":"Mobile campaign image","info":"Optional portrait crop for phones. Desktop/fallback image is used when blank."},
     {"type":"text","id":"eyebrow","label":"Eyebrow","default":"One of one pieces · Curated daily"},
     {"type":"textarea","id":"heading","label":"Heading","default":"CHICAGO\nTO THE WORLD."},
     {"type":"textarea","id":"copy","label":"Copy","default":"Rare designer, archive and pre-owned pieces selected in Chicago."},
