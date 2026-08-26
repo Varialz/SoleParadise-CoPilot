@@ -1,0 +1,31 @@
+/* Sole Paradise boutique PDP layer */
+.product--boutique{padding-top:clamp(2rem,4vw,4.5rem)}
+.product--boutique .product__layout{display:grid;gap:clamp(2rem,5vw,6rem)}
+.product__media-label,.product__retailer-kicker,.product__service-line{display:flex;align-items:center;justify-content:space-between;gap:1rem;color:var(--sp-muted);font:600 .62rem/1.2 monospace;letter-spacing:.12em;text-transform:uppercase}
+.product__media-label{margin-bottom:.8rem;padding-bottom:.7rem;border-bottom:1px solid var(--sp-line)}
+.product__retailer-kicker{margin-bottom:1.3rem;padding-bottom:.75rem;border-bottom:1px solid var(--sp-line)}
+.product--boutique .product__vendor{margin:0 0 .55rem;color:var(--sp-cobalt);font-size:.68rem;letter-spacing:.13em}
+.product--boutique .product__title{max-width:12ch;margin:0;font-size:clamp(2.6rem,5vw,5.8rem);line-height:.9;letter-spacing:-.065em;text-transform:uppercase}
+.product--boutique .product__price{margin:1.35rem 0 0;font-size:1rem}
+.product--boutique .product__identity{padding-bottom:1.75rem;border-bottom:1px solid var(--sp-line)}
+.product__purchase{padding:1.4rem 0 1.6rem;border-bottom:1px solid var(--sp-line)}
+.product--boutique .product__availability{margin:0 0 1.1rem;color:var(--sp-muted);font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.product--boutique .product-variants__legend{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}
+.product--boutique .product-variants__values{gap:.45rem}
+.product--boutique .product-variants__label{min-height:42px;padding:.6rem .9rem;border-color:var(--sp-line);font-size:.75rem}
+.product--boutique .product-variants__input:checked+.product-variants__label{background:var(--sp-deep-sea);border-color:var(--sp-deep-sea);color:#fff}
+.product--boutique .product-form__submit{width:100%;min-height:54px;border-radius:0;background:var(--sp-deep-sea);color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.product__service-line{padding:1rem 0;border-bottom:1px solid var(--sp-line)}
+.product__service-line span+span::before{content:'·';margin-right:1rem;color:var(--sp-paradise)}
+.product--boutique .product__blocks{margin-top:0}
+.product--boutique .product__description{margin:0;padding:1.5rem 0;border-bottom:1px solid var(--sp-line);color:var(--sp-muted);line-height:1.65}
+.product--boutique .product__disclosure{border-color:var(--sp-line)}
+.product--boutique .product__disclosure-summary{min-height:52px;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}
+.product--boutique .product__archive-panel{margin:0;padding:1.4rem 0 0;border-top:0;border-bottom:1px solid var(--sp-line)}
+.product--boutique .product__archive-panel-head h2{font-size:clamp(1.45rem,2vw,2.2rem)}
+.product--boutique .product-gallery__item{background:#f8fbff;border-color:var(--sp-line)}
+.product--boutique .product-gallery__thumb{width:72px;height:86px;background:#f8fbff;border-color:transparent}
+.product--boutique .product-gallery__thumb.is-active{border-color:var(--sp-deep-sea)}
+@media(min-width:1000px){.product--boutique .product__layout{grid-template-columns:minmax(0,1.35fr) minmax(340px,.65fr);align-items:start}.product--boutique .product__info-column{position:sticky;top:6.5rem}.product--boutique .product-gallery__item{aspect-ratio:4/5}.product--boutique .product-media__image{padding:5%;object-fit:contain}}
+@media(max-width:749px){.product--boutique{padding-top:1.2rem}.product--boutique .product__title{font-size:clamp(2.5rem,13vw,4.5rem)}.product__service-line{align-items:flex-start;flex-direction:column;gap:.45rem}.product__service-line span+span::before{display:none}}
+@media(prefers-reduced-motion:reduce){.product--boutique *{scroll-behavior:auto}}
