@@ -3,12 +3,16 @@
 
 {%- liquid
   assign intake_variant = blank
+  assign photo_relay_ready = false
   if section.settings.intake_product != blank
     assign intake_variant = section.settings.intake_product.selected_or_first_available_variant
+    if intake_variant != blank
+      assign photo_relay_ready = true
+    endif
   endif
 -%}
 
-<section class="seller-portal" data-seller-portal data-intake-variant-id="{% if intake_variant %}{{ intake_variant.id }}{% endif %}">
+<section class="seller-portal" data-seller-portal data-intake-variant-id="{% if intake_variant %}{{ intake_variant.id }}{% endif %}" data-photo-relay-ready="{{ photo_relay_ready }}">
   <div class="seller-portal__hero page-width">
     <div class="seller-portal__hero-copy" data-sp-reveal>
       <p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>
@@ -80,10 +84,13 @@
             <span class="seller-portal__dropzone-mark">+</span>
             <strong>DROP YOUR PHOTOS HERE</strong>
             <span>or tap to choose from camera roll</span>
-            <small>Up to 12 photos · JPG, PNG, HEIC/WebP where supported</small>
+            <small>Up to 12 photos · max 20 MB each · JPG, PNG, HEIC/WebP where supported</small>
           </label>
           <div class="seller-portal__photo-grid" data-photo-grid aria-live="polite"></div>
           <p class="seller-portal__photo-note" data-photo-note>0 / 12 photos selected</p>
+          {%- unless photo_relay_ready -%}
+            <p class="seller-portal__relay-note" data-photo-relay-note><strong>Demo mode:</strong> photo selection and review are active. Assign the hidden Shopify intake product before launch to transmit image files with the submission.</p>
+          {%- endunless -%}
         </div>
 
         <div class="seller-portal__step" data-seller-step="2" hidden>
@@ -139,7 +146,7 @@
     {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Sell to Paradise"},
     {"type":"textarea","id":"heading","label":"Heading","default":"YOUR CLOSET.\nOUR FLOOR."},
     {"type":"textarea","id":"copy","label":"Intro copy","default":"Submit your designer piece for a cash offer, trade value or consignment review."},
-    {"type":"product","id":"intake_product","label":"Hidden intake product","info":"Optional for now. Assign the dedicated $0 hidden intake product when testing the Shopify photo-upload relay."}
+    {"type":"product","id":"intake_product","label":"Hidden intake product","info":"Assign the dedicated $0 intake product to enable the Shopify photo relay. Until then the portal remains demoable and submits text details only."}
   ],
   "enabled_on": {"templates":["page"]}
 }
