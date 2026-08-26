@@ -5,7 +5,18 @@
     </div>
     <div class="sp-brand-index__grid">
       {%- for block in section.blocks -%}
-        <a class="sp-brand-index__item" href="{{ block.settings.link }}" data-sp-reveal {{ block.shopify_attributes }}><span>{{ block.settings.name | escape }}</span><span aria-hidden="true">↗</span></a>
+        {%- liquid
+          assign brand_url = block.settings.link
+          if brand_url == blank
+            if block.settings.name != blank
+              assign brand_query = block.settings.name | url_encode
+              assign brand_url = routes.search_url | append: '?type=product&q=' | append: brand_query
+            else
+              assign brand_url = routes.all_products_collection_url
+            endif
+          endif
+        -%}
+        <a class="sp-brand-index__item" href="{{ brand_url | escape }}" data-sp-reveal {{ block.shopify_attributes }}><span>{{ block.settings.name | escape }}</span><span aria-hidden="true">↗</span></a>
       {%- endfor -%}
     </div>
   </div>
@@ -17,7 +28,7 @@
     {"type":"text","id":"eyebrow","label":"Eyebrow","default":"The labels"},
     {"type":"text","id":"heading","label":"Heading","default":"Brands in Paradise"}
   ],
-  "blocks":[{"type":"brand","name":"Brand","settings":[{"type":"text","id":"name","label":"Brand name","default":"Chrome Hearts"},{"type":"url","id":"link","label":"Collection link"}]}],
+  "blocks":[{"type":"brand","name":"Brand","settings":[{"type":"text","id":"name","label":"Brand name","default":"Chrome Hearts"},{"type":"url","id":"link","label":"Collection link","info":"Optional. If blank, this brand searches the store by name."}]}],
   "max_blocks":24,
   "presets":[{"name":"SP — Brand Index","blocks":[{"type":"brand","settings":{"name":"Chrome Hearts"}},{"type":"brand","settings":{"name":"Rick Owens"}},{"type":"brand","settings":{"name":"Amiri"}},{"type":"brand","settings":{"name":"Balenciaga"}},{"type":"brand","settings":{"name":"Gallery Dept."}},{"type":"brand","settings":{"name":"Saint Mxxxxxx"}}]}]
 }
