@@ -1,0 +1,94 @@
+{%- liquid
+  assign variant_mode = false
+  if variant != blank
+    assign variant_mode = true
+  endif
+  if variant_mode
+    assign display_price = variant.price
+    assign display_compare = variant.compare_at_price | default: 0
+    assign price_varies = false
+    assign show_compare_at = false
+    if display_compare > display_price
+      assign show_compare_at = true
+    endif
+  else
+    assign seen_available = false
+    assign avail_min = 0
+    assign avail_max = 0
+    assign avail_compare_min = 0
+    assign avail_compare_max = 0
+    assign on_sale = false
+    for summary_variant in product.variants
+      if summary_variant.available
+        assign v_price = summary_variant.price
+        assign v_compare = summary_variant.compare_at_price | default: 0
+        unless seen_available
+          assign avail_min = v_price
+          assign avail_max = v_price
+          assign avail_compare_min = v_compare
+          assign avail_compare_max = v_compare
+          assign seen_available = true
+        endunless
+        if v_price < avail_min
+          assign avail_min = v_price
+        endif
+        if v_price > avail_max
+          assign avail_max = v_price
+        endif
+        if v_compare < avail_compare_min
+          assign avail_compare_min = v_compare
+        endif
+        if v_compare > avail_compare_max
+          assign avail_compare_max = v_compare
+        endif
+        if v_compare > v_price
+          assign on_sale = true
+        endif
+      endif
+    endfor
+    if seen_available
+      assign display_price = avail_min
+      assign display_compare = avail_compare_max
+      assign price_varies = false
+      if avail_max > avail_min
+        assign price_varies = true
+      endif
+      assign compare_unambiguous = false
+      if avail_compare_max == avail_compare_min
+        assign compare_unambiguous = true
+      endif
+      assign show_compare_at = false
+      if on_sale and price_varies == false and compare_unambiguous and display_compare > display_price
+        assign show_compare_at = true
+      endif
+    else
+      assign display_price = product.price_min
+      assign display_compare = product.compare_at_price_max
+      assign price_varies = product.price_varies
+      assign on_sale = false
+      for summary_variant in product.variants
+        if summary_variant.compare_at_price > summary_variant.price
+          assign on_sale = true
+          break
+        endif
+      endfor
+      assign show_compare_at = false
+      if on_sale and product.price_varies == false and product.compare_at_price_varies == false and display_compare > display_price
+        assign show_compare_at = true
+      endif
+    endif
+  endif
+  assign display_price_money = display_price | money
+  assign display_compare_money = display_compare | money
+-%}
+<div class="price{% if show_compare_at %} price--on-sale{% endif %}">
+  {%- if show_compare_at -%}
+    <span class="visually-hidden">{{ 'products.price.regular_price' | t }}</span>
+    <s class="price__compare">{{ display_compare_money }}</s>
+    <span class="visually-hidden">{{ 'products.price.sale_price' | t }}</span>
+    <span class="price__current">{{ display_price_money }}</span>
+  {%- else -%}
+    <span class="visually-hidden">{{ 'products.price.price' | t }}</span>
+    <span class="price__current">{% if price_varies %}{{ 'products.price.from_price' | t: price: display_price_money }}{% else %}{{ display_price_money }}{% endif %}</span>
+  {%- endif -%}
+</div>
