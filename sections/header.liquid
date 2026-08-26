@@ -10,6 +10,10 @@
   if utility_url == blank and section.settings.utility_link_label != blank
     assign utility_url = '/pages/sell-to-paradise'
   endif
+  assign overlay_header = false
+  if request.page_type == 'index'
+    assign overlay_header = true
+  endif
 -%}
 {%- if sticky -%}
   {%- style -%}
@@ -20,13 +24,13 @@
     }
   {%- endstyle -%}
 {%- endif -%}
-<header class="site-header" data-header>
+<header class="site-header{% if overlay_header %} site-header--overlay{% endif %}" data-header{% if overlay_header %} data-header-overlay{% endif %}>
   {%- if section.settings.show_utility_bar -%}
     <div class="site-header__utility-bar">
       <div class="page-width site-header__utility-bar-inner">
         <p>{{ section.settings.utility_text | escape }}</p>
         {%- if section.settings.utility_link_label != blank and utility_url != blank -%}
-          <a href="{{ utility_url | escape }}">{{ section.settings.utility_link_label | escape }}</a>
+          <a href="{{ utility_url | escape }}">{{ section.settings.utility_link_label | escape }} <span aria-hidden="true">→</span></a>
         {%- endif -%}
       </div>
     </div>
@@ -36,10 +40,11 @@
     <div class="site-header__row page-width">
       <button type="button" class="site-header__trigger site-header__trigger--menu no-js-hidden" aria-expanded="false" aria-controls="header-drawer-{{ section.id }}" data-header-drawer-open>
         {%- render 'icon', name: 'menu' -%}
+        <span class="site-header__utility-label">Menu</span>
         <span class="visually-hidden">{{ 'header.menu' | t }}</span>
       </button>
 
-      <a class="site-header__logo" href="{{ routes.root_url }}">
+      <a class="site-header__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home">
         {%- if settings.logo -%}
           <img src="{{ settings.logo | image_url: width: settings.logo_width | times: 2 }}" alt="{{ shop.name | escape }}" width="{{ settings.logo_width }}" height="{{ settings.logo_width | divided_by: settings.logo.aspect_ratio }}" loading="eager">
         {%- else -%}
@@ -54,14 +59,23 @@
       {%- endif -%}
 
       <div class="site-header__utility">
-        <a class="site-header__trigger site-header__trigger--search" href="{{ routes.search_url }}">{%- render 'icon', name: 'search' -%}<span class="visually-hidden">{{ 'header.search' | t }}</span></a>
+        <a class="site-header__trigger site-header__trigger--search" href="{{ routes.search_url }}">
+          {%- render 'icon', name: 'search' -%}
+          <span class="site-header__utility-label">Search</span>
+          <span class="visually-hidden">{{ 'header.search' | t }}</span>
+        </a>
         {%- if show_account -%}
-          <a class="site-header__trigger site-header__trigger--account" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">{%- render 'icon', name: 'account' -%}<span class="visually-hidden">{{ 'header.account' | t }}</span></a>
+          <a class="site-header__trigger site-header__trigger--account" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">
+            {%- render 'icon', name: 'account' -%}
+            <span class="site-header__utility-label">{% if customer %}Account{% else %}Sign in{% endif %}</span>
+            <span class="visually-hidden">{{ 'header.account' | t }}</span>
+          </a>
         {%- endif -%}
         <a class="site-header__trigger site-header__trigger--cart" href="{{ routes.cart_url }}" data-header-cart-trigger>
           {%- render 'icon', name: 'bag' -%}
+          <span class="site-header__utility-label">Bag</span>
           <span class="visually-hidden">{% if cart_count > 0 %}{{ 'header.cart_count' | t: count: cart_count }}{% else %}{{ 'header.cart' | t }}{% endif %}</span>
-          {%- if cart_count > 0 -%}<span class="site-header__cart-count" data-header-cart-count aria-hidden="true">{{ cart_count }}</span>{%- endif -%}
+          <span class="site-header__cart-count{% if cart_count == 0 %} is-empty{% endif %}" data-header-cart-count aria-hidden="true">{{ cart_count }}</span>
         </a>
       </div>
     </div>
@@ -69,9 +83,12 @@
 
   <div id="header-drawer-{{ section.id }}" class="header-drawer" data-header-drawer>
     <div class="header-drawer__backdrop no-js-hidden" data-header-drawer-backdrop></div>
-    <div class="header-drawer__panel" aria-label="{{ 'header.menu' | t }}" data-header-drawer-panel>
+    <div class="header-drawer__panel" aria-label="{{ 'header.menu' | t }}" data-header-drawer-panel tabindex="-1">
       <div class="header-drawer__head">
-        <span class="header-drawer__brand">{{ shop.name | escape }}</span>
+        <div>
+          <span class="header-drawer__eyebrow">Sole Paradise / Chicago</span>
+          <span class="header-drawer__brand">{{ shop.name | escape }}</span>
+        </div>
         <button type="button" class="site-header__trigger header-drawer__close no-js-hidden" aria-label="{{ 'header.close_menu' | t }}" data-header-drawer-close>{%- render 'icon', name: 'close' -%}</button>
       </div>
       {%- if menu != blank -%}<nav class="header-drawer__nav" aria-label="{{ 'header.primary_navigation' | t }}">{%- render 'header-menu-mobile', menu: menu, section_id: section.id -%}</nav>{%- endif -%}
@@ -84,7 +101,8 @@
         </div>
       {%- endif -%}
       <div class="header-drawer__footer">
-        <span>Chicago based</span>
+        <span>Chicago / Illinois</span>
+        <span>Authenticated designer resale</span>
         <span>Worldwide shipping</span>
       </div>
       {%- if show_account -%}
@@ -101,7 +119,7 @@
     {"type":"link_list","id":"menu","label":"Primary menu","default":"main-menu"},
     {"type":"checkbox","id":"enable_sticky_header","label":"Enable sticky header","default":true},
     {"type":"checkbox","id":"show_utility_bar","label":"Show utility bar","default":true},
-    {"type":"text","id":"utility_text","label":"Utility text","default":"Chicago based · Worldwide shipping · Authenticated"},
+    {"type":"text","id":"utility_text","label":"Utility text","default":"Chicago / IL · Authenticated designer resale · Worldwide shipping"},
     {"type":"text","id":"utility_link_label","label":"Utility link label","default":"Sell to Paradise"},
     {"type":"url","id":"utility_link","label":"Utility link","info":"If blank, Sell to Paradise falls back to /pages/sell-to-paradise."}
   ],
