@@ -1,0 +1,48 @@
+{
+  "sections": {
+    "hero": {
+      "type": "sp-hero",
+      "settings": {
+        "eyebrow": "Chicago — Rare goods",
+        "heading": "SOLE\nPARADISE",
+        "copy": "Rare designer pieces, landed in Chicago. New arrivals, pre-owned grails and one-off finds.",
+        "button_label": "Enter Paradise",
+        "index_label": "CHICAGO / 001"
+      }
+    },
+    "trust": {
+      "type": "sp-trust-strip",
+      "blocks": {
+        "auth": {"type":"item","settings":{"title":"Authenticated","text":"Every piece inspected before listing"}},
+        "one": {"type":"item","settings":{"title":"1 of 1 inventory","text":"When it's gone, it's gone"}},
+        "chi": {"type":"item","settings":{"title":"Chicago based","text":"Local pickup and personal service"}},
+        "ship": {"type":"item","settings":{"title":"Secure shipping","text":"Rare pieces delivered with care"}}
+      },
+      "block_order": ["auth","one","chi","ship"],
+      "settings": {}
+    },
+    "arrivals": {
+      "type": "sp-featured-collection",
+      "settings": {
+        "eyebrow": "Freshly landed",
+        "heading": "New arrivals",
+        "limit": 8,
+        "show_secondary_image": true
+      }
+    },
+    "brands": {
+      "type": "sp-brand-index",
+      "blocks": {
+        "ch": {"type":"brand","settings":{"name":"Chrome Hearts"}},
+        "rick": {"type":"brand","settings":{"name":"Rick Owens"}},
+        "amiri": {"type":"brand","settings":{"name":"Amiri"}},
+        "bal": {"type":"brand","settings":{"name":"Balenciaga"}},
+        "gallery": {"type":"brand","settings":{"name":"Gallery Dept."}},
+        "saint": {"type":"brand","settings":{"name":"Saint Mxxxxxx"}}
+      },
+      "block_order": ["ch","rick","amiri","bal","gallery","saint"],
+      "settings": {"eyebrow":"The labels","heading":"Brands in Paradise"}
+    }
+  },
+  "order": ["hero","trust","arrivals","brands"]
+}
