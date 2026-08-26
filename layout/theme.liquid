@@ -36,6 +36,7 @@
     {%- if request.page_type == 'product' -%}<link rel="stylesheet" href="{{ 'product.css' | asset_url }}">{%- endif -%}
     <link rel="stylesheet" href="{{ 'launch-page-polish.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'launch-readiness.css' | asset_url }}">
+    <link rel="stylesheet" href="{{ 'de-ai-retail.css' | asset_url }}">
     {%- if settings.favicon -%}<link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">{%- endif -%}
     <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'header.js' | asset_url }}" defer="defer"></script>
@@ -46,7 +47,7 @@
     {%- if request.page_type == 'collection' -%}<script src="{{ 'collection.js' | asset_url }}" defer="defer"></script>{%- endif -%}
     {%- if request.page_type == 'product' -%}<script src="{{ 'product.js' | asset_url }}" defer="defer"></script>{%- endif -%}
   </head>
-  <body>
+  <body class="template-{{ request.page_type | handle }}">
     <a class="skip-link" href="#main-content">{{ 'accessibility.skip_to_content' | t }}</a>
     {%- sections 'header-group' -%}
     <main id="main-content" tabindex="-1">{{ content_for_layout }}</main>
