@@ -1,0 +1,63 @@
+{%- liquid
+  assign media_count = product.media.size
+  assign media_sizes = '(min-width: 1000px) 57vw, 100vw'
+  assign track_id = 'ProductMediaTrack-' | append: section_id
+-%}
+
+{%- if media_count > 0 -%}
+  <div class="product-gallery" data-product-gallery data-product-selected-media="{{ active_media_id }}">
+    <div id="{{ track_id }}" class="product-gallery__track" role="group" aria-label="{{ 'products.page.media_gallery' | t }}" data-product-gallery-track>
+      {%- for media in product.media -%}
+        {%- liquid
+          assign is_active = false
+          if media.id == active_media_id
+            assign is_active = true
+          endif
+          assign item_loading = 'lazy'
+          assign item_priority = 'auto'
+          if is_active
+            assign item_loading = 'eager'
+            assign item_priority = 'high'
+          endif
+        -%}
+        <div class="product-gallery__item{% if is_active %} is-active{% endif %}" data-product-media-item data-media-id="{{ media.id }}" data-media-type="{{ media.media_type }}">
+          {%- render 'product-media', media: media, product: product, is_active: is_active, media_loading: item_loading, media_priority: item_priority, media_sizes: media_sizes -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if media_count > 1 -%}
+      <ul class="product-gallery__thumbs list-unstyled" data-product-gallery-thumbs>
+        {%- for media in product.media -%}
+          {%- liquid
+            assign is_active = false
+            if media.id == active_media_id
+              assign is_active = true
+            endif
+            case media.media_type
+              when 'video'
+                assign thumb_label = 'products.page.play_video' | t: index: forloop.index, total: media_count
+              when 'external_video'
+                assign thumb_label = 'products.page.play_video' | t: index: forloop.index, total: media_count
+              when 'model'
+                assign thumb_label = 'products.page.view_model' | t: index: forloop.index, total: media_count
+              else
+                assign thumb_label = 'products.page.view_image' | t: index: forloop.index, total: media_count
+            endcase
+          -%}
+          <li>
+            <button type="button" class="product-gallery__thumb{% if is_active %} is-active{% endif %}" aria-controls="{{ track_id }}" {% if is_active %}aria-current="true"{% endif %} data-product-gallery-thumb data-media-id="{{ media.id }}">
+              {%- if media.preview_image -%}
+                {{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy', sizes: '80px', widths: '80,120,160,200', class: 'product-gallery__thumb-image', alt: '' }}
+              {%- endif -%}
+              {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}<span class="product-gallery__thumb-badge">{%- render 'icon', name: 'play', size: 16 -%}</span>{%- elsif media.media_type == 'model' -%}<span class="product-gallery__thumb-badge">{%- render 'icon', name: 'model', size: 16 -%}</span>{%- endif -%}
+              <span class="visually-hidden">{{ thumb_label }}</span>
+            </button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+{%- else -%}
+  <div class="product-gallery product-gallery--empty" data-product-gallery><div class="product-gallery__track"><div class="product-gallery__item is-active">{{ 'product-1' | placeholder_svg_tag: 'product-gallery__placeholder-svg' }}</div></div></div>
+{%- endif -%}
