@@ -14,7 +14,16 @@
         "show_quantity_selector": false,
         "enable_dynamic_checkout": true
       }
+    },
+    "related": {
+      "type": "sp-related-products",
+      "settings": {
+        "eyebrow": "More from Paradise",
+        "heading": "MORE LIKE\nTHIS.",
+        "copy": "Related pieces selected from current Sole Paradise inventory.",
+        "limit": 4
+      }
     }
   },
-  "order": ["main"]
+  "order": ["main","related"]
 }
