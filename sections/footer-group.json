@@ -1,0 +1,18 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "menu": {"type":"menu","settings":{"heading":"Explore","menu":"footer"}},
+        "visit": {"type":"visit","settings":{"heading":"Chicago"}},
+        "newsletter": {"type":"newsletter","settings":{"heading":"Paradise dispatch"}},
+        "social": {"type":"social","settings":{"heading":"Follow us"}}
+      },
+      "block_order": ["menu","visit","newsletter","social"],
+      "settings": {}
+    }
+  },
+  "order": ["footer"]
+}
