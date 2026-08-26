@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-seller-portal",
+      "settings": {
+        "eyebrow": "Sell to Paradise",
+        "heading": "YOUR CLOSET.\nOUR FLOOR.",
+        "copy": "Submit your designer piece for a cash offer, trade value or consignment review."
+      }
+    }
+  },
+  "order": ["main"]
+}
