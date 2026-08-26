@@ -1,0 +1,78 @@
+{{ 'paradise-features.css' | asset_url | stylesheet_tag }}
+
+<section class="sp-features sp-section" data-sp-features>
+  <div class="page-width section-spacing">
+    <header class="sp-features__head" data-sp-reveal>
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        <h2 class="sp-features__title">{{ section.settings.heading | newline_to_br }}</h2>
+      </div>
+      {%- if section.settings.copy != blank -%}<p class="sp-features__copy">{{ section.settings.copy | escape }}</p>{%- endif -%}
+    </header>
+
+    <div class="sp-features__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign feature_url = block.settings.link
+          if feature_url == blank
+            assign feature_url = routes.all_products_collection_url
+          endif
+        -%}
+        <article class="sp-features__card sp-features__card--{{ forloop.index }}" {{ block.shopify_attributes }} data-sp-reveal>
+          <a class="sp-features__media" href="{{ feature_url }}" aria-label="{{ block.settings.title | escape }}">
+            {%- if block.settings.image != blank -%}
+              {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 1000px) 40vw, 100vw', widths: '480,720,960,1200,1400', alt: block.settings.image.alt }}
+            {%- else -%}
+              {{ 'lifestyle-2' | placeholder_svg_tag: 'sp-features__placeholder' }}
+            {%- endif -%}
+            <span class="sp-features__number">0{{ forloop.index }}</span>
+          </a>
+          <div class="sp-features__meta">
+            {%- if block.settings.label != blank -%}<span>{{ block.settings.label | escape }}</span>{%- endif -%}
+            <h3><a href="{{ feature_url }}">{{ block.settings.title | escape }}</a></h3>
+            {%- if block.settings.copy != blank -%}<p>{{ block.settings.copy | escape }}</p>{%- endif -%}
+            <a class="sp-link sp-features__link" href="{{ feature_url }}">{{ block.settings.link_label | escape }}</a>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name":"Paradise Features",
+  "tag":"section",
+  "class":"sp-features-section",
+  "settings":[
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Paradise Features"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"THE STORIES\nBEHIND THE PIECES."},
+    {"type":"textarea","id":"copy","label":"Copy","default":"Editorials, staff rotations and archive stories from the Sole Paradise floor."}
+  ],
+  "blocks":[
+    {
+      "type":"feature",
+      "name":"Feature",
+      "settings":[
+        {"type":"image_picker","id":"image","label":"Image"},
+        {"type":"text","id":"label","label":"Label","default":"Paradise Edit"},
+        {"type":"text","id":"title","label":"Title","default":"The Chrome Hearts Edit"},
+        {"type":"textarea","id":"copy","label":"Summary","default":"Pieces we are feeling right now, documented from the floor."},
+        {"type":"url","id":"link","label":"Link"},
+        {"type":"text","id":"link_label","label":"Link label","default":"Read the story"}
+      ]
+    }
+  ],
+  "max_blocks":3,
+  "presets":[
+    {
+      "name":"Paradise Features",
+      "blocks":[
+        {"type":"feature","settings":{"label":"Paradise Edit","title":"The Chrome Hearts Edit","copy":"Pieces we are feeling right now, documented from the floor."}},
+        {"type":"feature","settings":{"label":"Unboxed","title":"What Came Through This Week","copy":"A quick rotation of the rarest pieces to land in Chicago."}},
+        {"type":"feature","settings":{"label":"Chicago / Editorial","title":"After Dark","copy":"How the city wears archive designer after the sun goes down."}}
+      ]
+    }
+  ]
+}
+{% endschema %}
