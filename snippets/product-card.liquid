@@ -1,6 +1,7 @@
 {%- comment -%}
-  Canonical product summary card inherited from the LacedUpChicago commerce foundation.
-  Sole Paradise presentation is layered through assets/product-card.css and assets/sole-paradise.css.
+  Canonical Sole Paradise product summary card.
+  FROM-FEED pieces use the same purchase/catalog primitives as every other product,
+  with optional archive metadata layered from product metafields.
 {%- endcomment -%}
 {%- liquid
   assign card_heading_tag = heading_tag
@@ -41,12 +42,14 @@
     else
       assign product_url = product.url
     endif
+
     assign featured_image = product.featured_image
     assign secondary_image = product.images[1]
     assign image_alt = ''
     if featured_image.alt != blank and featured_image.alt != product.title
       assign image_alt = featured_image.alt
     endif
+
     assign on_sale = false
     if product.available
       for variant in product.variants
@@ -56,12 +59,31 @@
         endif
       endfor
     endif
+
     assign render_secondary_image = false
     if show_secondary_image == true and secondary_image != blank
       assign render_secondary_image = true
     endif
+
+    assign from_feed = false
+    if product.tags contains 'FROM-FEED'
+      assign from_feed = true
+    endif
+
+    assign item_state = product.metafields.custom.item_state.value | default: product.metafields.custom.item_state
+    assign archive_size = product.metafields.custom.size.value | default: product.metafields.custom.size
+    assign condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition
+    assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
   -%}
-  <article class="product-card" data-sp-reveal>
+
+  <article class="product-card{% if from_feed %} product-card--archive{% endif %}" data-sp-reveal>
+    {%- if from_feed -%}
+      <div class="product-card__archive-head" aria-label="Archive listing details">
+        <span>From the feed</span>
+        <span>{% if archive_id != blank %}{{ archive_id | escape }}{% else %}1 of 1{% endif %}</span>
+      </div>
+    {%- endif -%}
+
     <div class="product-card__media{% if render_secondary_image %} product-card__media--has-secondary{% endif %}">
       {%- if card_show_badges -%}
         {%- unless product.available -%}
@@ -79,9 +101,19 @@
         {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder-svg' }}
       {%- endif -%}
     </div>
+
     <div class="product-card__information">
       {%- if card_show_vendor and product.vendor != blank -%}<p class="product-card__vendor">{{ product.vendor | escape }}</p>{%- endif -%}
       <{{ card_heading_tag }} class="product-card__title"><a class="product-card__link" href="{{ product_url | escape }}">{{ product.title | escape }}</a></{{ card_heading_tag }}>
+
+      {%- if from_feed and (archive_size != blank or condition != blank or item_state != blank) -%}
+        <p class="product-card__archive-meta">
+          {%- if archive_size != blank -%}<span>{{ archive_size | escape }}</span>{%- endif -%}
+          {%- if condition != blank -%}<span>{{ condition | escape }}</span>{%- endif -%}
+          {%- if item_state != blank -%}<span>{{ item_state | escape }}</span>{%- endif -%}
+        </p>
+      {%- endif -%}
+
       {%- render 'product-price', product: product -%}
     </div>
   </article>
