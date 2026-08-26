@@ -1,3 +1,12 @@
+{%- liquid
+  assign selected_count = 0
+  for block in section.blocks
+    if block.settings.product != blank
+      assign selected_count = selected_count | plus: 1
+    endif
+  endfor
+  assign fallback_collection = collections['all']
+-%}
 <section class="sp-selects sp-section">
   <div class="page-width section-spacing">
     <div class="sp-section-head" data-sp-reveal>
@@ -8,22 +17,37 @@
       {%- if section.settings.copy != blank -%}<p class="sp-selects__copy">{{ section.settings.copy | escape }}</p>{%- endif -%}
     </div>
 
+    {%- if request.design_mode and selected_count == 0 and fallback_collection.products_count > 0 -%}
+      <p class="sp-editor-note">Theme setup: showing the first three store products until Paradise Selects are assigned.</p>
+    {%- endif -%}
+
     <div class="sp-selects__grid">
-      {%- for block in section.blocks -%}
-        {%- assign product = block.settings.product -%}
-        <div class="sp-selects__item sp-selects__item--{{ forloop.index }}" {{ block.shopify_attributes }} data-sp-reveal>
-          {%- if product != blank -%}
+      {%- if selected_count > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- assign product = block.settings.product -%}
+          <div class="sp-selects__item sp-selects__item--{{ forloop.index }}" {{ block.shopify_attributes }} data-sp-reveal>
+            {%- if product != blank -%}
+              <span class="sp-selects__index">0{{ forloop.index }}</span>
+              {%- render 'product-card', product: product, heading_tag: 'h3', image_loading: 'lazy', fetch_priority: 'auto', image_sizes: '(min-width: 1000px) 35vw, 50vw', show_vendor: true, show_secondary_image: true, show_badges: false -%}
+            {%- elsif request.design_mode -%}
+              <div class="sp-selects__placeholder">Select a piece</div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- elsif fallback_collection != blank and fallback_collection.products_count > 0 -%}
+        {%- for product in fallback_collection.products limit: 3 -%}
+          <div class="sp-selects__item sp-selects__item--{{ forloop.index }}" data-sp-reveal>
             <span class="sp-selects__index">0{{ forloop.index }}</span>
             {%- render 'product-card', product: product, heading_tag: 'h3', image_loading: 'lazy', fetch_priority: 'auto', image_sizes: '(min-width: 1000px) 35vw, 50vw', show_vendor: true, show_secondary_image: true, show_badges: false -%}
-          {%- else -%}
-            <div class="sp-selects__placeholder">Select a piece</div>
-          {%- endif -%}
-        </div>
-      {%- endfor -%}
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
     </div>
 
     {%- if section.settings.collection != blank -%}
       <div class="sp-selects__footer"><a class="sp-link" href="{{ section.settings.collection.url }}">{{ section.settings.link_label | escape }}</a></div>
+    {%- elsif fallback_collection != blank and fallback_collection.products_count > 0 -%}
+      <div class="sp-selects__footer"><a class="sp-link" href="{{ fallback_collection.url }}">{{ section.settings.link_label | escape }}</a></div>
     {%- endif -%}
   </div>
 </section>
