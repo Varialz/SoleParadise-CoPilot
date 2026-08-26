@@ -9,7 +9,7 @@
     <p class="sp-cart__count">{{ cart.item_count }} {% if cart.item_count == 1 %}piece{% else %}pieces{% endif %}</p>
   </header>
 
-  {%- if cart.empty? -%}
+  {%- if cart == empty -%}
     <div class="sp-cart__empty" data-sp-reveal>
       <p class="sp-kicker">Nothing held</p>
       <h2>THE BAG IS EMPTY.</h2>
