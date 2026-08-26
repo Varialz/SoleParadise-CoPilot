@@ -1,0 +1,39 @@
+<ul class="header-nav-mobile__list list-unstyled">
+  {%- for link in menu.links -%}
+    {%- assign l1_has_children = false -%}
+    {%- if link.links.size > 0 -%}{%- assign l1_has_children = true -%}{%- endif -%}
+    {%- assign l1_panel_id = 'header-mobile-panel-' | append: section_id | append: '-' | append: forloop.index -%}
+    <li class="header-nav-mobile__item">
+      <div class="header-nav-mobile__row">
+        <a href="{{ link.url | escape }}" class="header-nav-mobile__link"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+        {%- if l1_has_children -%}
+          <button type="button" class="header-nav-mobile__disclosure no-js-hidden" aria-expanded="false" aria-controls="{{ l1_panel_id }}" data-header-submenu-toggle data-label-closed="{{ 'header.open_submenu' | t: title: link.title | escape }}" data-label-open="{{ 'header.close_submenu' | t: title: link.title | escape }}">
+            {%- render 'icon', name: 'chevron-down', size: 18 -%}<span class="visually-hidden" data-header-submenu-label>{{ 'header.open_submenu' | t: title: link.title | escape }}</span>
+          </button>
+        {%- endif -%}
+      </div>
+      {%- if l1_has_children -%}
+        <ul id="{{ l1_panel_id }}" class="header-nav-mobile__sublist list-unstyled" data-header-submenu-panel>
+          {%- for child in link.links -%}
+            {%- assign l2_has_children = false -%}
+            {%- if child.links.size > 0 -%}{%- assign l2_has_children = true -%}{%- endif -%}
+            {%- assign l2_panel_id = l1_panel_id | append: '-' | append: forloop.index -%}
+            <li class="header-nav-mobile__item header-nav-mobile__item--level-2">
+              <div class="header-nav-mobile__row">
+                <a href="{{ child.url | escape }}" class="header-nav-mobile__link"{% if child.active %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                {%- if l2_has_children -%}
+                  <button type="button" class="header-nav-mobile__disclosure no-js-hidden" aria-expanded="false" aria-controls="{{ l2_panel_id }}" data-header-submenu-toggle data-label-closed="{{ 'header.open_submenu' | t: title: child.title | escape }}" data-label-open="{{ 'header.close_submenu' | t: title: child.title | escape }}">{%- render 'icon', name: 'chevron-down', size: 18 -%}<span class="visually-hidden" data-header-submenu-label>{{ 'header.open_submenu' | t: title: child.title | escape }}</span></button>
+                {%- endif -%}
+              </div>
+              {%- if l2_has_children -%}
+                <ul id="{{ l2_panel_id }}" class="header-nav-mobile__sublist header-nav-mobile__sublist--level-3 list-unstyled" data-header-submenu-panel>
+                  {%- for grandchild in child.links -%}<li class="header-nav-mobile__item header-nav-mobile__item--level-3"><a href="{{ grandchild.url | escape }}" class="header-nav-mobile__link"{% if grandchild.active %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a></li>{%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </li>
+  {%- endfor -%}
+</ul>
