@@ -1,0 +1,66 @@
+<div class="sp-quick-view" id="SoleParadiseQuickView" data-quick-view hidden>
+  <button class="sp-quick-view__backdrop" type="button" data-quick-view-close aria-label="Close quick view"></button>
+
+  <aside class="sp-quick-view__panel" role="dialog" aria-modal="true" aria-labelledby="QuickViewTitle" data-quick-view-panel tabindex="-1">
+    <header class="sp-quick-view__header">
+      <div>
+        <span class="sp-quick-view__eyebrow">Sole Paradise</span>
+        <span class="sp-quick-view__counter" data-quick-view-counter>Quick view / Chicago</span>
+      </div>
+      <button class="sp-quick-view__close" type="button" data-quick-view-close aria-label="Close quick view">×</button>
+    </header>
+
+    <div class="sp-quick-view__body" data-quick-view-body aria-live="polite">
+      <div class="sp-quick-view__loading" data-quick-view-loading>
+        <span></span><span></span><span></span>
+        <p>Pulling the piece from Paradise…</p>
+      </div>
+
+      <div class="sp-quick-view__content" data-quick-view-content hidden>
+        <div class="sp-quick-view__media">
+          <div class="sp-quick-view__image-wrap">
+            <img class="sp-quick-view__image" data-quick-view-image src="" alt="">
+            <span class="sp-quick-view__image-index" data-quick-view-image-index>01 / 01</span>
+          </div>
+          <div class="sp-quick-view__thumbs" data-quick-view-thumbs></div>
+        </div>
+
+        <div class="sp-quick-view__details">
+          <div class="sp-quick-view__identity">
+            <p class="sp-quick-view__vendor" data-quick-view-vendor></p>
+            <h2 class="sp-quick-view__title" id="QuickViewTitle" data-quick-view-title></h2>
+            <p class="sp-quick-view__price" data-quick-view-price></p>
+          </div>
+
+          <div class="sp-quick-view__archive" data-quick-view-archive-block hidden>
+            <span data-quick-view-archive-id>1 of 1</span>
+            <div data-quick-view-meta></div>
+          </div>
+
+          <div class="sp-quick-view__variants" data-quick-view-variants hidden>
+            <label for="QuickViewVariant">Choose piece</label>
+            <select id="QuickViewVariant" data-quick-view-variant-select></select>
+          </div>
+
+          <div class="sp-quick-view__actions">
+            <button class="sp-quick-view__add" type="button" data-quick-view-add>Add to bag</button>
+            <p class="sp-quick-view__status" data-quick-view-status></p>
+            <a class="sp-link sp-quick-view__full-link" href="#" data-quick-view-full-link>View full piece</a>
+          </div>
+
+          <div class="sp-quick-view__service">
+            <span>Authenticated</span>
+            <span>Chicago based</span>
+            <span>Secure shipping</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sp-quick-view__error" data-quick-view-error hidden>
+        <p class="sp-kicker">Couldn’t load the piece</p>
+        <h2>Open the full product page instead.</h2>
+        <a class="sp-link" href="#" data-quick-view-error-link>View piece</a>
+      </div>
+    </div>
+  </aside>
+</div>
