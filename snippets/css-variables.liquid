@@ -1,0 +1,34 @@
+{%- comment -%}
+  Outputs merchant-controlled global settings as CSS custom properties.
+  Included once in layout/theme.liquid <head>. Keep this the single place
+  that bridges Theme Editor settings into the design-token system so
+  components never read `settings.*` directly.
+{%- endcomment -%}
+{%- liquid
+  assign font_body_bold = settings.font_body | font_modify: 'weight', 'bold'
+-%}
+{%- style -%}
+  :root {
+    --color-background: {{ settings.color_background }};
+    --color-foreground: {{ settings.color_foreground }};
+    --color-surface: {{ settings.color_surface }};
+    --color-surface-secondary: {{ settings.color_surface_secondary }};
+    --color-border: {{ settings.color_border }};
+    --color-muted: {{ settings.color_muted }};
+    --color-accent: {{ settings.color_accent }};
+    --color-accent-foreground: {{ settings.color_accent_foreground }};
+    --color-success: {{ settings.color_success }};
+    --color-warning: {{ settings.color_warning }};
+    --color-error: {{ settings.color_error }};
+    --font-heading-family: {{ settings.font_heading.family }}, {{ settings.font_heading.fallback_families }};
+    --font-heading-style: {{ settings.font_heading.style }};
+    --font-heading-weight: {{ settings.font_heading.weight }};
+    --font-body-family: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
+    --font-body-style: {{ settings.font_body.style }};
+    --font-body-weight: {{ settings.font_body.weight }};
+    --font-body-weight-bold: {{ font_body_bold.weight }};
+    --container-page: {{ settings.page_width }}px;
+    --button-radius: {{ settings.button_border_radius }}px;
+    --button-border-width: {{ settings.button_border_thickness }}px;
+  }
+{%- endstyle -%}
