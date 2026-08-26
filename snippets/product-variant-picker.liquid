@@ -1,0 +1,32 @@
+{%- unless product.has_only_default_variant -%}
+  <div class="product-variants" role="group" aria-label="{{ 'products.page.product_options' | t }}" data-product-variant-picker>
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign option_index = forloop.index
+        assign group_name = 'Option-' | append: section_id | append: '-' | append: option_index
+      -%}
+      <fieldset class="product-variants__group">
+        <legend class="product-variants__legend">{{ option.name | escape }}</legend>
+        <div class="product-variants__values">
+          {%- for value in option.values -%}
+            {%- liquid
+              assign value_id = group_name | append: '-' | append: forloop.index
+              assign safe_value_name = value.name | escape
+              assign value_label = safe_value_name
+              unless value.available
+                assign value_label = 'products.page.value_unavailable' | t: value: safe_value_name
+              endunless
+            -%}
+            <div class="product-variants__value">
+              <input type="radio" class="product-variants__input" id="{{ value_id }}" name="{{ group_name }}" value="{{ value.name | escape }}" data-option-value-id="{{ value.id }}" data-option-position="{{ option_index }}" {% if value.product_url %}data-product-url="{{ value.product_url | escape }}"{% endif %} {% if value.selected %}checked{% endif %}>
+              <label class="product-variants__label{% unless value.available %} product-variants__label--unavailable{% endunless %}" for="{{ value_id }}">
+                {%- if value.swatch.image -%}<span class="product-variants__swatch" style="background-image:url({{ value.swatch.image | image_url: width: 80 }});" aria-hidden="true"></span>{%- elsif value.swatch.color -%}<span class="product-variants__swatch" style="background-color:{{ value.swatch.color }};" aria-hidden="true"></span>{%- endif -%}
+                <span class="product-variants__value-text" aria-hidden="true">{{ value.name | escape }}</span><span class="visually-hidden">{{ value_label }}</span>
+              </label>
+            </div>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endfor -%}
+  </div>
+{%- endunless -%}
