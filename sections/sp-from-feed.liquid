@@ -1,5 +1,10 @@
 {%- liquid
   assign feed_collection = section.settings.collection
+  assign using_fallback_collection = false
+  if feed_collection == blank
+    assign feed_collection = collections['all']
+    assign using_fallback_collection = true
+  endif
   assign product_limit = section.settings.limit | default: 6
 -%}
 <section class="sp-section sp-feed section-spacing" data-sp-feed>
@@ -18,6 +23,9 @@
     </header>
 
     {%- if feed_collection != blank and feed_collection.products_count > 0 -%}
+      {%- if request.design_mode and using_fallback_collection -%}
+        <p class="sp-editor-note">Theme setup: showing All products until a dedicated From the Feed collection is selected.</p>
+      {%- endif -%}
       <div class="sp-feed__grid">
         {%- for product in feed_collection.products limit: product_limit -%}
           <div class="sp-feed__item">
@@ -27,7 +35,7 @@
               heading_tag: 'h3',
               image_loading: 'lazy',
               fetch_priority: 'auto',
-              image_sizes: '(min-width: 1000px) 33vw, (min-width: 750px) 50vw, 100vw',
+              image_sizes: '(min-width: 1000px) 20vw, (min-width: 750px) 33vw, 50vw',
               show_vendor: true,
               show_secondary_image: true,
               show_badges: true
@@ -41,9 +49,9 @@
           <a class="sp-link" href="{{ feed_collection.url }}">Shop the full feed</a>
         </div>
       {%- endif -%}
-    {%- else -%}
+    {%- elsif request.design_mode -%}
       <div class="sp-feed__empty" data-sp-reveal>
-        <p>Select the automatic <strong>From the Feed</strong> collection in the Theme Editor after creating it in Shopify.</p>
+        <p>Add products to Shopify, then select the automatic <strong>From the Feed</strong> collection in this section.</p>
       </div>
     {%- endif -%}
   </div>
