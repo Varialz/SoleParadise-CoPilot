@@ -1,7 +1,6 @@
 {%- comment -%}
   Canonical Sole Paradise product summary card.
-  FROM-FEED pieces use the same purchase/catalog primitives as every other product,
-  with optional archive metadata layered from product metafields.
+  Product photography stays primary. Resale/archive metadata is intentionally quiet and secondary.
 {%- endcomment -%}
 {%- liquid
   assign card_heading_tag = heading_tag
@@ -76,19 +75,12 @@
     assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
 
     assign has_archive_meta = false
-    if archive_size != blank or condition != blank or item_state != blank
+    if archive_size != blank or condition != blank or item_state != blank or archive_id != blank
       assign has_archive_meta = true
     endif
   -%}
 
   <article class="product-card{% if from_feed %} product-card--archive{% endif %}" data-sp-reveal>
-    {%- if from_feed -%}
-      <div class="product-card__archive-head" aria-label="Archive listing details">
-        <span>From the feed</span>
-        <span>{% if archive_id != blank %}{{ archive_id | escape }}{% else %}1 of 1{% endif %}</span>
-      </div>
-    {%- endif -%}
-
     <div class="product-card__media{% if render_secondary_image %} product-card__media--has-secondary{% endif %}">
       {%- if card_show_badges -%}
         {%- unless product.available -%}
@@ -97,6 +89,13 @@
           {%- if on_sale -%}<span class="product-card__badge product-card__badge--sale">{{ 'products.card.sale' | t }}</span>{%- endif -%}
         {%- endunless -%}
       {%- endif -%}
+
+      {%- if from_feed -%}
+        <span class="product-card__provenance" aria-label="One of one archive piece">
+          {% if archive_id != blank %}{{ archive_id | escape }}{% else %}1 of 1{% endif %}
+        </span>
+      {%- endif -%}
+
       {%- if featured_image != blank -%}
         {{ featured_image | image_url: width: 960 | image_tag: loading: card_image_loading, fetchpriority: card_fetch_priority, sizes: card_image_sizes, widths: image_widths, class: 'product-card__image product-card__image--primary', alt: image_alt }}
         {%- if render_secondary_image -%}
@@ -117,6 +116,8 @@
         {% if condition != blank %}data-condition="{{ condition | escape }}"{% endif %}
         {% if item_state != blank %}data-item-state="{{ item_state | escape }}"{% endif %}
         aria-label="Quick view {{ product.title | escape }}"
+        aria-haspopup="dialog"
+        aria-controls="SoleParadiseQuickView"
       >Quick view</button>
     </div>
 
@@ -124,8 +125,8 @@
       {%- if card_show_vendor and product.vendor != blank -%}<p class="product-card__vendor">{{ product.vendor | escape }}</p>{%- endif -%}
       <{{ card_heading_tag }} class="product-card__title"><a class="product-card__link" href="{{ product_url | escape }}">{{ product.title | escape }}</a></{{ card_heading_tag }}>
 
-      {%- if from_feed and has_archive_meta -%}
-        <p class="product-card__archive-meta">
+      {%- if has_archive_meta -%}
+        <p class="product-card__archive-meta" aria-label="Piece details">
           {%- if archive_size != blank -%}<span>{{ archive_size | escape }}</span>{%- endif -%}
           {%- if condition != blank -%}<span>{{ condition | escape }}</span>{%- endif -%}
           {%- if item_state != blank -%}<span>{{ item_state | escape }}</span>{%- endif -%}
