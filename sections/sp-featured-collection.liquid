@@ -1,3 +1,11 @@
+{%- liquid
+  assign arrivals_collection = section.settings.collection
+  assign using_fallback_collection = false
+  if arrivals_collection == blank
+    assign arrivals_collection = collections['all']
+    assign using_fallback_collection = true
+  endif
+-%}
 <section class="sp-section sp-arrivals section-spacing" data-sp-section>
   <div class="page-width">
     <div class="sp-section-head" data-sp-reveal>
@@ -5,15 +13,19 @@
         <p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>
         <h2 class="sp-section-title">{{ section.settings.heading | escape }}</h2>
       </div>
-      {%- if section.settings.collection != blank -%}<a class="sp-link" href="{{ section.settings.collection.url }}">View all</a>{%- endif -%}
+      {%- if arrivals_collection != blank and arrivals_collection.products_count > 0 -%}<a class="sp-link" href="{{ arrivals_collection.url }}">View all</a>{%- endif -%}
     </div>
 
+    {%- if request.design_mode and using_fallback_collection and arrivals_collection.products_count > 0 -%}
+      <p class="sp-editor-note">Theme setup: showing All products until a New Arrivals collection is selected.</p>
+    {%- endif -%}
+
     <div class="sp-product-grid">
-      {%- if section.settings.collection != blank -%}
-        {%- for product in section.settings.collection.products limit: section.settings.limit -%}
-          {%- render 'product-card', product: product, collection: section.settings.collection, heading_tag: 'h3', image_loading: 'lazy', fetch_priority: 'auto', image_sizes: '(min-width: 1000px) 25vw, 50vw', show_vendor: true, show_secondary_image: section.settings.show_secondary_image, show_badges: true -%}
+      {%- if arrivals_collection != blank and arrivals_collection.products_count > 0 -%}
+        {%- for product in arrivals_collection.products limit: section.settings.limit -%}
+          {%- render 'product-card', product: product, collection: arrivals_collection, heading_tag: 'h3', image_loading: 'lazy', fetch_priority: 'auto', image_sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw', show_vendor: true, show_secondary_image: section.settings.show_secondary_image, show_badges: true -%}
         {%- endfor -%}
-      {%- else -%}
+      {%- elsif request.design_mode -%}
         {%- for i in (1..4) -%}{%- render 'product-card', product: blank, heading_tag: 'h3' -%}{%- endfor -%}
       {%- endif -%}
     </div>
