@@ -105,6 +105,19 @@
       {%- else -%}
         {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder-svg' }}
       {%- endif -%}
+
+      <button
+        class="product-card__quick-view no-js-hidden"
+        type="button"
+        data-quick-view-trigger
+        data-product-url="{{ product.url | escape }}"
+        data-archive="{% if from_feed %}true{% else %}false{% endif %}"
+        {% if archive_id != blank %}data-archive-id="{{ archive_id | escape }}"{% endif %}
+        {% if archive_size != blank %}data-size="{{ archive_size | escape }}"{% endif %}
+        {% if condition != blank %}data-condition="{{ condition | escape }}"{% endif %}
+        {% if item_state != blank %}data-item-state="{{ item_state | escape }}"{% endif %}
+        aria-label="Quick view {{ product.title | escape }}"
+      >Quick view</button>
     </div>
 
     <div class="product-card__information">
