@@ -43,6 +43,21 @@
         "button_label": "Shop the edit"
       }
     },
+    "selects": {
+      "type": "sp-paradise-selects",
+      "blocks": {
+        "one": {"type":"piece","settings":{}},
+        "two": {"type":"piece","settings":{}},
+        "three": {"type":"piece","settings":{}}
+      },
+      "block_order": ["one","two","three"],
+      "settings": {
+        "eyebrow": "Paradise Selects",
+        "heading": "WHAT WE'D\nTAKE HOME.",
+        "copy": "A rotating selection of pieces the Sole Paradise team would keep for themselves.",
+        "link_label": "Shop staff picks"
+      }
+    },
     "arrivals": {
       "type": "sp-featured-collection",
       "settings": {
@@ -85,5 +100,5 @@
       }
     }
   },
-  "order": ["hero","trust","feed","edit","arrivals","brands","seller","archive"]
+  "order": ["hero","feed","edit","selects","arrivals","brands","trust","seller","archive"]
 }
