@@ -1,4 +1,11 @@
-{%- assign archive_collection = section.settings.collection -%}
+{%- liquid
+  assign archive_collection = section.settings.collection
+  assign archive_ready = false
+  if archive_collection != blank and archive_collection.products_count > 0
+    assign archive_ready = true
+  endif
+-%}
+{%- if archive_ready or request.design_mode -%}
 <section class="sp-section sp-sold" id="SoldArchive-{{ section.id }}">
   <div class="page-width section-spacing">
     <div class="sp-section-head" data-sp-reveal>
@@ -9,7 +16,7 @@
       {%- if section.settings.copy != blank -%}<p class="sp-sold__copy">{{ section.settings.copy | escape }}</p>{%- endif -%}
     </div>
 
-    {%- if archive_collection != blank and archive_collection.products_count > 0 -%}
+    {%- if archive_ready -%}
       <div class="sp-sold__rail">
         {%- for product in archive_collection.products limit: section.settings.limit -%}
           <article class="sp-sold__item" data-sp-reveal>
@@ -39,11 +46,12 @@
       {%- endif -%}
     {%- else -%}
       <div class="sp-feed__empty" data-sp-reveal>
-        Select a sold-items collection to turn past inventory into social proof and brand history.
+        <p class="sp-editor-note">Theme setup: select a sold-items collection to enable the public Paradise Archive. This section stays hidden from shoppers until inventory is assigned.</p>
       </div>
     {%- endif -%}
   </div>
 </section>
+{%- endif -%}
 
 {% schema %}
 {
