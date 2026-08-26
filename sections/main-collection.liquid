@@ -1,0 +1,43 @@
+{%- paginate collection.products by section.settings.products_per_page -%}
+<section class="sp-collection section-spacing" data-collection-section>
+  <div class="page-width">
+    <header class="sp-collection__head" data-sp-reveal>
+      <p class="sp-kicker">Paradise inventory</p>
+      <h1 class="sp-section-title">{{ collection.title | escape }}</h1>
+      {%- if collection.description != blank -%}<div class="sp-collection__description rte">{{ collection.description }}</div>{%- endif -%}
+      <div class="sp-collection__meta"><span>{{ 'collection.product_count' | t: count: collection.products_count }}</span></div>
+    </header>
+
+    <form class="sp-collection__sort" method="get" action="{{ collection.url }}">
+      <label for="SortBy-{{ section.id }}">{{ 'collection.sort_by' | t }}</label>
+      <select id="SortBy-{{ section.id }}" name="sort_by" onchange="this.form.submit()">
+        {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+        {%- for option in collection.sort_options -%}<option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>{%- endfor -%}
+      </select>
+      <noscript><button type="submit" class="button button--secondary">{{ 'collection.sort_submit' | t }}</button></noscript>
+    </form>
+
+    {%- if collection.products.size > 0 -%}
+      <div class="sp-product-grid sp-product-grid--collection">
+        {%- for product in collection.products -%}
+          {%- render 'product-card', product: product, collection: collection, heading_tag: 'h2', image_loading: 'lazy', fetch_priority: 'auto', image_sizes: '(min-width: 1000px) 25vw, 50vw', show_vendor: true, show_secondary_image: section.settings.show_secondary_image, show_badges: true -%}
+        {%- endfor -%}
+      </div>
+      {%- render 'pagination', paginate: paginate -%}
+    {%- else -%}
+      <div class="sp-collection__empty"><h2>{{ 'collection.empty_title' | t }}</h2><p>{{ 'collection.empty_text' | t }}</p><a class="sp-link" href="{{ routes.all_products_collection_url }}">{{ 'collection.empty_link' | t }}</a></div>
+    {%- endif -%}
+  </div>
+</section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name":"Collection",
+  "settings":[
+    {"type":"range","id":"products_per_page","label":"Products per page","min":8,"max":32,"step":4,"default":20},
+    {"type":"checkbox","id":"show_secondary_image","label":"Show second image on hover","default":true}
+  ],
+  "enabled_on":{"templates":["collection"]}
+}
+{% endschema %}
