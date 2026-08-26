@@ -20,7 +20,7 @@
       <p class="sp-editor-note">Theme setup: showing All products until a New Arrivals collection is selected.</p>
     {%- endif -%}
 
-    <div class="sp-product-grid">
+    <div class="sp-product-grid" data-sp-product-grid>
       {%- if arrivals_collection != blank and arrivals_collection.products_count > 0 -%}
         {%- for product in arrivals_collection.products limit: section.settings.limit -%}
           {%- render 'product-card', product: product, collection: arrivals_collection, heading_tag: 'h3', image_loading: 'lazy', fetch_priority: 'auto', image_sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw', show_vendor: true, show_secondary_image: section.settings.show_secondary_image, show_badges: true -%}
