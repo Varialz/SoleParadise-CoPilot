@@ -41,6 +41,13 @@
   endif
 -%}
 <div class="product product--boutique page-width section-spacing{% if from_feed %} product--archive{% endif %}" data-product-section data-sp-product-section data-section-id="{{ section.id }}" data-product-url="{{ product.url | escape }}" data-error-message="{{ 'products.page.update_error' | t | escape }}">
+  <nav class="product__breadcrumbs" aria-label="Breadcrumb" data-sp-product-reveal>
+    <a href="{{ routes.root_url }}">Home</a>
+    <span>/</span>
+    <a href="{{ routes.all_products_collection_url }}">Shop</a>
+    {%- if product.vendor != blank -%}<span>/</span><span>{{ product.vendor | escape }}</span>{%- endif -%}
+  </nav>
+
   <div class="product__layout">
     <div class="product__media-column" data-sp-product-gallery>
       <div class="product__media-label">
@@ -67,6 +74,14 @@
         {%- if section.settings.show_vendor and product.vendor != blank -%}<p class="product__vendor">{{ product.vendor | escape }}</p>{%- endif -%}
         <h1 class="product__title">{{ product.title | escape }}</h1>
         <div class="product__price" data-product-price>{%- if has_variant -%}{%- render 'product-price', product: product, variant: selected_variant -%}{%- else -%}<p class="price price--unavailable">{{ 'products.page.price_unavailable' | t }}</p>{%- endif -%}</div>
+
+        {%- if from_feed or item_state != blank or condition != blank -%}
+          <div class="product__status-chips" aria-label="Piece status">
+            {%- if from_feed -%}<span>1 of 1</span>{%- endif -%}
+            {%- if item_state != blank -%}<span>{{ item_state | escape }}</span>{%- endif -%}
+            {%- if condition != blank -%}<span>{{ condition | escape }}</span>{%- endif -%}
+          </div>
+        {%- endif -%}
       </div>
 
       {%- if from_feed and has_archive_details -%}
