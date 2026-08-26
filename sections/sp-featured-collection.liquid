@@ -1,0 +1,34 @@
+<section class="sp-section sp-arrivals section-spacing" data-sp-section>
+  <div class="page-width">
+    <div class="sp-section-head" data-sp-reveal>
+      <div>
+        <p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="sp-section-title">{{ section.settings.heading | escape }}</h2>
+      </div>
+      {%- if section.settings.collection != blank -%}<a class="sp-link" href="{{ section.settings.collection.url }}">View all</a>{%- endif -%}
+    </div>
+
+    <div class="sp-product-grid">
+      {%- if section.settings.collection != blank -%}
+        {%- for product in section.settings.collection.products limit: section.settings.limit -%}
+          {%- render 'product-card', product: product, collection: section.settings.collection, heading_tag: 'h3', image_loading: 'lazy', fetch_priority: 'auto', image_sizes: '(min-width: 1000px) 25vw, 50vw', show_vendor: true, show_secondary_image: section.settings.show_secondary_image, show_badges: true -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..4) -%}{%- render 'product-card', product: blank, heading_tag: 'h3' -%}{%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name":"SP — Freshly Landed",
+  "settings":[
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Freshly landed"},
+    {"type":"text","id":"heading","label":"Heading","default":"New arrivals"},
+    {"type":"collection","id":"collection","label":"Collection"},
+    {"type":"range","id":"limit","label":"Products","min":4,"max":12,"step":4,"default":8},
+    {"type":"checkbox","id":"show_secondary_image","label":"Show second image on hover","default":true}
+  ],
+  "presets":[{"name":"SP — Freshly Landed"}]
+}
+{% endschema %}
