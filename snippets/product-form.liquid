@@ -1,0 +1,34 @@
+{%- liquid
+  assign has_variant = false
+  if selected_variant != blank
+    assign has_variant = true
+  endif
+  assign is_available = false
+  if has_variant and selected_variant.available
+    assign is_available = true
+  endif
+  if is_available
+    assign button_label = 'products.page.add_to_cart' | t
+  elsif has_variant
+    assign button_label = 'products.page.sold_out' | t
+  else
+    assign button_label = 'products.page.unavailable' | t
+  endif
+-%}
+{%- unless product.has_only_default_variant -%}
+<form method="get" action="{{ product.url | escape }}" class="product-form__selection" data-product-selection-form>
+  <label class="product-form__fallback-label" for="ProductVariantFallback-{{ section_id }}">{{ 'products.page.select_variant' | t }}</label>
+  <select id="ProductVariantFallback-{{ section_id }}" class="field__select product-form__fallback-select" name="variant" data-product-fallback-select>
+    {%- for variant in product.variants -%}<option value="{{ variant.id }}" {% if selected_variant.id == variant.id %}selected{% endif %}>{{ variant.title | escape }} &ndash; {{ variant.price | money }}{% unless variant.available %} ({{ 'products.page.sold_out' | t }}){% endunless %}</option>{%- endfor -%}
+  </select>
+  <button type="submit" class="button button--secondary product-form__selection-submit">{{ 'products.page.update_selection' | t }}</button>
+</form>
+{%- endunless -%}
+<div class="product-form" data-product-form-container data-has-variant="{% if has_variant %}true{% else %}false{% endif %}" data-variant-available="{% if is_available %}true{% else %}false{% endif %}">
+  {%- form 'product', product, id: 'ProductForm-' | append: section_id, class: 'product-form__form', novalidate: 'novalidate' -%}
+    <input type="hidden" name="id" value="{{ selected_variant.id }}" {% unless is_available %}disabled{% endunless %} data-product-variant-id>
+    {%- if show_quantity -%}<div class="product-form__quantity"><label class="product-form__quantity-label" for="Quantity-{{ section_id }}">{{ 'products.page.quantity' | t }}</label><input type="number" id="Quantity-{{ section_id }}" class="field__input product-form__quantity-input" name="quantity" value="1" min="1" step="1" inputmode="numeric" data-product-quantity></div>{%- else -%}<input type="hidden" name="quantity" value="1">{%- endif -%}
+    <button type="submit" name="add" class="button button--primary button--full-width product-form__submit" {% unless is_available %}disabled{% endunless %} data-product-submit data-label-add="{{ 'products.page.add_to_cart' | t | escape }}" data-label-sold-out="{{ 'products.page.sold_out' | t | escape }}" data-label-unavailable="{{ 'products.page.unavailable' | t | escape }}">{{ button_label }}</button>
+    {%- if show_dynamic_checkout and is_available -%}<div class="product-form__dynamic-checkout" data-product-dynamic-checkout>{{ form | payment_button }}</div>{%- endif -%}
+  {%- endform -%}
+</div>
