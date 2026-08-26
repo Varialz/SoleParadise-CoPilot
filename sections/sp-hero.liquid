@@ -1,23 +1,35 @@
-<section class="sp-hero" data-sp-section>
+<section class="sp-hero sp-hero--editorial" data-sp-section>
   <div class="sp-hero__media" data-sp-parallax>
     {%- if section.settings.image != blank -%}
-      {{ section.settings.image | image_url: width: 2200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '(min-width: 750px) 58vw, 100vw', widths: '750,1000,1400,1800,2200', alt: section.settings.image.alt }}
+      {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', alt: section.settings.image.alt }}
     {%- else -%}
       {{ 'lifestyle-1' | placeholder_svg_tag: 'sp-hero__placeholder' }}
     {%- endif -%}
   </div>
+  <div class="sp-hero__veil" aria-hidden="true"></div>
 
   <div class="sp-hero__inner page-width">
     <div class="sp-hero__copy">
       {%- if section.settings.eyebrow != blank -%}<p class="sp-kicker" data-sp-hero-line>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
       <h1 class="sp-display" data-sp-hero-line>{{ section.settings.heading | escape | newline_to_br }}</h1>
       {%- if section.settings.copy != blank -%}<p class="sp-hero__description" data-sp-hero-line>{{ section.settings.copy | escape }}</p>{%- endif -%}
-      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}<a class="sp-link" href="{{ section.settings.button_link }}" data-sp-hero-line>{{ section.settings.button_label | escape }}</a>{%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        {%- liquid
+          assign hero_url = routes.all_products_collection_url
+          if section.settings.button_link != blank
+            assign hero_url = section.settings.button_link
+          endif
+        -%}
+        <a class="sp-hero__button" href="{{ hero_url }}" data-sp-hero-line>{{ section.settings.button_label | escape }}</a>
+      {%- endif -%}
     </div>
   </div>
 
   <div class="sp-horizon" data-sp-horizon aria-hidden="true"></div>
-  {%- if section.settings.index_label != blank -%}<div class="sp-hero__index">{{ section.settings.index_label | escape }}</div>{%- endif -%}
+  <div class="sp-hero__footer page-width" data-sp-hero-line>
+    <span>{{ section.settings.index_label | escape }}</span>
+    <span>{{ section.settings.footer_label | escape }}</span>
+  </div>
 </section>
 
 {% schema %}
@@ -25,12 +37,13 @@
   "name":"SP — Hero",
   "settings":[
     {"type":"image_picker","id":"image","label":"Campaign image"},
-    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Chicago — Rare goods"},
-    {"type":"textarea","id":"heading","label":"Heading","default":"SOLE\nPARADISE"},
-    {"type":"textarea","id":"copy","label":"Copy","default":"Rare designer pieces, landed in Chicago. New arrivals, pre-owned grails and one-off finds."},
-    {"type":"text","id":"button_label","label":"Button label","default":"Enter Paradise"},
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"One of one pieces · Curated daily"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"CHICAGO\nTO THE WORLD."},
+    {"type":"textarea","id":"copy","label":"Copy","default":"Rare designer, archive and pre-owned pieces selected in Chicago."},
+    {"type":"text","id":"button_label","label":"Button label","default":"Shop new arrivals"},
     {"type":"url","id":"button_link","label":"Button link"},
-    {"type":"text","id":"index_label","label":"Corner label","default":"CHICAGO / 001"}
+    {"type":"text","id":"index_label","label":"Left footer label","default":"SOLE PARADISE / CHICAGO"},
+    {"type":"text","id":"footer_label","label":"Right footer label","default":"WORLDWIDE SHIPPING"}
   ],
   "presets":[{"name":"SP — Hero"}]
 }
