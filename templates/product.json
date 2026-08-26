@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "description": {"type":"description","settings":{}},
+        "sku": {"type":"sku","settings":{}},
+        "condition": {"type":"disclosure","settings":{"heading":"Condition & details","content":"<p>Condition notes and measurements can be added here for each piece.</p>"}},
+        "shipping": {"type":"disclosure","settings":{"heading":"Shipping & authenticity","content":"<p>Every piece is inspected before listing and shipped securely from Chicago.</p>"}}
+      },
+      "block_order": ["description","sku","condition","shipping"],
+      "settings": {
+        "show_vendor": true,
+        "show_quantity_selector": false,
+        "enable_dynamic_checkout": true
+      }
+    }
+  },
+  "order": ["main"]
+}
