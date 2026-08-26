@@ -1,0 +1,70 @@
+{%- liquid
+  assign primary_product = section.settings.primary_product
+  assign secondary_product = section.settings.secondary_product
+-%}
+<section class="sp-section sp-edit" id="ParadiseEdit-{{ section.id }}">
+  <div class="page-width section-spacing">
+    <div class="sp-edit__top" data-sp-reveal>
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="sp-section-title">{{ section.settings.heading | newline_to_br }}</h2>{%- endif -%}
+      </div>
+      {%- if section.settings.copy != blank -%}<p class="sp-edit__copy">{{ section.settings.copy | escape }}</p>{%- endif -%}
+    </div>
+
+    <div class="sp-edit__composition">
+      <div class="sp-edit__campaign" data-sp-reveal>
+        {%- if section.settings.image != blank -%}
+          <div class="sp-edit__campaign-media" data-sp-parallax>
+            {{ section.settings.image | image_url: width: 1800 | image_tag: loading: 'lazy', widths: '640,960,1280,1600,1800', sizes: '(min-width: 990px) 58vw, 100vw', alt: section.settings.image.alt }}
+          </div>
+        {%- else -%}
+          <div class="sp-edit__campaign-media sp-edit__placeholder">{{ 'lifestyle-1' | placeholder_svg_tag }}</div>
+        {%- endif -%}
+        <div class="sp-edit__campaign-caption">
+          <span>{{ section.settings.issue_label | escape }}</span>
+          <span>{{ section.settings.location_label | escape }}</span>
+        </div>
+      </div>
+
+      <div class="sp-edit__shop" data-sp-reveal>
+        {%- if primary_product != blank -%}
+          <div class="sp-edit__product sp-edit__product--primary">
+            {%- render 'product-card', product: primary_product, show_secondary_image: true, show_badges: true, show_vendor: true, heading_tag: 'h3', image_sizes: '(min-width: 990px) 28vw, 50vw' -%}
+          </div>
+        {%- endif -%}
+        {%- if secondary_product != blank -%}
+          <div class="sp-edit__product sp-edit__product--secondary">
+            {%- render 'product-card', product: secondary_product, show_secondary_image: true, show_badges: true, show_vendor: true, heading_tag: 'h3', image_sizes: '(min-width: 990px) 22vw, 50vw' -%}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+          <a class="sp-link sp-edit__cta" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Paradise Edit",
+  "tag": "section",
+  "class": "sp-paradise-edit-section",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Paradise Edit 001"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"CHICAGO\nAFTER DARK."},
+    {"type":"textarea","id":"copy","label":"Copy","default":"A rotating editorial of rare pieces, city nights and the people who wear them."},
+    {"type":"image_picker","id":"image","label":"Campaign image"},
+    {"type":"text","id":"issue_label","label":"Issue label","default":"ISSUE 001"},
+    {"type":"text","id":"location_label","label":"Location label","default":"CHICAGO / ILLINOIS"},
+    {"type":"product","id":"primary_product","label":"Primary shoppable product"},
+    {"type":"product","id":"secondary_product","label":"Secondary shoppable product"},
+    {"type":"text","id":"button_label","label":"Button label","default":"Shop the edit"},
+    {"type":"url","id":"button_link","label":"Button link"}
+  ],
+  "presets": [{"name":"Paradise Edit"}],
+  "enabled_on": {"templates":["index"]}
+}
+{% endschema %}
