@@ -1,0 +1,64 @@
+{%- assign archive_collection = section.settings.collection -%}
+<section class="sp-section sp-sold" id="SoldArchive-{{ section.id }}">
+  <div class="page-width section-spacing">
+    <div class="sp-section-head" data-sp-reveal>
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="sp-section-title">{{ section.settings.heading | newline_to_br }}</h2>{%- endif -%}
+      </div>
+      {%- if section.settings.copy != blank -%}<p class="sp-sold__copy">{{ section.settings.copy | escape }}</p>{%- endif -%}
+    </div>
+
+    {%- if archive_collection != blank and archive_collection.products_count > 0 -%}
+      <div class="sp-sold__rail">
+        {%- for product in archive_collection.products limit: section.settings.limit -%}
+          <article class="sp-sold__item" data-sp-reveal>
+            <a class="sp-sold__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+              {%- if product.featured_image != blank -%}
+                {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '320,480,640,900', sizes: '(min-width: 990px) 22vw, 64vw', alt: product.featured_image.alt }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag }}
+              {%- endif -%}
+              <span class="sp-sold__stamp">SOLD — PARADISE ARCHIVE</span>
+            </a>
+            <div class="sp-sold__meta">
+              <div>
+                {%- if product.vendor != blank -%}<span>{{ product.vendor | escape }}</span>{%- endif -%}
+                <h3>{{ product.title | escape }}</h3>
+              </div>
+              {%- assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id -%}
+              {%- if archive_id != blank -%}<span class="sp-sold__id">{{ archive_id | escape }}</span>{%- endif -%}
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+      {%- if section.settings.show_collection_link -%}
+        <div class="sp-sold__footer">
+          <a class="sp-link" href="{{ archive_collection.url }}">View the archive</a>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div class="sp-feed__empty" data-sp-reveal>
+        Select a sold-items collection to turn past inventory into social proof and brand history.
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name":"Paradise Archive",
+  "tag":"section",
+  "class":"sp-sold-archive-section",
+  "settings":[
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Paradise Archive"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"GONE, NOT\nFORGOTTEN."},
+    {"type":"textarea","id":"copy","label":"Copy","default":"Past one-of-one pieces stay visible as proof of what moves through Paradise."},
+    {"type":"collection","id":"collection","label":"Sold-items collection"},
+    {"type":"range","id":"limit","label":"Items","min":3,"max":10,"step":1,"default":6},
+    {"type":"checkbox","id":"show_collection_link","label":"Show archive link","default":true}
+  ],
+  "presets":[{"name":"Paradise Archive"}],
+  "enabled_on":{"templates":["index"]}
+}
+{% endschema %}
