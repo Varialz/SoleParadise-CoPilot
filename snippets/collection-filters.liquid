@@ -1,0 +1,51 @@
+{%- for filter in collection.filters -%}
+  <details class="collection-filter" open>
+    <summary class="collection-filter__summary">
+      <span>{{ filter.label | escape }}</span>
+      {%- render 'icon', name: 'chevron-down', size: 14 -%}
+    </summary>
+    <div class="collection-filter__content">
+      {%- case filter.type -%}
+        {%- when 'list', 'boolean' -%}
+          <ul class="collection-filter__list list-unstyled">
+            {%- for value in filter.values -%}
+              {%- liquid
+                assign input_id = 'Filter-' | append: section_id | append: '-' | append: filter.param_name | append: '-' | append: forloop.index
+                assign disabled = false
+                if value.count == 0 and value.active == false
+                  assign disabled = true
+                endif
+              -%}
+              <li>
+                <input type="checkbox" id="{{ input_id }}" name="{{ value.param_name }}" value="{{ value.value | escape }}" {% if value.active %}checked{% endif %} {% if disabled %}disabled{% endif %}>
+                <label for="{{ input_id }}">
+                  <span>{{ value.label | escape }}</span>
+                  <span class="collection-filter__count">{{ value.count }}</span>
+                </label>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- when 'price_range' -%}
+          {%- liquid
+            assign min_id = 'Filter-' | append: section_id | append: '-min'
+            assign max_id = 'Filter-' | append: section_id | append: '-max'
+            assign price_max = filter.range_max | money_without_currency | replace: ',', ''
+            assign min_current = ''
+            assign max_current = ''
+            if filter.min_value.value != blank
+              assign min_current = filter.min_value.value | money_without_currency | replace: ',', ''
+            endif
+            if filter.max_value.value != blank
+              assign max_current = filter.max_value.value | money_without_currency | replace: ',', ''
+            endif
+          -%}
+          <div class="collection-filter__price">
+            <label for="{{ min_id }}">Min {{ cart.currency.symbol }}</label>
+            <input id="{{ min_id }}" type="number" name="{{ filter.min_value.param_name }}" min="0" max="{{ price_max }}" step="0.01" value="{{ min_current }}" placeholder="0">
+            <label for="{{ max_id }}">Max {{ cart.currency.symbol }}</label>
+            <input id="{{ max_id }}" type="number" name="{{ filter.max_value.param_name }}" min="0" max="{{ price_max }}" step="0.01" value="{{ max_current }}" placeholder="{{ price_max }}">
+          </div>
+      {%- endcase -%}
+    </div>
+  </details>
+{%- endfor -%}
