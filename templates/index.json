@@ -45,8 +45,8 @@
     "features": {
       "type": "sp-features",
       "blocks": {
-        "one": {"type":"feature","settings":{"label":"Paradise Edit","title":"The Chrome Hearts Edit","copy":"Pieces on the floor right now.","link_label":"View the edit"}},
-        "two": {"type":"feature","settings":{"label":"Unboxed","title":"This Week's Rotation","copy":"New arrivals worth a closer look.","link_label":"Shop arrivals"}},
+        "one": {"type":"feature","settings":{"label":"Chrome Hearts / Archive","title":"The Chrome Hearts Edit","copy":"Crosses, leather and one-off pieces moving through Paradise.","link_label":"View the edit"}},
+        "two": {"type":"feature","settings":{"label":"Bottega Desires / New Drop","title":"Bottega Desires Rotation","copy":"Graphic streetwear and limited pieces from the current rotation.","link_label":"Shop arrivals"}},
         "three": {"type":"feature","settings":{"label":"Chicago / Editorial","title":"After Dark","copy":"Archive designer in the city.","link_label":"View editorial"}}
       },
       "block_order": ["one","two","three"],
@@ -60,13 +60,14 @@
       "type": "sp-brand-index",
       "blocks": {
         "ch": {"type":"brand","settings":{"name":"Chrome Hearts"}},
+        "bd": {"type":"brand","settings":{"name":"Bottega Desires"}},
         "rick": {"type":"brand","settings":{"name":"Rick Owens"}},
         "amiri": {"type":"brand","settings":{"name":"Amiri"}},
         "bal": {"type":"brand","settings":{"name":"Balenciaga"}},
         "gallery": {"type":"brand","settings":{"name":"Gallery Dept."}},
         "saint": {"type":"brand","settings":{"name":"Saint Mxxxxxx"}}
       },
-      "block_order": ["ch","rick","amiri","bal","gallery","saint"],
+      "block_order": ["ch","bd","rick","amiri","bal","gallery","saint"],
       "settings": {"eyebrow":"Designers","heading":"Shop by designer"}
     },
     "seller": {
