@@ -23,14 +23,57 @@
       break
     endif
   endfor
+
+  assign from_feed = false
+  if product.tags contains 'FROM-FEED'
+    assign from_feed = true
+  endif
+  assign item_state = product.metafields.custom.item_state.value | default: product.metafields.custom.item_state
+  assign archive_size = product.metafields.custom.size.value | default: product.metafields.custom.size
+  assign condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition
+  assign flaws = product.metafields.custom.flaws.value | default: product.metafields.custom.flaws
+  assign measurements = product.metafields.custom.measurements.value | default: product.metafields.custom.measurements
+  assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
+  assign instagram_permalink = product.metafields.custom.instagram_permalink.value | default: product.metafields.custom.instagram_permalink
 -%}
-<div class="product page-width section-spacing" data-product-section data-section-id="{{ section.id }}" data-product-url="{{ product.url | escape }}" data-error-message="{{ 'products.page.update_error' | t | escape }}">
+<div class="product page-width section-spacing{% if from_feed %} product--archive{% endif %}" data-product-section data-section-id="{{ section.id }}" data-product-url="{{ product.url | escape }}" data-error-message="{{ 'products.page.update_error' | t | escape }}">
   <div class="product__layout">
     <div class="product__media-column">{%- render 'product-media-gallery', product: product, active_media_id: active_media_id, section_id: section.id -%}</div>
     <div class="product__info-column">
+      {%- if from_feed -%}
+        <div class="product__archive-kicker">
+          <span>From the feed</span>
+          <span>{% if archive_id != blank %}{{ archive_id | escape }}{% else %}1 of 1{% endif %}</span>
+        </div>
+      {%- endif -%}
       {%- if section.settings.show_vendor and product.vendor != blank -%}<p class="product__vendor">{{ product.vendor | escape }}</p>{%- endif -%}
       <h1 class="product__title">{{ product.title | escape }}</h1>
       <div class="product__price" data-product-price>{%- if has_variant -%}{%- render 'product-price', product: product, variant: selected_variant -%}{%- else -%}<p class="price price--unavailable">{{ 'products.page.price_unavailable' | t }}</p>{%- endif -%}</div>
+
+      {%- if from_feed and (item_state != blank or archive_size != blank or condition != blank or measurements != blank or flaws != blank) -%}
+        <section class="product__archive-panel" aria-labelledby="ArchiveDetails-{{ section.id }}">
+          <div class="product__archive-panel-head">
+            <p class="sp-kicker">Archive details</p>
+            <h2 id="ArchiveDetails-{{ section.id }}">The piece, documented.</h2>
+          </div>
+          <dl class="product__archive-facts">
+            {%- if item_state != blank -%}<div><dt>Item</dt><dd>{{ item_state | escape }}</dd></div>{%- endif -%}
+            {%- if archive_size != blank -%}<div><dt>Size</dt><dd>{{ archive_size | escape }}</dd></div>{%- endif -%}
+            {%- if condition != blank -%}<div><dt>Condition</dt><dd>{{ condition | escape }}</dd></div>{%- endif -%}
+            {%- if measurements != blank -%}<div><dt>Measurements</dt><dd>{{ measurements | escape }}</dd></div>{%- endif -%}
+          </dl>
+          {%- if flaws != blank -%}
+            <div class="product__archive-notes">
+              <span>Condition notes</span>
+              <p>{{ flaws | escape | newline_to_br }}</p>
+            </div>
+          {%- endif -%}
+          {%- if instagram_permalink != blank -%}
+            <a class="sp-link product__instagram-link" href="{{ instagram_permalink | escape }}" target="_blank" rel="noopener">View original Instagram post</a>
+          {%- endif -%}
+        </section>
+      {%- endif -%}
+
       <p class="product__availability" data-product-availability><span class="visually-hidden">{{ 'products.page.availability' | t }}</span>{%- if is_available -%}<span class="product__availability-state product__availability-state--available">{{ 'products.page.available' | t }}</span>{%- elsif has_variant -%}<span class="product__availability-state product__availability-state--sold-out">{{ 'products.page.sold_out' | t }}</span>{%- else -%}<span class="product__availability-state product__availability-state--unavailable">{{ 'products.page.unavailable' | t }}</span>{%- endif -%}</p>
       <p class="visually-hidden" aria-live="polite" data-product-live-region></p>
       {%- render 'product-variant-picker', product: product, section_id: section.id -%}
