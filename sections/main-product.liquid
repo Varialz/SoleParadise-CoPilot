@@ -35,6 +35,10 @@
   assign measurements = product.metafields.custom.measurements.value | default: product.metafields.custom.measurements
   assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
   assign instagram_permalink = product.metafields.custom.instagram_permalink.value | default: product.metafields.custom.instagram_permalink
+  assign has_archive_details = false
+  if item_state != blank or archive_size != blank or condition != blank or measurements != blank or flaws != blank
+    assign has_archive_details = true
+  endif
 -%}
 <div class="product page-width section-spacing{% if from_feed %} product--archive{% endif %}" data-product-section data-section-id="{{ section.id }}" data-product-url="{{ product.url | escape }}" data-error-message="{{ 'products.page.update_error' | t | escape }}">
   <div class="product__layout">
@@ -50,7 +54,7 @@
       <h1 class="product__title">{{ product.title | escape }}</h1>
       <div class="product__price" data-product-price>{%- if has_variant -%}{%- render 'product-price', product: product, variant: selected_variant -%}{%- else -%}<p class="price price--unavailable">{{ 'products.page.price_unavailable' | t }}</p>{%- endif -%}</div>
 
-      {%- if from_feed and (item_state != blank or archive_size != blank or condition != blank or measurements != blank or flaws != blank) -%}
+      {%- if from_feed and has_archive_details -%}
         <section class="product__archive-panel" aria-labelledby="ArchiveDetails-{{ section.id }}">
           <div class="product__archive-panel-head">
             <p class="sp-kicker">Archive details</p>
