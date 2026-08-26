@@ -1,0 +1,110 @@
+{{ 'cart.css' | asset_url | stylesheet_tag }}
+
+<section class="sp-cart page-width section-spacing" data-cart-page>
+  <header class="sp-cart__head" data-sp-reveal>
+    <div>
+      <p class="sp-kicker">Sole Paradise / Bag</p>
+      <h1>YOUR BAG.</h1>
+    </div>
+    <p class="sp-cart__count">{{ cart.item_count }} {% if cart.item_count == 1 %}piece{% else %}pieces{% endif %}</p>
+  </header>
+
+  {%- if cart.empty? -%}
+    <div class="sp-cart__empty" data-sp-reveal>
+      <p class="sp-kicker">Nothing held</p>
+      <h2>THE BAG IS EMPTY.</h2>
+      <p>Rare pieces do not wait around. Keep browsing the current Sole Paradise inventory.</p>
+      <a class="sp-hero__button" href="{{ routes.all_products_collection_url }}">Shop current pieces</a>
+    </div>
+  {%- else -%}
+    <form action="{{ routes.cart_url }}" method="post" id="CartForm" class="sp-cart__form">
+      <div class="sp-cart__layout">
+        <div class="sp-cart__items" aria-label="Shopping bag items">
+          {%- for item in cart.items -%}
+            <article class="sp-cart-item" data-sp-reveal>
+              <a class="sp-cart-item__media" href="{{ item.url }}" aria-label="View {{ item.product.title | escape }}">
+                {%- if item.image != blank -%}
+                  {{ item.image | image_url: width: 720 | image_tag: loading: 'lazy', widths: '220,360,520,720', sizes: '(max-width: 749px) 34vw, 180px', alt: item.image.alt }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'sp-cart-item__placeholder' }}
+                {%- endif -%}
+              </a>
+
+              <div class="sp-cart-item__content">
+                <div class="sp-cart-item__identity">
+                  {%- if item.product.vendor != blank -%}<p class="sp-cart-item__vendor">{{ item.product.vendor | escape }}</p>{%- endif -%}
+                  <h2><a href="{{ item.url }}">{{ item.product.title | escape }}</a></h2>
+                  {%- unless item.variant.title == 'Default Title' -%}<p class="sp-cart-item__variant">{{ item.variant.title | escape }}</p>{%- endunless -%}
+
+                  {%- if item.properties.size > 0 -%}
+                    <dl class="sp-cart-item__properties">
+                      {%- for property in item.properties -%}
+                        {%- assign first_character = property.first | slice: 0 -%}
+                        {%- if property.last != blank and first_character != '_' -%}
+                          <div><dt>{{ property.first | escape }}</dt><dd>{{ property.last | escape }}</dd></div>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </dl>
+                  {%- endif -%}
+                </div>
+
+                <div class="sp-cart-item__controls">
+                  <label for="Quantity-{{ forloop.index }}">Qty</label>
+                  <input
+                    id="Quantity-{{ forloop.index }}"
+                    class="sp-cart-item__quantity"
+                    type="number"
+                    name="updates[]"
+                    value="{{ item.quantity }}"
+                    min="0"
+                    inputmode="numeric"
+                    aria-label="Quantity for {{ item.product.title | escape }}"
+                  >
+                  <a class="sp-cart-item__remove" href="{{ item.url_to_remove }}">Remove</a>
+                </div>
+
+                <div class="sp-cart-item__price">
+                  {%- if item.original_line_price != item.final_line_price -%}
+                    <s>{{ item.original_line_price | money }}</s>
+                  {%- endif -%}
+                  <strong>{{ item.final_line_price | money }}</strong>
+                </div>
+              </div>
+            </article>
+          {%- endfor -%}
+        </div>
+
+        <aside class="sp-cart__summary" data-sp-reveal aria-label="Order summary">
+          <div class="sp-cart__summary-head">
+            <p class="sp-kicker">Order summary</p>
+            <span>{{ cart.item_count }} {% if cart.item_count == 1 %}piece{% else %}pieces{% endif %}</span>
+          </div>
+          <div class="sp-cart__subtotal">
+            <span>Subtotal</span>
+            <strong>{{ cart.total_price | money }}</strong>
+          </div>
+          <p class="sp-cart__note">Shipping, taxes and any applicable duties are calculated at checkout.</p>
+          <button class="sp-cart__checkout" type="submit" name="checkout">Checkout →</button>
+          <button class="sp-cart__update" type="submit" name="update">Update bag</button>
+          <a class="sp-link sp-cart__continue" href="{{ routes.all_products_collection_url }}">Continue shopping</a>
+
+          <div class="sp-cart__standards">
+            <span><strong>Authenticated</strong><small>Every listed piece is inspected.</small></span>
+            <span><strong>Chicago based</strong><small>Packed and shipped from the city.</small></span>
+            <span><strong>Rare inventory</strong><small>Most pieces will not restock.</small></span>
+          </div>
+        </aside>
+      </div>
+    </form>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name":"Cart",
+  "tag":"section",
+  "class":"cart-section",
+  "settings":[],
+  "enabled_on":{"templates":["cart"]}
+}
+{% endschema %}
