@@ -1,0 +1,67 @@
+{%- liquid
+  assign feed_collection = section.settings.collection
+  assign product_limit = section.settings.limit | default: 6
+-%}
+<section class="sp-section sp-feed section-spacing" data-sp-feed>
+  <div class="page-width">
+    <header class="sp-section-head" data-sp-reveal>
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        <h2 class="sp-section-title">{{ section.settings.heading | escape }}</h2>
+      </div>
+      <div class="sp-feed__intro">
+        {%- if section.settings.copy != blank -%}<p>{{ section.settings.copy | escape }}</p>{%- endif -%}
+        {%- if section.settings.instagram_url != blank -%}
+          <a class="sp-link" href="{{ section.settings.instagram_url | escape }}" target="_blank" rel="noopener">{{ section.settings.instagram_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    </header>
+
+    {%- if feed_collection != blank and feed_collection.products_count > 0 -%}
+      <div class="sp-feed__grid">
+        {%- for product in feed_collection.products limit: product_limit -%}
+          <div class="sp-feed__item">
+            {%- render 'product-card',
+              product: product,
+              collection: feed_collection,
+              heading_tag: 'h3',
+              image_loading: 'lazy',
+              fetch_priority: 'auto',
+              image_sizes: '(min-width: 1000px) 33vw, (min-width: 750px) 50vw, 100vw',
+              show_vendor: true,
+              show_secondary_image: true,
+              show_badges: true
+            -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.show_collection_link -%}
+        <div class="sp-feed__footer" data-sp-reveal>
+          <a class="sp-link" href="{{ feed_collection.url }}">Shop the full feed</a>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div class="sp-feed__empty" data-sp-reveal>
+        <p>Select the automatic <strong>From the Feed</strong> collection in the Theme Editor after creating it in Shopify.</p>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "From the Feed",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"From the feed"},
+    {"type":"text","id":"heading","label":"Heading","default":"Shop the post"},
+    {"type":"textarea","id":"copy","label":"Intro","default":"The same one-off pieces posted in Chicago, documented and ready to shop."},
+    {"type":"collection","id":"collection","label":"From the Feed collection"},
+    {"type":"range","id":"limit","label":"Products to show","min":3,"max":12,"step":1,"default":6},
+    {"type":"url","id":"instagram_url","label":"Instagram profile URL"},
+    {"type":"text","id":"instagram_label","label":"Instagram link label","default":"@soleparadise.chicago"},
+    {"type":"checkbox","id":"show_collection_link","label":"Show collection link","default":true}
+  ],
+  "presets": [{"name":"From the Feed"}]
+}
+{% endschema %}
