@@ -12,9 +12,13 @@
           <span><strong>TRADE</strong><small>More value toward another piece</small></span>
           <span><strong>CONSIGN</strong><small>Let us move it</small></span>
         </div>
-        {%- if section.settings.page != blank -%}
-          <a class="sp-link" href="{{ section.settings.page.url }}">{{ section.settings.link_label | escape }}</a>
-        {%- endif -%}
+        {%- liquid
+          assign seller_url = '/pages/sell-to-paradise'
+          if section.settings.page != blank
+            assign seller_url = section.settings.page.url
+          endif
+        -%}
+        <a class="sp-link" href="{{ seller_url }}">{{ section.settings.link_label | escape }}</a>
       </div>
     </div>
   </div>
@@ -29,7 +33,7 @@
     {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Your closet / our floor"},
     {"type":"textarea","id":"heading","label":"Heading","default":"SELL TO\nPARADISE."},
     {"type":"textarea","id":"copy","label":"Copy","default":"Send us the piece once. Show us the photos. Choose cash, trade or consignment."},
-    {"type":"page","id":"page","label":"Seller portal page"},
+    {"type":"page","id":"page","label":"Seller portal page","info":"Optional. If blank, the CTA links to /pages/sell-to-paradise."},
     {"type":"text","id":"link_label","label":"Link label","default":"Start a submission"}
   ],
   "presets":[{"name":"Sell to Paradise CTA"}]
