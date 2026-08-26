@@ -27,7 +27,43 @@
         <p class="sp-editor-note">Theme setup: showing All products until a dedicated From the Feed collection is selected.</p>
       {%- endif -%}
 
-      <div class="sp-feed-media" data-sp-feed-grid>
+      {%- if section.settings.enhanced_react_feed -%}
+        <div
+          data-sp-react-feed
+          data-style-url="{{ 'sp-react-feed.css' | asset_url }}"
+          hidden
+        >
+          <script type="application/json" data-sp-react-feed-data>
+            {
+              "products": [
+                {%- for product in feed_collection.products limit: product_limit -%}
+                  {%- liquid
+                    assign react_size = product.metafields.custom.size.value | default: product.metafields.custom.size
+                    assign react_condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition
+                    assign react_item_state = product.metafields.custom.item_state.value | default: product.metafields.custom.item_state
+                    assign react_archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
+                    assign react_alt = product.featured_image.alt | default: product.title
+                  -%}
+                  {
+                    "title": {{ product.title | json }},
+                    "vendor": {{ product.vendor | json }},
+                    "url": {{ product.url | json }},
+                    "image": {% if product.featured_image != blank %}{{ product.featured_image | image_url: width: 1400 | json }}{% else %}""{% endif %},
+                    "alt": {{ react_alt | json }},
+                    "price": {{ product.price | money | json }},
+                    "size": {{ react_size | default: '' | json }},
+                    "condition": {{ react_condition | default: '' | json }},
+                    "itemState": {{ react_item_state | default: '' | json }},
+                    "archiveId": {{ react_archive_id | default: '' | json }}
+                  }{% unless forloop.last %},{% endunless %}
+                {%- endfor -%}
+              ]
+            }
+          </script>
+        </div>
+      {%- endif -%}
+
+      <div class="sp-feed-media" data-sp-feed-grid data-sp-feed-fallback>
         {%- for product in feed_collection.products limit: product_limit -%}
           {%- if product.featured_image != blank -%}
             {%- liquid
@@ -82,6 +118,16 @@
   </div>
 </section>
 
+{%- if section.settings.enhanced_react_feed -%}
+  <script type="module" src="{{ 'sp-react-feed.js' | asset_url }}"></script>
+{%- endif -%}
+
+{% style %}
+  [data-sp-feed][data-react-feed-mounted='true'] [data-sp-feed-fallback] {
+    display: none;
+  }
+{% endstyle %}
+
 {% schema %}
 {
   "name": "From the Feed",
@@ -91,6 +137,7 @@
     {"type":"textarea","id":"copy","label":"Intro","default":"Fresh arrivals, one-offs and details straight from the floor."},
     {"type":"collection","id":"collection","label":"From the Feed collection"},
     {"type":"range","id":"limit","label":"Products to show","min":3,"max":12,"step":1,"default":6},
+    {"type":"checkbox","id":"enhanced_react_feed","label":"Use enhanced React lookbook","default":true},
     {"type":"url","id":"instagram_url","label":"Instagram profile URL"},
     {"type":"text","id":"instagram_label","label":"Instagram link label","default":"@soleparadise.chicago"},
     {"type":"checkbox","id":"show_collection_link","label":"Show collection link","default":true}
