@@ -1,0 +1,37 @@
+<section class="sp-seller-cta sp-section">
+  <div class="page-width section-spacing">
+    <div class="sp-seller-cta__grid">
+      <div data-sp-reveal>
+        <p class="sp-kicker">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="sp-section-title">{{ section.settings.heading | newline_to_br }}</h2>
+      </div>
+      <div class="sp-seller-cta__content" data-sp-reveal>
+        <p>{{ section.settings.copy | escape }}</p>
+        <div class="sp-seller-cta__modes">
+          <span><strong>SELL</strong><small>Cash offer</small></span>
+          <span><strong>TRADE</strong><small>More value toward another piece</small></span>
+          <span><strong>CONSIGN</strong><small>Let us move it</small></span>
+        </div>
+        {%- if section.settings.page != blank -%}
+          <a class="sp-link" href="{{ section.settings.page.url }}">{{ section.settings.link_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name":"Sell to Paradise CTA",
+  "tag":"section",
+  "class":"sp-seller-cta-section",
+  "settings":[
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Your closet / our floor"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"SELL TO\nPARADISE."},
+    {"type":"textarea","id":"copy","label":"Copy","default":"Send us the piece once. Show us the photos. Choose cash, trade or consignment."},
+    {"type":"page","id":"page","label":"Seller portal page"},
+    {"type":"text","id":"link_label","label":"Link label","default":"Start a submission"}
+  ],
+  "presets":[{"name":"Sell to Paradise CTA"}]
+}
+{% endschema %}
