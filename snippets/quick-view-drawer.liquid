@@ -10,8 +10,8 @@
       <button class="sp-quick-view__close" type="button" data-quick-view-close aria-label="Close quick view">×</button>
     </header>
 
-    <div class="sp-quick-view__body" data-quick-view-body aria-live="polite">
-      <div class="sp-quick-view__loading" data-quick-view-loading>
+    <div class="sp-quick-view__body" data-quick-view-body>
+      <div class="sp-quick-view__loading" data-quick-view-loading role="status" aria-live="polite">
         <span></span><span></span><span></span>
         <p>Pulling the piece from Paradise…</p>
       </div>
@@ -44,8 +44,11 @@
 
           <div class="sp-quick-view__actions">
             <button class="sp-quick-view__add" type="button" data-quick-view-add>Add to bag</button>
-            <p class="sp-quick-view__status" data-quick-view-status></p>
-            <a class="sp-link sp-quick-view__full-link" href="#" data-quick-view-full-link>View full piece</a>
+            <p class="sp-quick-view__status" data-quick-view-status role="status" aria-live="polite"></p>
+            <div class="sp-quick-view__action-links">
+              <a class="sp-link sp-quick-view__bag-link" href="{{ routes.cart_url }}" data-quick-view-bag-link hidden>View bag</a>
+              <a class="sp-link sp-quick-view__full-link" href="#" data-quick-view-full-link>View full piece</a>
+            </div>
           </div>
 
           <div class="sp-quick-view__service">
