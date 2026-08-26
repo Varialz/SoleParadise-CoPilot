@@ -1,0 +1,27 @@
+{{ 'page.css' | asset_url | stylesheet_tag }}
+
+<section class="sp-page page-width section-spacing">
+  <header class="sp-page__head" data-sp-reveal>
+    <div>
+      <p class="sp-kicker">Sole Paradise / Information</p>
+      <h1>{{ page.title | escape }}</h1>
+    </div>
+    <p class="sp-page__meta">Chicago / {{ 'now' | date: '%Y' }}</p>
+  </header>
+
+  {%- if page.content != blank -%}
+    <div class="sp-page__body rte" data-sp-reveal>{{ page.content }}</div>
+  {%- elsif request.design_mode -%}
+    <div class="sp-page__body"><p class="sp-page__empty">Theme setup: add page content in Shopify Admin. This note is only visible in the Theme Editor.</p></div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name":"Page",
+  "tag":"section",
+  "class":"page-section",
+  "settings":[],
+  "enabled_on":{"templates":["page"]}
+}
+{% endschema %}
