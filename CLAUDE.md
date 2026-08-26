@@ -1,5 +1,12 @@
 # Sole Paradise — Claude implementation handoff
 
+## Deadline / operating mode
+**Working Shopify demo required by end of day Thursday, August 27, 2026.**
+
+Until that demo is live, reliability and launch-critical fidelity outrank new features. Read `docs/LAUNCH_PLAN_2026-08-27.md` before coding.
+
+Do not spend deadline time inventing new sections, new data models, or architectural rewrites unless they fix a P0 blocker.
+
 ## Mission
 Help turn the approved Sole Paradise visual target into the real Shopify theme without redesigning the product.
 
@@ -31,6 +38,7 @@ Core systems already exist:
 - GSAP + ScrollTrigger motion layer
 
 ## Files Claude should inspect first
+- `docs/LAUNCH_PLAN_2026-08-27.md`
 - `layout/theme.liquid`
 - `assets/sole-paradise.css`
 - `assets/mockup-alignment.css`
@@ -61,6 +69,8 @@ Core systems already exist:
 8. If a change conflicts with the approved mockup direction, do not make it.
 9. Preserve reduced-motion support.
 10. Before finishing, compare your branch against `main` and list changed files + unresolved risks.
+11. Until the Aug 27 demo is live, pick one P0 launch task at a time and stop when that task is complete.
+12. Do not merge to `main`; return the branch/commits for review.
 
 ## Best work for Claude to take in parallel
 To avoid collisions, focus on these lanes first:
@@ -87,7 +97,7 @@ To avoid collisions, focus on these lanes first:
 - identify Liquid or CSS regressions without redesigning surfaces
 
 ### Lane D — responsive cleanup
-- inspect 750px, 1000px, 1200px breakpoints
+- inspect 390px, 750px, 1000px, 1200px, 1440px breakpoints
 - remove text collisions / overflow
 - verify 2-column mobile product cards and 3-4 column desktop collection density
 
@@ -103,6 +113,8 @@ Unless explicitly assigned:
 
 ## Acceptance criteria
 A change is good if it makes the live Shopify theme closer to the approved mockup while keeping commerce behavior intact.
+
+Before the Aug 27 deadline, a change is only worth shipping if it improves a P0 launch requirement or removes a real blocker.
 
 The target feel is:
 **END. boutique presentation + Grailed archive intelligence + Sole Paradise Chicago identity.**
