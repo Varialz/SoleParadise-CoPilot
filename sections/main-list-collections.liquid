@@ -1,0 +1,54 @@
+{{ 'list-collections.css' | asset_url | stylesheet_tag }}
+
+<section class="sp-collection-list page-width section-spacing">
+  <header class="sp-collection-list__head" data-sp-reveal>
+    <div>
+      <p class="sp-kicker">Paradise index</p>
+      <h1>SHOP BY<br>COLLECTION.</h1>
+    </div>
+    <p class="sp-page__meta">Designer / Category / Archive</p>
+  </header>
+
+  {%- assign visible_collection_count = 0 -%}
+  <div class="sp-collection-list__grid">
+    {%- for collection in collections -%}
+      {%- if collection.products_count > 0 -%}
+        {%- assign visible_collection_count = visible_collection_count | plus: 1 -%}
+        <article class="sp-collection-tile" data-sp-reveal>
+          <a class="sp-collection-tile__media" href="{{ collection.url }}" aria-label="Shop {{ collection.title | escape }}">
+            {%- assign tile_image = collection.featured_image -%}
+            {%- if tile_image == blank and collection.products_count > 0 -%}
+              {%- assign tile_image = collection.products.first.featured_image -%}
+            {%- endif -%}
+            {%- if tile_image != blank -%}
+              {{ tile_image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '320,480,720,1000', sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw', alt: tile_image.alt }}
+            {%- else -%}
+              <span class="sp-collection-tile__placeholder">{{ collection.title | escape }}</span>
+            {%- endif -%}
+          </a>
+          <div class="sp-collection-tile__meta">
+            <h2><a href="{{ collection.url }}">{{ collection.title | escape }}</a></h2>
+            <span>{{ collection.products_count }} pieces</span>
+          </div>
+        </article>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- if visible_collection_count == 0 -%}
+    <div class="sp-collection-list__empty" data-sp-reveal>
+      <p>No public collections are ready yet.</p>
+      <a class="sp-link" href="{{ routes.all_products_collection_url }}">Browse all products</a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name":"Collection list",
+  "tag":"section",
+  "class":"collection-list-section",
+  "settings":[],
+  "enabled_on":{"templates":["list-collections"]}
+}
+{% endschema %}
