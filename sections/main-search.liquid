@@ -1,0 +1,68 @@
+{{ 'search.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign search_terms = search.terms | escape
+  assign result_count = search.results_count
+-%}
+
+<section class="sp-search section-spacing" data-sp-search>
+  <div class="page-width">
+    <header class="sp-search__head" data-sp-reveal>
+      <div>
+        <p class="sp-kicker">Paradise Search</p>
+        <h1 class="sp-section-title">Find the piece.</h1>
+      </div>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="sp-search__form">
+        <label class="visually-hidden" for="SearchInput-{{ section.id }}">Search</label>
+        <input id="SearchInput-{{ section.id }}" type="search" name="q" value="{{ search_terms }}" placeholder="Chrome Hearts, Rick Owens, denim..." autocomplete="off">
+        <input type="hidden" name="type" value="product">
+        <button type="submit">Search</button>
+      </form>
+    </header>
+
+    {%- if search.performed -%}
+      <div class="sp-search__summary">
+        <span>{{ result_count }} result{% unless result_count == 1 %}s{% endunless %}</span>
+        <span>for “{{ search_terms }}”</span>
+      </div>
+
+      {%- paginate search.results by section.settings.products_per_page -%}
+        {%- if search.results_count > 0 -%}
+          <div class="sp-search__grid">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                {%- render 'product-card', product: item, heading_tag: 'h2', image_loading: 'lazy', fetch_priority: 'auto', image_sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw', show_vendor: true, show_secondary_image: true, show_badges: true -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          {%- render 'pagination', paginate: paginate -%}
+        {%- else -%}
+          <div class="sp-search__empty">
+            <p class="sp-kicker">Nothing landed</p>
+            <h2>No pieces matched that search.</h2>
+            <p>Try a designer, category, color, or broader term.</p>
+            <a class="sp-link" href="{{ routes.all_products_collection_url }}">Browse all pieces</a>
+          </div>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- else -%}
+      <div class="sp-search__suggestions">
+        <span>Try searching</span>
+        <a href="{{ routes.search_url }}?q=Chrome+Hearts&type=product">Chrome Hearts</a>
+        <a href="{{ routes.search_url }}?q=Rick+Owens&type=product">Rick Owens</a>
+        <a href="{{ routes.search_url }}?q=Denim&type=product">Denim</a>
+        <a href="{{ routes.search_url }}?q=Jewelry&type=product">Jewelry</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name":"Search",
+  "tag":"section",
+  "class":"search-section",
+  "settings":[{"type":"range","id":"products_per_page","label":"Products per page","min":8,"max":32,"step":4,"default":20}],
+  "enabled_on":{"templates":["search"]}
+}
+{% endschema %}
