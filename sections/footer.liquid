@@ -36,10 +36,11 @@
               {%- endif -%}
 
             {%- when 'newsletter' -%}
+              {%- assign footer_newsletter_form_id = 'FooterNewsletter-' | append: block.id -%}
               <div class="footer-block footer-block--newsletter" {{ block.shopify_attributes }}>
                 {%- if block.settings.heading != blank -%}<h2 class="footer-block__heading">{{ block.settings.heading | escape }}</h2>{%- endif -%}
                 {%- if block.settings.text != blank -%}<p class="footer-block__text">{{ block.settings.text | escape | newline_to_br }}</p>{%- endif -%}
-                {%- form 'customer', id: 'FooterNewsletter-' | append: block.id, class: 'footer-newsletter-form' -%}
+                {%- form 'customer', id: footer_newsletter_form_id, class: 'footer-newsletter-form' -%}
                   <input type="hidden" name="contact[tags]" value="newsletter">
                   {%- if form.posted_successfully? -%}
                     <p class="footer-newsletter-form__message" role="status" tabindex="-1" autofocus>{{ 'footer.newsletter.success' | t }}</p>
