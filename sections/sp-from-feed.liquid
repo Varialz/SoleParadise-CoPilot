@@ -33,7 +33,7 @@
           data-style-url="{{ 'sp-react-feed.css' | asset_url }}"
           hidden
         >
-          <script type="application/json" data-sp-react-feed-data>
+          {%- capture react_feed_json -%}
             {
               "products": [
                 {%- for product in feed_collection.products limit: product_limit -%}
@@ -59,7 +59,8 @@
                 {%- endfor -%}
               ]
             }
-          </script>
+          {%- endcapture -%}
+          <script type="application/json" data-sp-react-feed-data>{{ react_feed_json | replace: '</script', '<\\/script' }}</script>
         </div>
       {%- endif -%}
 
