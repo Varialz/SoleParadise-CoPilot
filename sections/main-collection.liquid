@@ -54,8 +54,10 @@
           {%- for value in filter.active_values -%}
             <a href="{{ value.url_to_remove | escape }}">{{ value.label | escape }} ×</a>
           {%- endfor -%}
-          {%- if filter.type == 'price_range' and (filter.min_value.value != blank or filter.max_value.value != blank) -%}
-            <a href="{{ filter.url_to_remove | escape }}">Price ×</a>
+          {%- if filter.type == 'price_range' -%}
+            {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}
+              <a href="{{ filter.url_to_remove | escape }}">Price ×</a>
+            {%- endif -%}
           {%- endif -%}
         {%- endfor -%}
         <a href="{{ collection.url }}{% if sort_by != blank %}?sort_by={{ sort_by }}{% endif %}">Clear all</a>
