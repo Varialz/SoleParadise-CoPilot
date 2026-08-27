@@ -110,18 +110,32 @@ function FeedIsland({ products, onQuickView }) {
 
   useEffect(() => {
     const rail = railRef.current;
-    if (!rail || !window.gsap || !window.ScrollTrigger || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
-    const ctx = window.gsap.context(() => {
-      window.gsap.from(cardRefs.current.filter(Boolean), {
-        opacity: 0,
-        y: 26,
-        duration: 0.72,
-        stagger: 0.055,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: rail, start: 'top 88%', once: true }
-      });
-    }, rail);
-    return () => ctx.revert();
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!rail || reduceMotion) return undefined;
+
+    let ctx = null;
+    const runEntranceMotion = () => {
+      if (ctx || !rail.isConnected || !window.gsap || !window.ScrollTrigger) return;
+      window.gsap.registerPlugin?.(window.ScrollTrigger);
+      ctx = window.gsap.context(() => {
+        window.gsap.from(cardRefs.current.filter(Boolean), {
+          opacity: 0,
+          y: 26,
+          duration: 0.72,
+          stagger: 0.055,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: rail, start: 'top 88%', once: true }
+        });
+      }, rail);
+    };
+
+    runEntranceMotion();
+    if (!ctx) window.addEventListener('load', runEntranceMotion, { once: true });
+
+    return () => {
+      window.removeEventListener('load', runEntranceMotion);
+      ctx?.revert?.();
+    };
   }, [products.length]);
 
   const scrollByPage = (direction) => {
