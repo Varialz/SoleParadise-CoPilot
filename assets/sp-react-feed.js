@@ -3,6 +3,7 @@ import { createRoot } from 'https://esm.sh/react-dom@19.1.1/client';
 
 const h = React.createElement;
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const mountedFeedRoots = new WeakMap();
 
 function ArrowIcon({ direction = 1 }) {
   return h(
@@ -47,6 +48,7 @@ function FeedCard({ product, index, active, onQuickView, onActivate }) {
         onPointerLeave: () => setPointer({ x: 0, y: 0, inside: false })
       },
       h('img', {
+        ref: (node) => node?.setAttribute('draggable', 'false'),
         src: product.image,
         alt: product.alt || product.title,
         loading: index < 2 ? 'eager' : 'lazy',
@@ -124,7 +126,9 @@ function FeedIsland({ products, onQuickView }) {
 
   const scrollByPage = (direction) => {
     const rail = railRef.current;
-    if (rail) rail.scrollBy({ left: rail.clientWidth * 0.76 * direction, behavior: 'smooth' });
+    if (!rail) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    rail.scrollBy({ left: rail.clientWidth * 0.76 * direction, behavior: reduceMotion ? 'auto' : 'smooth' });
   };
 
   const onPointerDown = (event) => {
@@ -152,6 +156,13 @@ function FeedIsland({ products, onQuickView }) {
     rail.classList.remove('is-dragging');
   };
 
+  const onClickCapture = (event) => {
+    if (!drag.current.moved) return;
+    event.preventDefault();
+    event.stopPropagation();
+    drag.current.moved = false;
+  };
+
   return h(
     'div',
     { className: 'relative isolate overflow-hidden' },
@@ -168,10 +179,34 @@ function FeedIsland({ products, onQuickView }) {
     ),
     h(
       'div',
-      { ref: railRef, className: 'sp-feed-rail flex cursor-grab snap-x snap-mandatory gap-2 overflow-x-auto overscroll-x-contain pb-3 active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', onPointerDown, onPointerMove, onPointerUp: endDrag, onPointerCancel: endDrag },
+      {
+        ref: railRef,
+        className: 'sp-feed-rail flex cursor-grab snap-x snap-mandatory gap-2 overflow-x-auto overscroll-x-contain pb-3 active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+        onPointerDown,
+        onPointerMove,
+        onPointerUp: endDrag,
+        onPointerCancel: endDrag,
+        onClickCapture
+      },
       products.map((product, index) => h('div', { key: `${product.url}-${index}`, ref: (node) => { cardRefs.current[index] = node; }, 'data-index': index, className: 'contents' }, h(FeedCard, { product, index, active: activeIndex === index, onActivate: () => setActiveIndex(index), onQuickView })))
     )
   );
+}
+
+function unmountFeed(host) {
+  if (!host) return;
+  const root = mountedFeedRoots.get(host);
+  if (root) {
+    root.unmount();
+    mountedFeedRoots.delete(host);
+  }
+
+  const section = host.closest?.('[data-sp-feed]');
+  const fallback = section?.querySelector('[data-sp-feed-fallback]');
+  host.removeAttribute('data-react-mounted');
+  host.hidden = true;
+  if (section) section.removeAttribute('data-react-feed-mounted');
+  fallback?.removeAttribute('aria-hidden');
 }
 
 function mountFeed(host) {
@@ -202,8 +237,10 @@ function mountFeed(host) {
   };
 
   const activate = () => {
-    if (host.dataset.reactMounted === 'true') return;
-    createRoot(mountNode).render(h(FeedIsland, { products, onQuickView: openQuickView }));
+    if (!host.isConnected || host.dataset.reactMounted === 'true') return;
+    const root = createRoot(mountNode);
+    mountedFeedRoots.set(host, root);
+    root.render(h(FeedIsland, { products, onQuickView: openQuickView }));
     host.hidden = false;
     host.dataset.reactMounted = 'true';
     if (section) section.dataset.reactFeedMounted = 'true';
@@ -211,13 +248,23 @@ function mountFeed(host) {
   };
 
   stylesheet.addEventListener('load', activate, { once: true });
-  stylesheet.addEventListener('error', () => { shadow.replaceChildren(); host.hidden = true; }, { once: true });
+  stylesheet.addEventListener('error', () => {
+    unmountFeed(host);
+    shadow.replaceChildren();
+  }, { once: true });
   if (stylesheet.sheet) activate();
 }
 
 function mountAllFeeds(scope = document) {
+  if (scope.matches?.('[data-sp-react-feed]')) mountFeed(scope);
   scope.querySelectorAll?.('[data-sp-react-feed]').forEach(mountFeed);
+}
+
+function unmountAllFeeds(scope = document) {
+  if (scope.matches?.('[data-sp-react-feed]')) unmountFeed(scope);
+  scope.querySelectorAll?.('[data-sp-react-feed]').forEach(unmountFeed);
 }
 
 mountAllFeeds();
 document.addEventListener('shopify:section:load', (event) => mountAllFeeds(event.target));
+document.addEventListener('shopify:section:unload', (event) => unmountAllFeeds(event.target));
