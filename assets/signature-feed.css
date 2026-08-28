@@ -1,0 +1,48 @@
+/* Manual social-post fallback styling. The React island uses its own Shadow DOM stylesheet. */
+.template-index .sp-feed-media:has(.sp-feed-tile--social){
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1.5rem .5rem;
+}
+.template-index .sp-feed-tile--social .sp-feed-tile__media{aspect-ratio:4/5}
+.template-index .sp-feed-tile__source{
+  position:absolute;
+  left:.55rem;
+  top:.55rem;
+  z-index:2;
+  padding:.42rem .5rem;
+  background:rgba(7,17,27,.88);
+  color:#fff;
+  font:700 .48rem/1 monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.template-index .sp-feed-tile__actions{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  margin-top:.55rem;
+}
+.template-index .sp-feed-tile--social .sp-feed-tile__quick{
+  position:static;
+  opacity:1;
+  transform:none;
+  min-height:30px;
+  background:#07111b;
+  color:#fff;
+}
+.template-index .sp-feed-tile__post{
+  color:#69727c;
+  font:700 .5rem/1 monospace;
+  letter-spacing:.08em;
+  text-decoration:none;
+  text-transform:uppercase;
+}
+.template-index .sp-feed-tile__post:hover,
+.template-index .sp-feed-tile__post:focus-visible{color:#1769d2}
+@media(min-width:750px){
+  .template-index .sp-feed-media:has(.sp-feed-tile--social){grid-template-columns:repeat(3,minmax(0,1fr));gap:2rem .7rem}
+}
+@media(min-width:1200px){
+  .template-index .sp-feed-media:has(.sp-feed-tile--social){grid-template-columns:repeat(4,minmax(0,1fr));gap:2.4rem .8rem}
+}
