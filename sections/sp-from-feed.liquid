@@ -6,6 +6,10 @@
     assign using_fallback_collection = true
   endif
   assign product_limit = section.settings.limit | default: 6
+  assign has_manual_posts = false
+  if section.blocks.size > 0
+    assign has_manual_posts = true
+  endif
 -%}
 <section class="sp-section sp-feed sp-feed--media section-spacing" data-sp-feed>
   <div class="page-width">
@@ -22,41 +26,80 @@
       </div>
     </header>
 
-    {%- if feed_collection != blank and feed_collection.products_count > 0 -%}
-      {%- if request.design_mode and using_fallback_collection -%}
-        <p class="sp-editor-note">Theme setup: showing All products until a dedicated From the Feed collection is selected.</p>
+    {%- if has_manual_posts or feed_collection != blank and feed_collection.products_count > 0 -%}
+      {%- if request.design_mode and using_fallback_collection and has_manual_posts == false -%}
+        <p class="sp-editor-note">Theme setup: showing All products until social posts or a dedicated From the Feed collection are assigned.</p>
       {%- endif -%}
 
       {%- if section.settings.enhanced_react_feed -%}
-        <div
-          data-sp-react-feed
-          data-style-url="{{ 'sp-react-feed.css' | asset_url }}"
-          hidden
-        >
+        <div data-sp-react-feed data-style-url="{{ 'sp-react-feed.css' | asset_url }}" hidden>
           {%- capture react_feed_json -%}
             {
               "products": [
-                {%- for product in feed_collection.products limit: product_limit -%}
-                  {%- liquid
-                    assign react_size = product.metafields.custom.size.value | default: product.metafields.custom.size
-                    assign react_condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition
-                    assign react_item_state = product.metafields.custom.item_state.value | default: product.metafields.custom.item_state
-                    assign react_archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
-                    assign react_alt = product.featured_image.alt | default: product.title
-                  -%}
-                  {
-                    "title": {{ product.title | json }},
-                    "vendor": {{ product.vendor | json }},
-                    "url": {{ product.url | json }},
-                    "image": {% if product.featured_image != blank %}{{ product.featured_image | image_url: width: 1400 | json }}{% else %}""{% endif %},
-                    "alt": {{ react_alt | json }},
-                    "price": {{ product.price | money | json }},
-                    "size": {{ react_size | default: '' | json }},
-                    "condition": {{ react_condition | default: '' | json }},
-                    "itemState": {{ react_item_state | default: '' | json }},
-                    "archiveId": {{ react_archive_id | default: '' | json }}
-                  }{% unless forloop.last %},{% endunless %}
-                {%- endfor -%}
+                {%- assign emitted_count = 0 -%}
+                {%- if has_manual_posts -%}
+                  {%- for block in section.blocks -%}
+                    {%- liquid
+                      assign feed_product = block.settings.product
+                      assign feed_image = block.settings.image
+                      if feed_image == blank and feed_product != blank
+                        assign feed_image = feed_product.featured_image
+                      endif
+                    -%}
+                    {%- if feed_product != blank and feed_image != blank -%}
+                      {%- liquid
+                        assign react_size = feed_product.metafields.custom.size.value | default: feed_product.metafields.custom.size
+                        assign react_condition = feed_product.metafields.custom.condition.value | default: feed_product.metafields.custom.condition
+                        assign react_item_state = feed_product.metafields.custom.item_state.value | default: feed_product.metafields.custom.item_state
+                        assign react_archive_id = feed_product.metafields.custom.archive_id.value | default: feed_product.metafields.custom.archive_id
+                        assign react_alt = feed_image.alt | default: feed_product.title
+                        assign post_number = forloop.index | prepend: '0' | slice: -2, 2
+                      -%}
+                      {%- if emitted_count > 0 -%},{%- endif -%}
+                      {
+                        "title": {{ feed_product.title | json }},
+                        "vendor": {{ feed_product.vendor | json }},
+                        "url": {{ feed_product.url | json }},
+                        "image": {{ feed_image | image_url: width: 1800 | json }},
+                        "alt": {{ react_alt | json }},
+                        "price": {{ feed_product.price | money | json }},
+                        "size": {{ react_size | default: '' | json }},
+                        "condition": {{ react_condition | default: '' | json }},
+                        "itemState": {{ react_item_state | default: '' | json }},
+                        "archiveId": {{ react_archive_id | default: '' | json }},
+                        "postUrl": {{ block.settings.post_url | default: '' | json }},
+                        "sourceLabel": {{ block.settings.post_label | default: 'From the feed' | json }},
+                        "postNumber": {{ post_number | json }}
+                      }
+                      {%- assign emitted_count = emitted_count | plus: 1 -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- else -%}
+                  {%- for product in feed_collection.products limit: product_limit -%}
+                    {%- liquid
+                      assign react_size = product.metafields.custom.size.value | default: product.metafields.custom.size
+                      assign react_condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition
+                      assign react_item_state = product.metafields.custom.item_state.value | default: product.metafields.custom.item_state
+                      assign react_archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
+                      assign react_alt = product.featured_image.alt | default: product.title
+                    -%}
+                    {
+                      "title": {{ product.title | json }},
+                      "vendor": {{ product.vendor | json }},
+                      "url": {{ product.url | json }},
+                      "image": {% if product.featured_image != blank %}{{ product.featured_image | image_url: width: 1400 | json }}{% else %}""{% endif %},
+                      "alt": {{ react_alt | json }},
+                      "price": {{ product.price | money | json }},
+                      "size": {{ react_size | default: '' | json }},
+                      "condition": {{ react_condition | default: '' | json }},
+                      "itemState": {{ react_item_state | default: '' | json }},
+                      "archiveId": {{ react_archive_id | default: '' | json }},
+                      "postUrl": "",
+                      "sourceLabel": "Current rotation",
+                      "postNumber": ""
+                    }{% unless forloop.last %},{% endunless %}
+                  {%- endfor -%}
+                {%- endif -%}
               ]
             }
           {%- endcapture -%}
@@ -65,68 +108,85 @@
       {%- endif -%}
 
       <div class="sp-feed-media" data-sp-feed-grid data-sp-feed-fallback>
-        {%- for product in feed_collection.products limit: product_limit -%}
-          {%- if product.featured_image != blank -%}
+        {%- if has_manual_posts -%}
+          {%- for block in section.blocks -%}
             {%- liquid
-              assign archive_size = product.metafields.custom.size.value | default: product.metafields.custom.size
-              assign condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition
-              assign item_state = product.metafields.custom.item_state.value | default: product.metafields.custom.item_state
-              assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
-              assign tile_alt = product.featured_image.alt | default: product.title
+              assign feed_product = block.settings.product
+              assign feed_image = block.settings.image
+              if feed_image == blank and feed_product != blank
+                assign feed_image = feed_product.featured_image
+              endif
+              assign archive_size = feed_product.metafields.custom.size.value | default: feed_product.metafields.custom.size
+              assign condition = feed_product.metafields.custom.condition.value | default: feed_product.metafields.custom.condition
+              assign item_state = feed_product.metafields.custom.item_state.value | default: feed_product.metafields.custom.item_state
+              assign archive_id = feed_product.metafields.custom.archive_id.value | default: feed_product.metafields.custom.archive_id
+              assign tile_alt = feed_image.alt | default: feed_product.title
             -%}
-            <article class="sp-feed-tile" data-sp-feed-tile>
-              <a class="sp-feed-tile__link" href="{{ product.url | escape }}" aria-label="View {{ product.title | escape }}">
-                <figure class="sp-feed-tile__media" data-sp-feed-media>
-                  {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360,540,720,900,1200', sizes: '(min-width: 1200px) 20vw, (min-width: 750px) 33vw, 50vw', class: 'sp-feed-tile__image', alt: tile_alt }}
-                </figure>
-                <div class="sp-feed-tile__meta">
-                  <div>
-                    {%- if product.vendor != blank -%}<span class="sp-feed-tile__vendor">{{ product.vendor | escape }}</span>{%- endif -%}
-                    <h3>{{ product.title | escape }}</h3>
+            {%- if feed_product != blank and feed_image != blank -%}
+              <article class="sp-feed-tile sp-feed-tile--social" data-sp-feed-tile {{ block.shopify_attributes }}>
+                <a class="sp-feed-tile__link" href="{{ feed_product.url | escape }}" aria-label="View {{ feed_product.title | escape }}">
+                  <figure class="sp-feed-tile__media" data-sp-feed-media>
+                    {{ feed_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '480,720,960,1200,1600', sizes: '(min-width: 1200px) 24vw, (min-width: 750px) 42vw, 78vw', class: 'sp-feed-tile__image', alt: tile_alt }}
+                    <span class="sp-feed-tile__source">{{ block.settings.post_label | default: 'From the feed' | escape }}</span>
+                  </figure>
+                  <div class="sp-feed-tile__meta">
+                    <div>
+                      {%- if feed_product.vendor != blank -%}<span class="sp-feed-tile__vendor">{{ feed_product.vendor | escape }}</span>{%- endif -%}
+                      <h3>{{ feed_product.title | escape }}</h3>
+                    </div>
+                    <div class="sp-feed-tile__price">{%- render 'product-price', product: feed_product -%}</div>
                   </div>
-                  <div class="sp-feed-tile__price">{%- render 'product-price', product: product -%}</div>
+                </a>
+                <div class="sp-feed-tile__actions">
+                  <button class="sp-feed-tile__quick no-js-hidden" type="button" data-quick-view-trigger data-product-url="{{ feed_product.url | escape }}" data-archive="true" {% if archive_id != blank %}data-archive-id="{{ archive_id | escape }}"{% endif %} {% if archive_size != blank %}data-size="{{ archive_size | escape }}"{% endif %} {% if condition != blank %}data-condition="{{ condition | escape }}"{% endif %} {% if item_state != blank %}data-item-state="{{ item_state | escape }}"{% endif %} aria-label="Quick view {{ feed_product.title | escape }}" aria-haspopup="dialog" aria-controls="SoleParadiseQuickView">Quick view</button>
+                  {%- if block.settings.post_url != blank -%}<a class="sp-feed-tile__post" href="{{ block.settings.post_url | escape }}" target="_blank" rel="noopener">View post ↗</a>{%- endif -%}
                 </div>
-              </a>
-              <button
-                class="sp-feed-tile__quick no-js-hidden"
-                type="button"
-                data-quick-view-trigger
-                data-product-url="{{ product.url | escape }}"
-                data-archive="{% if product.tags contains 'FROM-FEED' %}true{% else %}false{% endif %}"
-                {% if archive_id != blank %}data-archive-id="{{ archive_id | escape }}"{% endif %}
-                {% if archive_size != blank %}data-size="{{ archive_size | escape }}"{% endif %}
-                {% if condition != blank %}data-condition="{{ condition | escape }}"{% endif %}
-                {% if item_state != blank %}data-item-state="{{ item_state | escape }}"{% endif %}
-                aria-label="Quick view {{ product.title | escape }}"
-                aria-haspopup="dialog"
-                aria-controls="SoleParadiseQuickView"
-              >Quick view</button>
-            </article>
-          {%- endif -%}
-        {%- endfor -%}
+              </article>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for product in feed_collection.products limit: product_limit -%}
+            {%- if product.featured_image != blank -%}
+              {%- liquid
+                assign archive_size = product.metafields.custom.size.value | default: product.metafields.custom.size
+                assign condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition
+                assign item_state = product.metafields.custom.item_state.value | default: product.metafields.custom.item_state
+                assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
+                assign tile_alt = product.featured_image.alt | default: product.title
+              -%}
+              <article class="sp-feed-tile" data-sp-feed-tile>
+                <a class="sp-feed-tile__link" href="{{ product.url | escape }}" aria-label="View {{ product.title | escape }}">
+                  <figure class="sp-feed-tile__media" data-sp-feed-media>
+                    {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360,540,720,900,1200', sizes: '(min-width: 1200px) 20vw, (min-width: 750px) 33vw, 50vw', class: 'sp-feed-tile__image', alt: tile_alt }}
+                  </figure>
+                  <div class="sp-feed-tile__meta">
+                    <div>
+                      {%- if product.vendor != blank -%}<span class="sp-feed-tile__vendor">{{ product.vendor | escape }}</span>{%- endif -%}
+                      <h3>{{ product.title | escape }}</h3>
+                    </div>
+                    <div class="sp-feed-tile__price">{%- render 'product-price', product: product -%}</div>
+                  </div>
+                </a>
+                <button class="sp-feed-tile__quick no-js-hidden" type="button" data-quick-view-trigger data-product-url="{{ product.url | escape }}" data-archive="{% if product.tags contains 'FROM-FEED' %}true{% else %}false{% endif %}" {% if archive_id != blank %}data-archive-id="{{ archive_id | escape }}"{% endif %} {% if archive_size != blank %}data-size="{{ archive_size | escape }}"{% endif %} {% if condition != blank %}data-condition="{{ condition | escape }}"{% endif %} {% if item_state != blank %}data-item-state="{{ item_state | escape }}"{% endif %} aria-label="Quick view {{ product.title | escape }}" aria-haspopup="dialog" aria-controls="SoleParadiseQuickView">Quick view</button>
+              </article>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
       </div>
 
-      {%- if section.settings.show_collection_link -%}
-        <div class="sp-feed__footer" data-sp-reveal>
-          <a class="sp-link" href="{{ feed_collection.url }}">Shop the full feed</a>
-        </div>
+      {%- if section.settings.show_collection_link and feed_collection != blank -%}
+        <div class="sp-feed__footer" data-sp-reveal><a class="sp-link" href="{{ feed_collection.url }}">Shop the full rotation</a></div>
       {%- endif -%}
     {%- elsif request.design_mode -%}
-      <div class="sp-feed__empty" data-sp-reveal>
-        <p>Add products with real photography, then select the automatic <strong>From the Feed</strong> collection in this section.</p>
-      </div>
+      <div class="sp-feed__empty" data-sp-reveal><p>Add social post blocks with a real image + linked product, or select a fallback collection.</p></div>
     {%- endif -%}
   </div>
 </section>
 
-{%- if section.settings.enhanced_react_feed -%}
-  <script type="module" src="{{ 'sp-react-feed.js' | asset_url }}"></script>
-{%- endif -%}
+{%- if section.settings.enhanced_react_feed -%}<script type="module" src="{{ 'sp-react-feed.js' | asset_url }}"></script>{%- endif -%}
 
 {% style %}
-  [data-sp-feed][data-react-feed-mounted='true'] [data-sp-feed-fallback] {
-    display: none;
-  }
+  [data-sp-feed][data-react-feed-mounted='true'] [data-sp-feed-fallback] { display: none; }
 {% endstyle %}
 
 {% schema %}
@@ -134,15 +194,28 @@
   "name": "From the Feed",
   "settings": [
     {"type":"text","id":"eyebrow","label":"Eyebrow","default":"From the feed"},
-    {"type":"text","id":"heading","label":"Heading","default":"Shop the post"},
-    {"type":"textarea","id":"copy","label":"Intro","default":"Fresh arrivals, one-offs and details straight from the floor."},
-    {"type":"collection","id":"collection","label":"From the Feed collection"},
-    {"type":"range","id":"limit","label":"Products to show","min":3,"max":12,"step":1,"default":6},
+    {"type":"text","id":"heading","label":"Heading","default":"Shop the floor"},
+    {"type":"textarea","id":"copy","label":"Intro","default":"Real arrivals, details and looks from the current rotation."},
+    {"type":"collection","id":"collection","label":"Fallback collection","info":"Used when no social post blocks are configured."},
+    {"type":"range","id":"limit","label":"Fallback products to show","min":3,"max":12,"step":1,"default":6},
     {"type":"checkbox","id":"enhanced_react_feed","label":"Use enhanced React lookbook","default":true},
     {"type":"url","id":"instagram_url","label":"Instagram profile URL"},
     {"type":"text","id":"instagram_label","label":"Instagram link label","default":"@soleparadise.chicago"},
     {"type":"checkbox","id":"show_collection_link","label":"Show collection link","default":true}
   ],
+  "blocks": [
+    {
+      "type":"post",
+      "name":"Shoppable social post",
+      "settings":[
+        {"type":"image_picker","id":"image","label":"Social / campaign image","info":"Use the real post image or an approved high-resolution crop."},
+        {"type":"product","id":"product","label":"Linked Shopify product"},
+        {"type":"url","id":"post_url","label":"Instagram post URL"},
+        {"type":"text","id":"post_label","label":"Source label","default":"From the feed"}
+      ]
+    }
+  ],
+  "max_blocks":12,
   "presets": [{"name":"From the Feed"}]
 }
 {% endschema %}

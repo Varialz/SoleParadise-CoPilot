@@ -2,6 +2,10 @@
   assign hero_image = section.settings.image
   assign using_inventory_image = false
   assign fallback_collection = collections['all']
+  assign inventory_count = 0
+  if fallback_collection != blank
+    assign inventory_count = fallback_collection.products_count
+  endif
   if hero_image == blank and fallback_collection != blank and fallback_collection.products_count > 0
     assign fallback_product = fallback_collection.products.first
     if fallback_product.featured_image != blank
@@ -9,23 +13,29 @@
       assign using_inventory_image = true
     endif
   endif
+  assign hero_alt = section.settings.heading | strip_newlines
+  if hero_image != blank and hero_image.alt != blank
+    assign hero_alt = hero_image.alt
+  endif
 -%}
-<section class="sp-hero sp-hero--editorial" data-sp-section data-sp-hero>
+<section class="sp-hero sp-hero--editorial sp-hero--signature sp-hero--focus-{{ section.settings.image_focus | default: 'center' }}" data-sp-section data-sp-hero>
   <div class="sp-hero__media" data-sp-hero-media>
     {%- if hero_image != blank -%}
       <picture>
         {%- if section.settings.mobile_image != blank -%}
           <source
             media="(max-width: 749px)"
-            srcset="{{ section.settings.mobile_image | image_url: width: 750 }} 750w, {{ section.settings.mobile_image | image_url: width: 1000 }} 1000w"
+            srcset="{{ section.settings.mobile_image | image_url: width: 750 }} 750w, {{ section.settings.mobile_image | image_url: width: 1000 }} 1000w, {{ section.settings.mobile_image | image_url: width: 1400 }} 1400w, {{ section.settings.mobile_image | image_url: width: 1800 }} 1800w"
             sizes="100vw"
           >
         {%- endif -%}
-        {{ hero_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: hero_image.alt }}
+        {{ hero_image | image_url: width: 3840 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '900,1200,1600,2000,2400,3000,3840', class: 'sp-hero__image', alt: hero_alt }}
       </picture>
-      {%- if request.design_mode and using_inventory_image -%}<span class="sp-hero__setup">Using the first product image until campaign art is assigned</span>{%- endif -%}
+      {%- if request.design_mode and using_inventory_image -%}
+        <span class="sp-hero__setup" role="status">Campaign image not assigned — previewing the first product image.</span>
+      {%- endif -%}
     {%- else -%}
-      <div class="sp-hero__fallback" aria-hidden="true"><span>SOLE PARADISE</span><strong>CHICAGO / RARE GOODS</strong></div>
+      <div class="sp-hero__fallback" aria-hidden="true"><strong>SOLE PARADISE</strong></div>
     {%- endif -%}
   </div>
   <div class="sp-hero__veil" aria-hidden="true"></div>
@@ -35,39 +45,40 @@
       {%- if section.settings.eyebrow != blank -%}<p class="sp-kicker" data-sp-hero-line>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
       <h1 class="sp-display" data-sp-hero-line>{{ section.settings.heading | escape | newline_to_br }}</h1>
       {%- if section.settings.copy != blank -%}<p class="sp-hero__description" data-sp-hero-line>{{ section.settings.copy | escape }}</p>{%- endif -%}
-      {%- if section.settings.button_label != blank -%}
-        {%- liquid
-          assign hero_url = routes.all_products_collection_url
-          if section.settings.button_link != blank
-            assign hero_url = section.settings.button_link
-          endif
-        -%}
-        <a class="sp-hero__button" href="{{ hero_url | escape }}" data-sp-hero-line>{{ section.settings.button_label | escape }}</a>
-      {%- endif -%}
+      <div class="sp-hero__actions" data-sp-hero-line>
+        {%- if section.settings.button_label != blank -%}
+          {%- liquid
+            assign hero_url = routes.all_products_collection_url
+            if section.settings.button_link != blank
+              assign hero_url = section.settings.button_link
+            endif
+          -%}
+          <a class="sp-hero__button" href="{{ hero_url | escape }}"><span>{{ section.settings.button_label | escape }}</span><span aria-hidden="true">→</span></a>
+        {%- endif -%}
+        {%- if section.settings.show_inventory_count and inventory_count > 0 -%}
+          <p class="sp-hero__inventory"><strong>{{ inventory_count }}</strong> pieces online <span aria-hidden="true">·</span> updated continuously</p>
+        {%- endif -%}
+      </div>
     </div>
   </div>
 
   <div class="sp-horizon" data-sp-horizon aria-hidden="true"></div>
-  <div class="sp-hero__footer page-width" data-sp-hero-line>
-    <span>{{ section.settings.index_label | escape }}</span>
-    <span>{{ section.settings.footer_label | escape }}</span>
-  </div>
 </section>
 
 {% schema %}
 {
-  "name":"SP — Hero",
+  "name":"SP — Campaign Hero",
   "settings":[
-    {"type":"image_picker","id":"image","label":"Campaign image","info":"If blank, the theme borrows the first product image until campaign art is assigned."},
-    {"type":"image_picker","id":"mobile_image","label":"Mobile campaign image","info":"Optional portrait crop for phones. Desktop/fallback image is used when blank."},
-    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"One of one pieces · Curated daily"},
+    {"type":"image_picker","id":"image","label":"Desktop campaign image","info":"Upload the highest-resolution landscape campaign image available. Shopify will serve responsive renditions up to 3840px."},
+    {"type":"image_picker","id":"mobile_image","label":"Mobile campaign image","info":"Optional portrait crop for phones. The desktop image is used when blank."},
+    {"type":"select","id":"image_focus","label":"Image focus","default":"center","options":[{"value":"left","label":"Left"},{"value":"center","label":"Center"},{"value":"right","label":"Right"}]},
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Curated in Chicago"},
     {"type":"textarea","id":"heading","label":"Heading","default":"CHICAGO\nTO THE WORLD."},
-    {"type":"textarea","id":"copy","label":"Copy","default":"Rare designer, archive and pre-owned pieces selected in Chicago."},
+    {"type":"textarea","id":"copy","label":"Copy","default":"Rare designer, archive and one-of-one pieces from the current rotation."},
     {"type":"text","id":"button_label","label":"Button label","default":"Shop new arrivals"},
     {"type":"url","id":"button_link","label":"Button link"},
-    {"type":"text","id":"index_label","label":"Left footer label","default":"SOLE PARADISE / CHICAGO"},
-    {"type":"text","id":"footer_label","label":"Right footer label","default":"WORLDWIDE SHIPPING"}
+    {"type":"checkbox","id":"show_inventory_count","label":"Show live inventory count","default":true}
   ],
-  "presets":[{"name":"SP — Hero"}]
+  "presets":[{"name":"SP — Campaign Hero"}]
 }
 {% endschema %}
