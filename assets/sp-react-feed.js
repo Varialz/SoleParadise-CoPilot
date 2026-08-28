@@ -28,6 +28,8 @@ function FeedCard({ product, index, active, onQuickView, onActivate }) {
     setPointer({ x, y, inside: true });
   };
 
+  const sourceLabel = product.sourceLabel || product.archiveId || String(index + 1).padStart(2, '0');
+
   return h(
     'article',
     {
@@ -56,7 +58,7 @@ function FeedCard({ product, index, active, onQuickView, onActivate }) {
         style: { transform: imageTransform }
       }),
       h('div', { className: 'pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100' }),
-      h('span', { className: 'absolute left-3 top-3 inline-flex items-center bg-[#07111b]/90 px-2 py-1 text-[8px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur-sm' }, product.archiveId || String(index + 1).padStart(2, '0')),
+      h('span', { className: 'absolute left-3 top-3 inline-flex items-center bg-[#07111b]/90 px-2 py-1 text-[8px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur-sm' }, sourceLabel),
       h(
         'div',
         { className: 'absolute inset-x-0 bottom-0 translate-y-2 p-4 text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100' },
@@ -183,7 +185,7 @@ function FeedIsland({ products, onQuickView }) {
     h(
       'div',
       { className: 'mb-4 flex items-end justify-between gap-4' },
-      h('p', { className: 'font-mono text-[9px] uppercase tracking-[0.14em] text-[#7b8188]' }, h('span', { className: 'text-[#1769d2]' }, activeLabel), ' / ', totalLabel, ' · drag to browse'),
+      h('p', { className: 'font-mono text-[9px] uppercase tracking-[0.14em] text-[#7b8188]' }, h('span', { className: 'text-[#1769d2]' }, activeLabel), ' / ', totalLabel, ' · current rotation'),
       h(
         'div',
         { className: 'hidden gap-2 sm:flex' },
@@ -214,7 +216,6 @@ function unmountFeed(host) {
     root.unmount();
     mountedFeedRoots.delete(host);
   }
-
   const section = host.closest?.('[data-sp-feed]');
   const fallback = section?.querySelector('[data-sp-feed-fallback]');
   host.removeAttribute('data-react-mounted');
