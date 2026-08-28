@@ -5,6 +5,7 @@
   if (!root) return;
 
   const panel = root.querySelector('[data-quick-view-panel]');
+  const backdrop = root.querySelector('.sp-quick-view__backdrop');
   const content = root.querySelector('[data-quick-view-content]');
   const loading = root.querySelector('[data-quick-view-loading]');
   const errorState = root.querySelector('[data-quick-view-error]');
@@ -18,7 +19,9 @@
   const archiveId = root.querySelector('[data-quick-view-archive-id]');
   const archiveMeta = root.querySelector('[data-quick-view-meta]');
   const variantsWrap = root.querySelector('[data-quick-view-variants]');
+  const variantOptions = root.querySelector('[data-quick-view-variant-options]');
   const variantSelect = root.querySelector('[data-quick-view-variant-select]');
+  const selectedVariantLabel = root.querySelector('[data-quick-view-selected-variant]');
   const addButton = root.querySelector('[data-quick-view-add]');
   const status = root.querySelector('[data-quick-view-status]');
   const bagLink = root.querySelector('[data-quick-view-bag-link]');
@@ -29,10 +32,15 @@
   let currentProduct = null;
   let currentImages = [];
   let currentImageIndex = 0;
+  let selectedVariantId = null;
+  let addedVariantId = null;
   let activeRequest = 0;
   let requestController = null;
-  let addedVariantId = null;
 
+  const productCache = new Map();
+  const productPrefetches = new Map();
+  const isMobile = () => window.matchMedia('(max-width: 749px)').matches;
+  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const shopRoot = () => window.Shopify?.routes?.root || '/';
 
   const money = (cents) => {
@@ -53,23 +61,17 @@
     if (!cartTrigger || !cart) return;
 
     let count = cartTrigger.querySelector('[data-header-cart-count]');
-    if (cart.item_count > 0) {
-      if (!count) {
-        count = document.createElement('span');
-        count.className = 'site-header__cart-count';
-        count.dataset.headerCartCount = '';
-        count.setAttribute('aria-hidden', 'true');
-        cartTrigger.appendChild(count);
-      }
-      count.textContent = String(cart.item_count);
-    } else {
-      count?.remove();
+    if (!count) {
+      count = document.createElement('span');
+      count.className = 'site-header__cart-count';
+      count.dataset.headerCartCount = '';
+      count.setAttribute('aria-hidden', 'true');
+      cartTrigger.appendChild(count);
     }
+    count.textContent = String(cart.item_count || 0);
 
     const hiddenLabel = cartTrigger.querySelector('.visually-hidden');
-    if (hiddenLabel) {
-      hiddenLabel.textContent = cart.item_count === 1 ? 'Cart, 1 item' : `Cart, ${cart.item_count} items`;
-    }
+    if (hiddenLabel) hiddenLabel.textContent = cart.item_count === 1 ? 'Bag, 1 item' : `Bag, ${cart.item_count || 0} items`;
   };
 
   const fetchCart = async () => {
@@ -78,18 +80,55 @@
     return response.json();
   };
 
+  const cacheProduct = (productUrl, product) => {
+    product.url = productUrl;
+    productCache.set(productUrl, product);
+    return product;
+  };
+
+  const prefetchProduct = (productUrl) => {
+    if (!productUrl || productCache.has(productUrl) || productPrefetches.has(productUrl)) return;
+    const request = fetch(`${productUrl}.js`, { headers: { Accept: 'application/json' } })
+      .then((response) => {
+        if (!response.ok) throw new Error('Product prefetch failed');
+        return response.json();
+      })
+      .then((product) => cacheProduct(productUrl, product))
+      .catch(() => null)
+      .finally(() => productPrefetches.delete(productUrl));
+    productPrefetches.set(productUrl, request);
+  };
+
+  const loadProduct = async (productUrl, signal) => {
+    if (productCache.has(productUrl)) return productCache.get(productUrl);
+    if (productPrefetches.has(productUrl)) {
+      const prefetched = await productPrefetches.get(productUrl);
+      if (prefetched) return prefetched;
+    }
+
+    const response = await fetch(`${productUrl}.js`, {
+      headers: { Accept: 'application/json' },
+      signal
+    });
+    if (!response.ok) throw new Error('Product request failed');
+    return cacheProduct(productUrl, await response.json());
+  };
+
   const setLoading = () => {
     loading.hidden = false;
     content.hidden = true;
     errorState.hidden = true;
     status.textContent = '';
     bagLink.hidden = true;
+    selectedVariantId = null;
     addedVariantId = null;
   };
 
   const finishClose = () => {
     root.hidden = true;
     document.documentElement.classList.remove('quick-view-scroll-lock');
+    panel?.removeAttribute('style');
+    backdrop?.removeAttribute('style');
     previousFocus?.focus?.();
   };
 
@@ -98,11 +137,11 @@
     requestController?.abort();
     requestController = null;
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduceMotion && window.gsap && panel) {
-      window.gsap.killTweensOf(panel);
-      window.gsap.to(panel, { xPercent: 100, duration: .3, ease: 'power2.in', onComplete: finishClose });
-      window.gsap.to(root.querySelector('.sp-quick-view__backdrop'), { opacity: 0, duration: .2, ease: 'power2.in' });
+    if (!reduceMotion() && window.gsap && panel) {
+      window.gsap.killTweensOf([panel, backdrop].filter(Boolean));
+      const panelVars = isMobile() ? { yPercent: 100 } : { xPercent: 100 };
+      window.gsap.to(panel, { ...panelVars, duration: .28, ease: 'power2.in', onComplete: finishClose });
+      if (backdrop) window.gsap.to(backdrop, { opacity: 0, duration: .18, ease: 'power2.in' });
     } else {
       finishClose();
     }
@@ -111,12 +150,15 @@
   const openShell = () => {
     root.hidden = false;
     document.documentElement.classList.add('quick-view-scroll-lock');
+    panel?.scrollTo?.({ top: 0 });
     panel?.focus();
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduceMotion && window.gsap && panel) {
-      window.gsap.killTweensOf(panel);
-      window.gsap.fromTo(panel, { xPercent: 100 }, { xPercent: 0, duration: .4, ease: 'power3.out' });
-      window.gsap.fromTo(root.querySelector('.sp-quick-view__backdrop'), { opacity: 0 }, { opacity: 1, duration: .24, ease: 'power2.out' });
+
+    if (!reduceMotion() && window.gsap && panel) {
+      window.gsap.killTweensOf([panel, backdrop].filter(Boolean));
+      const fromVars = isMobile() ? { yPercent: 100 } : { xPercent: 100 };
+      const toVars = isMobile() ? { yPercent: 0 } : { xPercent: 0 };
+      window.gsap.fromTo(panel, fromVars, { ...toVars, duration: .36, ease: 'power3.out' });
+      if (backdrop) window.gsap.fromTo(backdrop, { opacity: 0 }, { opacity: 1, duration: .2, ease: 'power2.out' });
     }
   };
 
@@ -128,7 +170,10 @@
     image.src = selected.src || selected;
     image.alt = `${currentProduct?.title || 'Product'} — image ${boundedIndex + 1}`;
     imageIndex.textContent = `${String(boundedIndex + 1).padStart(2, '0')} / ${String(currentImages.length).padStart(2, '0')}`;
-    [...thumbs.children].forEach((button, i) => button.classList.toggle('is-active', i === boundedIndex));
+    [...thumbs.children].forEach((button, i) => {
+      button.classList.toggle('is-active', i === boundedIndex);
+      button.setAttribute('aria-pressed', i === boundedIndex ? 'true' : 'false');
+    });
   };
 
   const renderImages = (images = []) => {
@@ -148,6 +193,7 @@
       button.type = 'button';
       button.className = 'sp-quick-view__thumb';
       button.setAttribute('aria-label', `View image ${index + 1}`);
+      button.setAttribute('aria-pressed', index === 0 ? 'true' : 'false');
       const img = document.createElement('img');
       img.src = entry.src || entry;
       img.alt = '';
@@ -158,14 +204,33 @@
     setActiveImage(0);
   };
 
-  const syncVariantState = () => {
-    const variant = currentProduct?.variants?.find((item) => String(item.id) === String(variantSelect.value));
-    if (!variant) return;
+  const getSelectedVariant = () => currentProduct?.variants?.find((item) => String(item.id) === String(selectedVariantId));
 
+  const syncVariantButtons = () => {
+    [...variantOptions.children].forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.variantId) === String(selectedVariantId) ? 'true' : 'false');
+    });
+  };
+
+  const syncVariantState = () => {
+    const variant = getSelectedVariant();
+    syncVariantButtons();
+
+    if (!variant) {
+      if (currentProduct?.price != null) price.textContent = money(currentProduct.price);
+      selectedVariantLabel.textContent = '';
+      addButton.disabled = true;
+      addButton.textContent = variantsWrap.hidden ? 'Unavailable' : 'Choose a size';
+      return;
+    }
+
+    variantSelect.value = String(variant.id);
     price.textContent = money(variant.price);
+    selectedVariantLabel.textContent = variant.title === 'Default Title' ? '' : variant.title;
+
     const wasAdded = String(addedVariantId) === String(variant.id);
     addButton.disabled = !variant.available || wasAdded;
-    addButton.textContent = !variant.available ? 'Sold out' : (wasAdded ? 'Added to bag' : 'Add to bag');
+    addButton.textContent = !variant.available ? 'Sold out' : (wasAdded ? 'Added ✓' : `Add — ${money(variant.price)}`);
 
     const variantImage = variant.featured_image?.src || variant.featured_image;
     if (variantImage && currentImages.length) {
@@ -173,6 +238,44 @@
       const matchIndex = currentImages.findIndex((entry) => normalizeImageUrl(entry.src || entry) === normalizedVariant);
       if (matchIndex >= 0 && matchIndex !== currentImageIndex) setActiveImage(matchIndex);
     }
+  };
+
+  const renderVariants = (variants = []) => {
+    variantSelect.innerHTML = '';
+    variantOptions.innerHTML = '';
+    selectedVariantId = null;
+
+    const meaningful = variants.length > 1 || (variants.length === 1 && variants[0].title !== 'Default Title');
+    variantsWrap.hidden = !meaningful;
+
+    variants.forEach((variant) => {
+      const option = document.createElement('option');
+      option.value = variant.id;
+      option.textContent = variant.title;
+      option.disabled = !variant.available;
+      variantSelect.appendChild(option);
+
+      if (meaningful) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'sp-quick-view__variant-option';
+        button.dataset.variantId = String(variant.id);
+        button.textContent = variant.title;
+        button.disabled = !variant.available;
+        button.setAttribute('aria-pressed', 'false');
+        button.setAttribute('aria-label', `${variant.title}${variant.available ? '' : ', sold out'}`);
+        button.addEventListener('click', () => {
+          selectedVariantId = variant.id;
+          status.textContent = '';
+          bagLink.hidden = true;
+          syncVariantState();
+        });
+        variantOptions.appendChild(button);
+      }
+    });
+
+    if (!meaningful && variants[0]) selectedVariantId = variants[0].id;
+    syncVariantState();
   };
 
   const renderArchiveMeta = (trigger) => {
@@ -194,36 +297,31 @@
 
   const renderProduct = (product, trigger) => {
     currentProduct = product;
+    selectedVariantId = null;
     addedVariantId = null;
     bagLink.hidden = true;
+    status.textContent = '';
     vendor.textContent = product.vendor || '';
     title.textContent = product.title || 'Untitled piece';
     fullLink.href = product.url || trigger.dataset.productUrl || '#';
     errorLink.href = fullLink.href;
 
     renderImages(product.images || []);
-
-    variantSelect.innerHTML = '';
-    const variants = product.variants || [];
-    variants.forEach((variant) => {
-      const option = document.createElement('option');
-      option.value = variant.id;
-      option.textContent = `${variant.title}${variant.available ? '' : ' — Sold out'}`;
-      option.disabled = !variant.available;
-      variantSelect.appendChild(option);
-    });
-    const firstAvailable = variants.find((variant) => variant.available) || variants[0];
-    if (firstAvailable) variantSelect.value = String(firstAvailable.id);
-    variantsWrap.hidden = variants.length <= 1 || (variants.length === 1 && variants[0].title === 'Default Title');
-    syncVariantState();
+    renderVariants(product.variants || []);
     renderArchiveMeta(trigger);
 
     loading.hidden = true;
     errorState.hidden = true;
     content.hidden = false;
 
-    if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      window.gsap.from(content.children, { opacity: 0, y: 10, duration: .4, stagger: .05, ease: 'power3.out' });
+    if (window.gsap && !reduceMotion()) {
+      window.gsap.from([root.querySelector('.sp-quick-view__media'), root.querySelector('.sp-quick-view__details')].filter(Boolean), {
+        opacity: 0,
+        y: 10,
+        duration: .34,
+        stagger: .045,
+        ease: 'power3.out'
+      });
     }
   };
 
@@ -241,14 +339,8 @@
     if (!productUrl) return;
 
     try {
-      const response = await fetch(`${productUrl}.js`, {
-        headers: { Accept: 'application/json' },
-        signal: requestController.signal
-      });
-      if (!response.ok) throw new Error('Product request failed');
-      const product = await response.json();
+      const product = await loadProduct(productUrl, requestController.signal);
       if (requestId !== activeRequest || root.hidden) return;
-      product.url = productUrl;
       renderProduct(product, trigger);
     } catch (error) {
       if (error.name === 'AbortError' || requestId !== activeRequest) return;
@@ -258,6 +350,21 @@
       errorLink.href = productUrl;
     }
   };
+
+  document.addEventListener('pointerover', (event) => {
+    const trigger = event.target.closest?.('[data-quick-view-trigger]');
+    if (trigger) prefetchProduct(trigger.dataset.productUrl);
+  });
+
+  document.addEventListener('focusin', (event) => {
+    const trigger = event.target.closest?.('[data-quick-view-trigger]');
+    if (trigger) prefetchProduct(trigger.dataset.productUrl);
+  });
+
+  document.addEventListener('touchstart', (event) => {
+    const trigger = event.target.closest?.('[data-quick-view-trigger]');
+    if (trigger) prefetchProduct(trigger.dataset.productUrl);
+  }, { passive: true });
 
   document.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-quick-view-trigger]');
@@ -269,36 +376,32 @@
     if (event.target.closest('[data-quick-view-close]')) close();
   });
 
-  variantSelect?.addEventListener('change', () => {
-    status.textContent = '';
-    bagLink.hidden = true;
-    syncVariantState();
-  });
-
   addButton?.addEventListener('click', async () => {
-    if (!variantSelect.value || addButton.disabled) return;
-    const variantId = Number(variantSelect.value);
+    const variant = getSelectedVariant();
+    if (!variant || !variant.available || addButton.disabled) return;
+
     addButton.disabled = true;
-    status.textContent = 'Adding to bag…';
+    addButton.textContent = 'Adding…';
+    status.textContent = '';
 
     try {
       const response = await fetch(`${shopRoot()}cart/add.js`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ id: variantId, quantity: 1 })
+        body: JSON.stringify({ id: Number(variant.id), quantity: 1 })
       });
       if (!response.ok) throw new Error('Cart add failed');
 
-      addedVariantId = variantId;
+      addedVariantId = variant.id;
       const cart = await fetchCart();
       updateHeaderCart(cart);
-      addButton.textContent = 'Added to bag';
+      addButton.textContent = 'Added ✓';
       addButton.disabled = true;
-      status.textContent = 'Bag updated.';
+      status.textContent = 'Added to your bag.';
       bagLink.hidden = false;
       document.dispatchEvent(new CustomEvent('cart:refresh', { detail: { cart } }));
     } catch (_) {
-      status.textContent = 'Could not add this piece. Open the full product page to try again.';
+      status.textContent = 'Could not add this piece. Try the product page.';
       addedVariantId = null;
       syncVariantState();
     }
@@ -306,7 +409,11 @@
 
   document.addEventListener('keydown', (event) => {
     if (root.hidden) return;
-    if (event.key === 'Escape') close();
+    if (event.key === 'Escape') {
+      close();
+      return;
+    }
+
     if (event.key === 'Tab' && panel) {
       const focusable = [...panel.querySelectorAll('a[href],button:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')]
         .filter((element) => element.offsetParent !== null);
