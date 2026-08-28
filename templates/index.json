@@ -3,23 +3,24 @@
     "hero": {
       "type": "sp-hero",
       "settings": {
-        "eyebrow": "One of one pieces · Curated daily",
+        "eyebrow": "Curated in Chicago",
         "heading": "CHICAGO\nTO THE WORLD.",
-        "copy": "Rare designer, archive and pre-owned pieces selected in Chicago.",
+        "copy": "Rare designer, archive and one-of-one pieces from the current rotation.",
         "button_label": "Shop new arrivals",
-        "index_label": "SOLE PARADISE / CHICAGO",
-        "footer_label": "WORLDWIDE SHIPPING"
+        "show_inventory_count": true,
+        "image_focus": "center"
       }
     },
     "feed": {
       "type": "sp-from-feed",
       "settings": {
         "eyebrow": "From the feed",
-        "heading": "Shop the post",
-        "copy": "Fresh arrivals, one-offs and details straight from the floor.",
+        "heading": "Shop the floor",
+        "copy": "Real arrivals, details and looks from the current rotation.",
         "limit": 6,
         "instagram_label": "@soleparadise.chicago",
-        "show_collection_link": true
+        "show_collection_link": true,
+        "enhanced_react_feed": true
       }
     },
     "arrivals": {
@@ -29,31 +30,6 @@
         "heading": "New arrivals",
         "limit": 8,
         "show_secondary_image": true
-      }
-    },
-    "edit": {
-      "type": "sp-paradise-edit",
-      "settings": {
-        "eyebrow": "Paradise Edit 002",
-        "heading": "LATE SUMMER\nIN CHICAGO.",
-        "copy": "A rotation from the floor, photographed and worn in Chicago.",
-        "issue_label": "ISSUE 002",
-        "location_label": "CHICAGO / ILLINOIS",
-        "button_label": "Shop the edit"
-      }
-    },
-    "features": {
-      "type": "sp-features",
-      "blocks": {
-        "one": {"type":"feature","settings":{"label":"Chrome Hearts / Archive","title":"The Chrome Hearts Edit","copy":"Crosses, leather and one-off pieces moving through Paradise.","link_label":"View the edit"}},
-        "two": {"type":"feature","settings":{"label":"Bottega Desires / New Drop","title":"Bottega Desires Rotation","copy":"Graphic streetwear and limited pieces from the current rotation.","link_label":"Shop arrivals"}},
-        "three": {"type":"feature","settings":{"label":"Chicago / Editorial","title":"After Dark","copy":"Archive designer in the city.","link_label":"View editorial"}}
-      },
-      "block_order": ["one","two","three"],
-      "settings": {
-        "eyebrow": "Paradise Features",
-        "heading": "FROM THE FLOOR.",
-        "copy": "Edits, arrivals and stories around the pieces."
       }
     },
     "brands": {
@@ -68,27 +44,20 @@
         "saint": {"type":"brand","settings":{"name":"Saint Mxxxxxx"}}
       },
       "block_order": ["ch","bd","rick","amiri","bal","gallery","saint"],
-      "settings": {"eyebrow":"Designers","heading":"Shop by designer"}
+      "settings": {
+        "eyebrow": "Designers",
+        "heading": "Shop by designer"
+      }
     },
     "seller": {
       "type": "sp-seller-cta",
       "settings": {
         "eyebrow": "Sell / Trade / Consign",
-        "heading": "SELL TO\nPARADISE.",
-        "copy": "Send the piece once, show us the details, and choose how you want to move it.",
+        "heading": "MOVE YOUR\nPIECES.",
+        "copy": "Send us the details once. Choose cash, trade value or consignment review.",
         "link_label": "Start a submission"
-      }
-    },
-    "archive": {
-      "type": "sp-sold-archive",
-      "settings": {
-        "eyebrow": "Paradise Archive",
-        "heading": "GONE, NOT\nFORGOTTEN.",
-        "copy": "Past one-of-one pieces stay visible as proof of what moves through Paradise.",
-        "limit": 6,
-        "show_collection_link": true
       }
     }
   },
-  "order": ["hero","feed","arrivals","edit","features","brands","seller","archive"]
+  "order": ["hero","feed","arrivals","brands","seller"]
 }
