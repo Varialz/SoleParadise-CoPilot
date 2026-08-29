@@ -4,6 +4,7 @@ import { createRoot } from 'https://esm.sh/react-dom@19.1.1/client';
 const h = React.createElement;
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const mountedFeedRoots = new WeakMap();
+const interactiveSelector = 'a,button,input,select,textarea,label,[role="button"]';
 
 function ArrowIcon({ direction = 1 }) {
   return h(
@@ -79,7 +80,7 @@ function FeedCard({ product, index, active, onQuickView, onActivate }) {
         'div',
         { className: 'min-w-0' },
         h('p', { className: 'truncate text-[9px] font-bold uppercase tracking-[0.1em] text-[#1769d2]' }, product.vendor || 'Sole Paradise'),
-        h('p', { className: 'mt-1 truncate text-[11px] font-medium text-[#11151a]' }, product.title),
+        h('a', { href: product.url, className: 'mt-1 block truncate text-[11px] font-medium text-[#11151a] no-underline hover:text-[#1769d2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1769d2]' }, product.title),
         h('div', { className: 'mt-1 flex flex-wrap gap-x-2 gap-y-1 text-[8px] uppercase tracking-[0.08em] text-[#7b8188]' }, product.size ? h('span', null, product.size) : null, product.condition ? h('span', null, product.condition) : null, product.itemState ? h('span', null, product.itemState) : null)
       ),
       h('span', { className: 'shrink-0 text-[11px] font-semibold text-[#11151a]' }, product.price)
@@ -151,6 +152,14 @@ function FeedIsland({ products, onQuickView }) {
     if (event.button !== 0) return;
     const rail = railRef.current;
     if (!rail) return;
+
+    // Buttons and links are commerce controls, not drag handles. Let them receive
+    // a normal click even when the surrounding rail is draggable.
+    if (event.target.closest?.(interactiveSelector)) {
+      drag.current = { active: false, x: 0, left: rail.scrollLeft, moved: false };
+      return;
+    }
+
     drag.current = { active: true, x: event.clientX, left: rail.scrollLeft, moved: false };
     rail.setPointerCapture?.(event.pointerId);
     rail.classList.add('is-dragging');
@@ -160,23 +169,16 @@ function FeedIsland({ products, onQuickView }) {
     const rail = railRef.current;
     if (!rail || !drag.current.active) return;
     const delta = event.clientX - drag.current.x;
-    if (Math.abs(delta) > 4) drag.current.moved = true;
+    if (Math.abs(delta) > 10) drag.current.moved = true;
     rail.scrollLeft = drag.current.left - delta;
   };
 
   const endDrag = (event) => {
     const rail = railRef.current;
-    if (!rail) return;
+    if (!rail || !drag.current.active) return;
     drag.current.active = false;
     rail.releasePointerCapture?.(event.pointerId);
     rail.classList.remove('is-dragging');
-  };
-
-  const onClickCapture = (event) => {
-    if (!drag.current.moved) return;
-    event.preventDefault();
-    event.stopPropagation();
-    drag.current.moved = false;
   };
 
   return h(
@@ -201,8 +203,7 @@ function FeedIsland({ products, onQuickView }) {
         onPointerDown,
         onPointerMove,
         onPointerUp: endDrag,
-        onPointerCancel: endDrag,
-        onClickCapture
+        onPointerCancel: endDrag
       },
       products.map((product, index) => h('div', { key: `${product.url}-${index}`, ref: (node) => { cardRefs.current[index] = node; }, 'data-index': index, className: 'contents' }, h(FeedCard, { product, index, active: activeIndex === index, onActivate: () => setActiveIndex(index), onQuickView })))
     )

@@ -15,20 +15,129 @@
     assign overlay_header = true
   endif
 -%}
-{%- if sticky -%}
-  {%- style -%}
+{%- style -%}
+  {%- if sticky -%}
     #shopify-section-{{ section.id }} {
       position: sticky;
       top: 0;
       z-index: var(--z-index-header);
     }
-  {%- endstyle -%}
-{%- endif -%}
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .site-header__utility-bar-inner {
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .site-header__utility-marquee {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
+  }
+
+  #shopify-section-{{ section.id }} .site-header__utility-marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    animation: sp-utility-marquee {{ section.settings.utility_speed }}s linear infinite;
+  }
+
+  #shopify-section-{{ section.id }} .site-header__utility-marquee-group {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    min-width: max-content;
+  }
+
+  #shopify-section-{{ section.id }} .site-header__utility-marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: .85rem;
+    padding-right: 2.3rem;
+    color: #fff;
+    font: 700 .54rem/1 monospace;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  #shopify-section-{{ section.id }} .site-header__utility-marquee-separator {
+    color: rgba(255,255,255,.58);
+    font-size: .45rem;
+  }
+
+  #shopify-section-{{ section.id }} .site-header__utility-marquee:hover .site-header__utility-marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes sp-utility-marquee {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} .site-header__utility-marquee {
+      width: 100%;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+    }
+    #shopify-section-{{ section.id }} .site-header__utility-marquee-item {
+      font-size: .49rem;
+      letter-spacing: .085em;
+      padding-right: 1.8rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .site-header__utility-marquee {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+    #shopify-section-{{ section.id }} .site-header__utility-marquee-track {
+      animation: none;
+      width: 100%;
+    }
+    #shopify-section-{{ section.id }} .site-header__utility-marquee-group {
+      width: 100%;
+    }
+    #shopify-section-{{ section.id }} .site-header__utility-marquee-group:nth-child(2),
+    #shopify-section-{{ section.id }} .site-header__utility-marquee-item:not(:first-child) {
+      display: none;
+    }
+    #shopify-section-{{ section.id }} .site-header__utility-marquee-item:first-child {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      padding-right: 0;
+      text-overflow: ellipsis;
+      text-align: left;
+      white-space: nowrap;
+    }
+    #shopify-section-{{ section.id }} .site-header__utility-marquee-separator {
+      display: none;
+    }
+  }
+{%- endstyle -%}
 <header class="site-header{% if overlay_header %} site-header--overlay{% endif %}{% unless section.settings.show_utility_bar %} site-header--no-utility{% endunless %}" data-header{% if overlay_header %} data-header-overlay{% endif %}>
   {%- if section.settings.show_utility_bar -%}
     <div class="site-header__utility-bar">
       <div class="page-width site-header__utility-bar-inner">
-        <p>{{ section.settings.utility_text | escape }}</p>
+        <div class="site-header__utility-marquee" role="region" aria-label="Store announcement">
+          <span class="visually-hidden">{{ section.settings.utility_text | escape }}</span>
+          <div class="site-header__utility-marquee-track" aria-hidden="true">
+            {%- for group in (1..2) -%}
+              <div class="site-header__utility-marquee-group">
+                {%- for repeat in (1..6) -%}
+                  <span class="site-header__utility-marquee-item">
+                    {{ section.settings.utility_text | escape }}
+                    <span class="site-header__utility-marquee-separator" aria-hidden="true">◆</span>
+                  </span>
+                {%- endfor -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
         {%- if section.settings.utility_link_label != blank and utility_url != blank -%}
           <a href="{{ utility_url | escape }}">{{ section.settings.utility_link_label | escape }} <span aria-hidden="true">→</span></a>
         {%- endif -%}
@@ -144,6 +253,7 @@
     {"type":"checkbox","id":"enable_sticky_header","label":"Enable sticky header","default":true},
     {"type":"checkbox","id":"show_utility_bar","label":"Show utility bar","default":true},
     {"type":"text","id":"utility_text","label":"Utility text","default":"Chicago / IL · Authenticated designer resale · Worldwide shipping"},
+    {"type":"range","id":"utility_speed","label":"Announcement speed","min":16,"max":60,"step":2,"unit":"s","default":36},
     {"type":"text","id":"utility_link_label","label":"Utility link label","default":"Sell to Paradise"},
     {"type":"url","id":"utility_link","label":"Utility link","info":"If blank, Sell to Paradise falls back to /pages/sell-to-paradise."}
   ],
