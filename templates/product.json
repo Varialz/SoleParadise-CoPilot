@@ -1,18 +1,59 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "main-product",
       "blocks": {
-        "description": {"type":"description","settings":{}},
-        "sku": {"type":"sku","settings":{}},
-        "condition": {"type":"disclosure","settings":{"heading":"Condition & details","content":"<p>Condition notes and measurements can be added here for each piece.</p>"}},
-        "shipping": {"type":"disclosure","settings":{"heading":"Shipping & authenticity","content":"<p>Every piece is inspected before listing and shipped securely from Chicago.</p>"}}
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "sku": {
+          "type": "sku",
+          "settings": {}
+        },
+        "condition": {
+          "type": "disclosure",
+          "disabled": true,
+          "settings": {
+            "heading": "Condition & details",
+            "content": "<p>Condition notes and measurements can be added here for each piece.</p>"
+          }
+        },
+        "shipping": {
+          "type": "disclosure",
+          "disabled": true,
+          "settings": {
+            "heading": "Shipping & authenticity",
+            "content": "<p>Every piece is inspected before listing and shipped securely from Chicago.</p>"
+          }
+        }
       },
-      "block_order": ["description","sku","condition","shipping"],
+      "block_order": [
+        "description",
+        "sku",
+        "condition",
+        "shipping"
+      ],
       "settings": {
         "show_vendor": true,
         "show_quantity_selector": false,
-        "enable_dynamic_checkout": true
+        "enable_dynamic_checkout": true,
+        "authenticity_copy": "<p>Every piece is individually inspected by Sole Paradise before it is listed. We stand behind the authenticity of every item we sell.</p>",
+        "faq_copy": "<p>Need measurements, condition details, or help choosing a size? Contact the Sole Paradise team before purchasing and we will help verify the piece.</p>",
+        "payment_copy": "<p>Checkout is encrypted and processed securely through Shopify. Available accelerated and installment options appear at checkout when eligible.</p>",
+        "shipping_copy": "Orders over $250 ship free.",
+        "service_copy": "Available during store hours for product questions.",
+        "secure_copy": "Checkout information is processed securely.",
+        "contact_email": ""
       }
     },
     "related": {
@@ -25,5 +66,8 @@
       }
     }
   },
-  "order": ["main","related"]
+  "order": [
+    "main",
+    "related"
+  ]
 }
