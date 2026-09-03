@@ -24,195 +24,48 @@
     "arrivals": {
       "type": "sp-brand-showcase",
       "blocks": {
-        "all": {
-          "type": "tab",
-          "settings": {
-            "label": "All",
-            "collection": "",
-            "vendor": "",
-            "category_match": "",
-            "button_label": "Shop all new arrivals"
-          }
-        },
-        "clothing": {
-          "type": "tab",
-          "settings": {
-            "label": "Clothing",
-            "collection": "",
-            "vendor": "",
-            "category_match": "clothing",
-            "button_label": "Shop all clothing"
-          }
-        },
-        "footwear": {
-          "type": "tab",
-          "settings": {
-            "label": "Footwear",
-            "collection": "",
-            "vendor": "",
-            "category_match": "footwear",
-            "button_label": "Shop all footwear"
-          }
-        },
-        "accessories": {
-          "type": "tab",
-          "settings": {
-            "label": "Accessories",
-            "collection": "",
-            "vendor": "",
-            "category_match": "accessories",
-            "button_label": "Shop all accessories"
-          }
-        }
+        "all": {"type":"tab","settings":{"label":"All","collection":"","vendor":"","category_match":"","button_label":"Shop all new arrivals"}},
+        "clothing": {"type":"tab","settings":{"label":"Clothing","collection":"","vendor":"","category_match":"clothing","button_label":"Shop all clothing"}},
+        "footwear": {"type":"tab","settings":{"label":"Footwear","collection":"","vendor":"","category_match":"footwear","button_label":"Shop all footwear"}},
+        "accessories": {"type":"tab","settings":{"label":"Accessories","collection":"","vendor":"","category_match":"accessories","button_label":"Shop all accessories"}}
       },
-      "block_order": [
-        "all",
-        "clothing",
-        "footwear",
-        "accessories"
-      ],
-      "settings": {
-        "eyebrow": "Just in",
-        "heading": "New arrivals",
-        "vendor": "",
-        "product_limit": 8
-      }
+      "block_order": ["all","clothing","footwear","accessories"],
+      "settings": {"eyebrow":"Just in","heading":"New arrivals","vendor":"","product_limit":8}
+    },
+    "trust": {
+      "type": "sp-trust-strip",
+      "blocks": {
+        "auth": {"type":"item","settings":{"title":"Authenticated","text":"Every piece inspected before listing"}},
+        "chicago": {"type":"item","settings":{"title":"Chicago based","text":"Local shop service and pickup"}},
+        "shipping": {"type":"item","settings":{"title":"Worldwide shipping","text":"Rare pieces delivered with care"}},
+        "inventory": {"type":"item","settings":{"title":"Limited inventory","text":"One-offs move quickly"}}
+      },
+      "block_order": ["auth","chicago","shipping","inventory"],
+      "settings": {}
     },
     "chrome_showcase": {
       "type": "sp-brand-showcase",
       "blocks": {
-        "all": {
-          "type": "tab",
-          "settings": {
-            "label": "All",
-            "collection": "",
-            "vendor": "",
-            "category_match": "",
-            "button_label": ""
-          }
-        },
-        "tees": {
-          "type": "tab",
-          "settings": {
-            "label": "Tees",
-            "collection": "",
-            "vendor": "",
-            "category_match": "shirt",
-            "button_label": ""
-          }
-        },
-        "hoodies": {
-          "type": "tab",
-          "settings": {
-            "label": "Hoodies",
-            "collection": "",
-            "vendor": "",
-            "category_match": "hoodie",
-            "button_label": ""
-          }
-        },
-        "hats": {
-          "type": "tab",
-          "settings": {
-            "label": "Hats",
-            "collection": "",
-            "vendor": "",
-            "category_match": "hat",
-            "button_label": ""
-          }
-        },
-        "accessories": {
-          "type": "tab",
-          "settings": {
-            "label": "Accessories",
-            "collection": "",
-            "vendor": "",
-            "category_match": "accessories",
-            "button_label": ""
-          }
-        }
+        "all": {"type":"tab","settings":{"label":"All","collection":"","vendor":"","category_match":"","button_label":""}},
+        "tees": {"type":"tab","settings":{"label":"Tees","collection":"","vendor":"","category_match":"shirt","button_label":""}},
+        "hoodies": {"type":"tab","settings":{"label":"Hoodies","collection":"","vendor":"","category_match":"hoodie","button_label":""}},
+        "hats": {"type":"tab","settings":{"label":"Hats","collection":"","vendor":"","category_match":"hat","button_label":""}},
+        "accessories": {"type":"tab","settings":{"label":"Accessories","collection":"","vendor":"","category_match":"accessories","button_label":""}}
       },
-      "block_order": [
-        "all",
-        "tees",
-        "hoodies",
-        "hats",
-        "accessories"
-      ],
-      "settings": {
-        "eyebrow": "",
-        "heading": "Chrome Hearts",
-        "vendor": "Chrome Hearts",
-        "product_limit": 8
-      }
+      "block_order": ["all","tees","hoodies","hats","accessories"],
+      "settings": {"eyebrow":"Designer rotation","heading":"Chrome Hearts","vendor":"Chrome Hearts","product_limit":8}
     },
     "other_showcase": {
       "type": "sp-brand-showcase",
       "blocks": {
-        "rick": {
-          "type": "tab",
-          "settings": {
-            "label": "Rick Owens",
-            "collection": "rick-owens",
-            "vendor": "Rick Owens",
-            "category_match": "Rick Owens",
-            "button_label": ""
-          }
-        },
-        "amiri": {
-          "type": "tab",
-          "settings": {
-            "label": "Amiri",
-            "collection": "",
-            "vendor": "Amiri",
-            "category_match": "",
-            "button_label": ""
-          }
-        },
-        "balenciaga": {
-          "type": "tab",
-          "settings": {
-            "label": "Balenciaga",
-            "collection": "",
-            "vendor": "Balenciaga",
-            "category_match": "",
-            "button_label": ""
-          }
-        },
-        "bottega": {
-          "type": "tab",
-          "settings": {
-            "label": "Bottega Desires",
-            "collection": "",
-            "vendor": "Bottega Desires",
-            "category_match": "",
-            "button_label": ""
-          }
-        },
-        "gallery": {
-          "type": "tab",
-          "settings": {
-            "label": "Gallery Dept.",
-            "collection": "",
-            "vendor": "Gallery Dept.",
-            "category_match": "",
-            "button_label": ""
-          }
-        }
+        "rick": {"type":"tab","settings":{"label":"Rick Owens","collection":"rick-owens","vendor":"Rick Owens","category_match":"Rick Owens","button_label":""}},
+        "amiri": {"type":"tab","settings":{"label":"Amiri","collection":"","vendor":"Amiri","category_match":"","button_label":""}},
+        "balenciaga": {"type":"tab","settings":{"label":"Balenciaga","collection":"","vendor":"Balenciaga","category_match":"","button_label":""}},
+        "bottega": {"type":"tab","settings":{"label":"Bottega Desires","collection":"","vendor":"Bottega Desires","category_match":"","button_label":""}},
+        "gallery": {"type":"tab","settings":{"label":"Gallery Dept.","collection":"","vendor":"Gallery Dept.","category_match":"","button_label":""}}
       },
-      "block_order": [
-        "rick",
-        "amiri",
-        "balenciaga",
-        "bottega",
-        "gallery"
-      ],
-      "settings": {
-        "eyebrow": "",
-        "heading": "Other brands",
-        "vendor": "",
-        "product_limit": 8
-      }
+      "block_order": ["rick","amiri","balenciaga","bottega","gallery"],
+      "settings": {"eyebrow":"Across the floor","heading":"More designers","vendor":"","product_limit":8}
     },
     "feed": {
       "type": "sp-from-feed",
@@ -228,76 +81,15 @@
         "show_collection_link": true
       }
     },
-    "edit": {
-      "type": "sp-paradise-edit",
-      "disabled": true,
+    "flyer": {
+      "type": "sp-we-buy-sneakers",
       "settings": {
-        "eyebrow": "Paradise Edit 002",
-        "heading": "LATE SUMMER\nIN CHICAGO.",
-        "copy": "A rotation from the floor, photographed and worn in Chicago.",
-        "issue_label": "ISSUE 002",
-        "location_label": "CHICAGO / ILLINOIS",
-        "primary_product": "",
-        "secondary_product": "",
-        "button_label": "Shop the edit",
-        "button_link": ""
-      }
-    },
-    "features": {
-      "type": "sp-features",
-      "blocks": {
-        "one": {
-          "type": "feature",
-          "settings": {
-            "label": "Chrome Hearts / Archive",
-            "title": "The Chrome Hearts Edit",
-            "copy": "Crosses, leather and one-off pieces moving through Paradise.",
-            "link": "",
-            "link_label": "View the edit"
-          }
-        },
-        "two": {
-          "type": "feature",
-          "settings": {
-            "label": "Bottega Desires / New Drop",
-            "title": "Bottega Desires Rotation",
-            "copy": "Graphic streetwear and limited pieces from the current rotation.",
-            "link": "",
-            "link_label": "Shop arrivals"
-          }
-        },
-        "three": {
-          "type": "feature",
-          "settings": {
-            "label": "Chicago / Editorial",
-            "title": "After Dark",
-            "copy": "Archive designer in the city.",
-            "link": "",
-            "link_label": "View editorial"
-          }
-        }
-      },
-      "block_order": [
-        "one",
-        "two",
-        "three"
-      ],
-      "disabled": true,
-      "settings": {
-        "eyebrow": "Paradise Features",
-        "heading": "FROM THE FLOOR.",
-        "copy": "Edits, arrivals and stories around the pieces."
-      }
-    },
-    "seller": {
-      "type": "sp-seller-cta",
-      "disabled": true,
-      "settings": {
-        "eyebrow": "Sell / Trade / Consign",
-        "heading": "SELL TO\nPARADISE.",
-        "copy": "Send the piece once, show us the details, and choose how you want to move it.",
-        "page": "",
-        "link_label": "Start a submission"
+        "flyer_image": "",
+        "eyebrow": "Sole Paradise / Chicago",
+        "heading": "WE BUY\nSNEAKERS.",
+        "copy": "Selling a pair or designer piece? Connect through the same channels Sole Paradise shares in-store and on social. The actual shop flyer is the campaign — no separate seller portal required.",
+        "instagram_url": "",
+        "primary_label": "Connect with Paradise"
       }
     },
     "archive": {
@@ -312,15 +104,5 @@
       }
     }
   },
-  "order": [
-    "hero",
-    "arrivals",
-    "chrome_showcase",
-    "other_showcase",
-    "feed",
-    "edit",
-    "features",
-    "seller",
-    "archive"
-  ]
+  "order": ["hero","arrivals","trust","chrome_showcase","other_showcase","feed","flyer","archive"]
 }
