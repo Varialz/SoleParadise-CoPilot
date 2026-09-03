@@ -2,6 +2,7 @@
   'use strict';
 
   const controllers = new WeakMap();
+  const desktopGallery = window.matchMedia('(min-width: 1000px)');
 
   function selectedOptionIds(section) {
     return Array.from(section.querySelectorAll('[data-option-value-id]:checked'))
@@ -66,19 +67,96 @@
     el.toggleAttribute('hidden', !message);
   }
 
-  function activateMedia(section, mediaId) {
-    if (!mediaId) return;
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function setActiveMediaState(section, mediaId) {
+    if (!mediaId) return null;
+    const targetId = String(mediaId);
+    let activeItem = null;
+    let activeThumb = null;
+
     section.querySelectorAll('[data-product-media-item]').forEach((item) => {
-      item.classList.toggle('is-active', item.dataset.mediaId === String(mediaId));
+      const active = item.dataset.mediaId === targetId;
+      item.classList.toggle('is-active', active);
+      if (active) activeItem = item;
     });
+
     section.querySelectorAll('[data-product-gallery-thumb]').forEach((thumb) => {
-      const active = thumb.dataset.mediaId === String(mediaId);
+      const active = thumb.dataset.mediaId === targetId;
       thumb.classList.toggle('is-active', active);
-      if (active) thumb.setAttribute('aria-current', 'true');
-      else thumb.removeAttribute('aria-current');
+      if (active) {
+        thumb.setAttribute('aria-current', 'true');
+        activeThumb = thumb;
+      } else {
+        thumb.removeAttribute('aria-current');
+      }
     });
+
     const gallery = section.querySelector('[data-product-gallery]');
-    if (gallery) gallery.dataset.productSelectedMedia = mediaId;
+    if (gallery) gallery.dataset.productSelectedMedia = targetId;
+
+    return { item: activeItem, thumb: activeThumb };
+  }
+
+  function centerThumbInRail(thumb) {
+    if (!thumb) return;
+    const rail = thumb.closest('[data-product-gallery-thumbs]');
+    if (!rail || rail.scrollWidth <= rail.clientWidth) return;
+
+    const left = thumb.offsetLeft - ((rail.clientWidth - thumb.offsetWidth) / 2);
+    rail.scrollTo({
+      left: Math.max(0, left),
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+    });
+  }
+
+  function moveTrackToMedia(section, item) {
+    if (!item || desktopGallery.matches) return;
+    const track = section.querySelector('[data-product-gallery-track]');
+    if (!track) return;
+
+    const left = item.offsetLeft - ((track.clientWidth - item.offsetWidth) / 2);
+    track.scrollTo({
+      left: Math.max(0, left),
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+    });
+  }
+
+  function activateMedia(section, mediaId, navigate = true) {
+    const active = setActiveMediaState(section, mediaId);
+    if (!active) return;
+
+    if (navigate) moveTrackToMedia(section, active.item);
+    centerThumbInRail(active.thumb);
+  }
+
+  function syncMediaFromTrack(section) {
+    if (desktopGallery.matches) return;
+    const track = section.querySelector('[data-product-gallery-track]');
+    if (!track) return;
+
+    const items = Array.from(track.querySelectorAll('[data-product-media-item]'));
+    if (!items.length) return;
+
+    const trackCenter = track.scrollLeft + (track.clientWidth / 2);
+    let closest = items[0];
+    let closestDistance = Infinity;
+
+    items.forEach((item) => {
+      const itemCenter = item.offsetLeft + (item.offsetWidth / 2);
+      const distance = Math.abs(itemCenter - trackCenter);
+      if (distance < closestDistance) {
+        closest = item;
+        closestDistance = distance;
+      }
+    });
+
+    const gallery = section.querySelector('[data-product-gallery]');
+    if (gallery?.dataset.productSelectedMedia === closest.dataset.mediaId) return;
+    const active = setActiveMediaState(section, closest.dataset.mediaId);
+    centerThumbInRail(active?.thumb);
   }
 
   function announce(section) {
@@ -228,8 +306,23 @@
 
     section.addEventListener('click', (event) => {
       const thumb = event.target.closest('[data-product-gallery-thumb]');
-      if (thumb) activateMedia(section, thumb.dataset.mediaId);
+      if (!thumb) return;
+      event.preventDefault();
+      activateMedia(section, thumb.dataset.mediaId);
     });
+
+    const galleryTrack = section.querySelector('[data-product-gallery-track]');
+    if (galleryTrack) {
+      let scrollFrame = null;
+      galleryTrack.addEventListener('scroll', () => {
+        if (desktopGallery.matches) return;
+        if (scrollFrame) cancelAnimationFrame(scrollFrame);
+        scrollFrame = requestAnimationFrame(() => {
+          scrollFrame = null;
+          syncMediaFromTrack(section);
+        });
+      }, { passive: true });
+    }
 
     section.addEventListener('submit', (event) => {
       const form = event.target.closest('.product-form__form');
