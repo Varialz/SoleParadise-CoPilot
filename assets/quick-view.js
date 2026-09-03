@@ -6,7 +6,6 @@
 
   const panel = root.querySelector('[data-quick-view-panel]');
   const content = root.querySelector('[data-quick-view-content]');
-  const loading = root.querySelector('[data-quick-view-loading]');
   const errorState = root.querySelector('[data-quick-view-error]');
   const image = root.querySelector('[data-quick-view-image]');
   const thumbs = root.querySelector('[data-quick-view-thumbs]');
@@ -29,8 +28,10 @@
   let currentImages = [];
   let currentImageIndex = 0;
   let activeRequest = 0;
-  let requestController = null;
   let addedVariantId = null;
+
+  const productCache = new Map();
+  const pendingProducts = new Map();
 
   const shopRoot = () => window.Shopify?.routes?.root || '/';
 
@@ -46,6 +47,36 @@
   };
 
   const normalizeImageUrl = (value = '') => String(value).split('?')[0].replace(/^https?:/, '');
+
+  const productEndpoint = (productUrl) => {
+    const url = new URL(productUrl, window.location.origin);
+    url.pathname = `${url.pathname.replace(/\/$/, '')}.js`;
+    url.search = '';
+    url.hash = '';
+    return url.toString();
+  };
+
+  const fetchProduct = (productUrl) => {
+    if (productCache.has(productUrl)) return Promise.resolve(productCache.get(productUrl));
+    if (pendingProducts.has(productUrl)) return pendingProducts.get(productUrl);
+
+    const request = fetch(productEndpoint(productUrl), {
+      headers: { Accept: 'application/json' }
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Product request failed');
+        return response.json();
+      })
+      .then((product) => {
+        product.url = productUrl;
+        productCache.set(productUrl, product);
+        return product;
+      })
+      .finally(() => pendingProducts.delete(productUrl));
+
+    pendingProducts.set(productUrl, request);
+    return request;
+  };
 
   const updateHeaderCart = (cart) => {
     const cartTrigger = document.querySelector('[data-header-cart-trigger]');
@@ -77,15 +108,6 @@
     return response.json();
   };
 
-  const setLoading = () => {
-    loading.hidden = false;
-    content.hidden = true;
-    errorState.hidden = true;
-    status.textContent = '';
-    bagLink.hidden = true;
-    addedVariantId = null;
-  };
-
   const finishClose = () => {
     root.hidden = true;
     document.documentElement.classList.remove('quick-view-scroll-lock');
@@ -94,8 +116,6 @@
 
   const close = () => {
     activeRequest += 1;
-    requestController?.abort();
-    requestController = null;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduceMotion && window.gsap && panel) {
@@ -110,7 +130,9 @@
   const openShell = () => {
     root.hidden = false;
     document.documentElement.classList.add('quick-view-scroll-lock');
+    if (panel) panel.scrollTop = 0;
     panel?.focus();
+
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!reduceMotion && window.gsap && panel) {
       window.gsap.killTweensOf(panel);
@@ -130,7 +152,7 @@
   };
 
   const renderImages = (images = []) => {
-    thumbs.innerHTML = '';
+    thumbs.replaceChildren();
     currentImages = images.slice(0, 6);
     currentImageIndex = 0;
 
@@ -145,6 +167,7 @@
       button.type = 'button';
       button.className = 'sp-quick-view__thumb';
       button.setAttribute('aria-label', `View image ${index + 1}`);
+
       const img = document.createElement('img');
       img.src = entry.src || entry;
       img.alt = '';
@@ -152,6 +175,7 @@
       button.addEventListener('click', () => setActiveImage(index));
       thumbs.appendChild(button);
     });
+
     setActiveImage(0);
   };
 
@@ -177,7 +201,6 @@
     archiveMeta.replaceChildren();
 
     const suppliedArchiveId = trigger.dataset.archiveId || '';
-
     if (suppliedArchiveId || values.length) {
       archiveBlock.hidden = false;
       archiveId.hidden = !suppliedArchiveId;
@@ -194,10 +217,51 @@
     }
   };
 
+  const renderPreview = (trigger, productUrl) => {
+    const card = trigger.closest('.product-card');
+    const cardImage = card?.querySelector('.product-card__image--primary');
+    const cardVendor = card?.querySelector('.product-card__vendor');
+    const cardTitle = card?.querySelector('.product-card__title');
+    const cardPrice = card?.querySelector('.price__current') || card?.querySelector('.price');
+
+    currentProduct = null;
+    currentImages = [];
+    currentImageIndex = 0;
+    addedVariantId = null;
+
+    thumbs.replaceChildren();
+    variantSelect.replaceChildren();
+    variantsWrap.hidden = true;
+    bagLink.hidden = true;
+    status.textContent = '';
+    addButton.disabled = true;
+    addButton.textContent = 'Add to bag';
+
+    vendor.textContent = cardVendor?.textContent?.trim() || '';
+    title.textContent = cardTitle?.textContent?.trim() || trigger.getAttribute('aria-label')?.replace(/^Quick view\s+/i, '') || 'Product';
+    price.textContent = cardPrice?.textContent?.trim() || '';
+
+    const previewSrc = cardImage?.currentSrc || cardImage?.src || '';
+    if (previewSrc) {
+      image.src = previewSrc;
+      image.alt = title.textContent;
+    } else {
+      image.removeAttribute('src');
+      image.alt = '';
+    }
+
+    fullLink.href = productUrl;
+    errorLink.href = productUrl;
+    renderArchiveMeta(trigger);
+    errorState.hidden = true;
+    content.hidden = false;
+  };
+
   const renderProduct = (product, trigger) => {
     currentProduct = product;
     addedVariantId = null;
     bagLink.hidden = true;
+    status.textContent = '';
     vendor.textContent = product.vendor || '';
     title.textContent = product.title || 'Untitled piece';
     fullLink.href = product.url || trigger.dataset.productUrl || '#';
@@ -205,7 +269,7 @@
 
     renderImages(product.images || []);
 
-    variantSelect.innerHTML = '';
+    variantSelect.replaceChildren();
     const variants = product.variants || [];
     variants.forEach((variant) => {
       const option = document.createElement('option');
@@ -214,52 +278,62 @@
       option.disabled = !variant.available;
       variantSelect.appendChild(option);
     });
+
     const firstAvailable = variants.find((variant) => variant.available) || variants[0];
     if (firstAvailable) variantSelect.value = String(firstAvailable.id);
     variantsWrap.hidden = variants.length <= 1 || (variants.length === 1 && variants[0].title === 'Default Title');
+
     syncVariantState();
     renderArchiveMeta(trigger);
-
-    loading.hidden = true;
     errorState.hidden = true;
     content.hidden = false;
-
-    if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      window.gsap.from(content.children, { opacity: 0, y: 10, duration: .4, stagger: .05, ease: 'power3.out' });
-    }
   };
 
   const open = async (trigger) => {
     previousFocus = trigger;
     activeRequest += 1;
     const requestId = activeRequest;
-    requestController?.abort();
-    requestController = new AbortController();
-
-    setLoading();
-    openShell();
-
     const productUrl = trigger.dataset.productUrl;
     if (!productUrl) return;
 
+    const cachedProduct = productCache.get(productUrl);
+    if (cachedProduct) {
+      renderProduct(cachedProduct, trigger);
+      openShell();
+      return;
+    }
+
+    renderPreview(trigger, productUrl);
+    openShell();
+
     try {
-      const response = await fetch(`${productUrl}.js`, {
-        headers: { Accept: 'application/json' },
-        signal: requestController.signal
-      });
-      if (!response.ok) throw new Error('Product request failed');
-      const product = await response.json();
+      const product = await fetchProduct(productUrl);
       if (requestId !== activeRequest || root.hidden) return;
-      product.url = productUrl;
       renderProduct(product, trigger);
-    } catch (error) {
-      if (error.name === 'AbortError' || requestId !== activeRequest) return;
-      loading.hidden = true;
-      content.hidden = true;
-      errorState.hidden = false;
-      errorLink.href = productUrl;
+    } catch (_) {
+      if (requestId !== activeRequest || root.hidden) return;
+      addButton.disabled = true;
+      status.textContent = 'Open the full piece to choose options.';
     }
   };
+
+  const prefetch = (trigger) => {
+    const productUrl = trigger?.dataset?.productUrl;
+    if (!productUrl || productCache.has(productUrl) || pendingProducts.has(productUrl)) return;
+    fetchProduct(productUrl).catch(() => {});
+  };
+
+  document.addEventListener('pointerover', (event) => {
+    prefetch(event.target.closest?.('[data-quick-view-trigger]'));
+  });
+
+  document.addEventListener('focusin', (event) => {
+    prefetch(event.target.closest?.('[data-quick-view-trigger]'));
+  });
+
+  document.addEventListener('pointerdown', (event) => {
+    prefetch(event.target.closest?.('[data-quick-view-trigger]'));
+  }, { passive: true });
 
   document.addEventListener('click', (event) => {
     const trigger = event.target.closest('[data-quick-view-trigger]');
@@ -268,6 +342,7 @@
       open(trigger);
       return;
     }
+
     if (event.target.closest('[data-quick-view-close]')) close();
   });
 
@@ -279,6 +354,7 @@
 
   addButton?.addEventListener('click', async () => {
     if (!variantSelect.value || addButton.disabled) return;
+
     const variantId = Number(variantSelect.value);
     addButton.disabled = true;
     status.textContent = 'Adding to bag…';
@@ -309,10 +385,12 @@
   document.addEventListener('keydown', (event) => {
     if (root.hidden) return;
     if (event.key === 'Escape') close();
+
     if (event.key === 'Tab' && panel) {
       const focusable = [...panel.querySelectorAll('a[href],button:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')]
         .filter((element) => element.offsetParent !== null);
       if (!focusable.length) return;
+
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       if (event.shiftKey && document.activeElement === first) {
