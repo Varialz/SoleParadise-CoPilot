@@ -65,7 +65,7 @@
             <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.collections_url }}">Designers</a></div></li>
             <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Clothing">Clothing</a></div></li>
             <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Footwear">Footwear</a></div></li>
-            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="/pages/features">Features</a></div></li>
+            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="/pages/contact">Contact</a></div></li>
           </ul>
         {%- endif -%}
       </nav>
@@ -97,9 +97,12 @@
     <div class="header-drawer__backdrop no-js-hidden" data-header-drawer-backdrop></div>
     <div class="header-drawer__panel" aria-label="{{ 'header.menu' | t }}" data-header-drawer-panel tabindex="-1">
       <div class="header-drawer__head">
-        <div>
-          <span class="header-drawer__eyebrow">Sole Paradise / Chicago</span>
-          <span class="header-drawer__brand">{{ shop.name | escape }}</span>
+        <div class="header-drawer__brand-lockup">
+          <img class="header-drawer__mark" src="{{ 'sole-paradise-sp-mark.webp' | asset_url }}" alt="" width="92" height="92" loading="eager">
+          <div>
+            <span class="header-drawer__eyebrow">Sole Paradise / Chicago</span>
+            <span class="header-drawer__brand">{{ shop.name | escape }}</span>
+          </div>
         </div>
         <button type="button" class="site-header__trigger header-drawer__close no-js-hidden" aria-label="{{ 'header.close_menu' | t }}" data-header-drawer-close>{%- render 'icon', name: 'close' -%}</button>
       </div>
@@ -114,7 +117,7 @@
             <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.collections_url }}">Designers</a></div></li>
             <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Clothing">Clothing</a></div></li>
             <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Footwear">Footwear</a></div></li>
-            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="/pages/features">Features</a></div></li>
+            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="/pages/contact">Contact</a></div></li>
           </ul>
         {%- endif -%}
       </nav>
