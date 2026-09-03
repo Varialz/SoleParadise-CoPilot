@@ -6,10 +6,19 @@
   if media_alt == blank
     assign media_alt = product.title
   endif
+
+  assign media_ratio = media.aspect_ratio | default: media.preview_image.aspect_ratio | default: 1
+  assign media_shape = 'balanced'
+  if media_ratio > 1.18
+    assign media_shape = 'landscape'
+  elsif media_ratio < 0.82
+    assign media_shape = 'portrait'
+  endif
+  assign media_image_class = 'product-media__image product-media__image--' | append: media_shape
 -%}
 {%- case media.media_type -%}
   {%- when 'image' -%}
-    {{ media | image_url: width: 1600 | image_tag: loading: media_loading, fetchpriority: media_priority, sizes: media_sizes, widths: '360,480,640,840,1080,1400,1600', class: 'product-media__image', alt: media_alt }}
+    {{ media | image_url: width: 1600 | image_tag: loading: media_loading, fetchpriority: media_priority, sizes: media_sizes, widths: '360,480,640,840,1080,1400,1600', class: media_image_class, alt: media_alt }}
   {%- when 'video' -%}
     {{ media | video_tag: controls: true, preload: 'none', image_size: '1600x', class: 'product-media__video' }}
   {%- when 'external_video' -%}
@@ -17,5 +26,5 @@
   {%- when 'model' -%}
     <div class="product-media__model">{{ media | model_viewer_tag: class: 'product-media__model-viewer', reveal: 'interaction', toggleable: true }}</div>
   {%- else -%}
-    {%- if media.preview_image -%}{{ media.preview_image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: media_sizes, widths: '360,480,640,840,1080,1200', class: 'product-media__image', alt: media_alt }}{%- endif -%}
+    {%- if media.preview_image -%}{{ media.preview_image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: media_sizes, widths: '360,480,640,840,1080,1200', class: media_image_class, alt: media_alt }}{%- endif -%}
 {%- endcase -%}
