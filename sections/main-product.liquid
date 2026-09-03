@@ -35,6 +35,9 @@
   assign measurements = product.metafields.custom.measurements.value | default: product.metafields.custom.measurements
   assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
   assign instagram_permalink = product.metafields.custom.instagram_permalink.value | default: product.metafields.custom.instagram_permalink
+  if archive_size == 0 or archive_size == '0'
+    assign archive_size = ''
+  endif
   assign has_archive_details = false
   if item_state != blank or archive_size != blank or condition != blank or measurements != blank or flaws != blank
     assign has_archive_details = true
@@ -66,7 +69,7 @@
       {%- if from_feed -%}
         <div class="product__archive-kicker" data-sp-product-reveal>
           <span>From the feed</span>
-          <span>{% if archive_id != blank %}{{ archive_id | escape }}{% else %}1 of 1{% endif %}</span>
+          {%- if archive_id != blank -%}<span>{{ archive_id | escape }}</span>{%- endif -%}
         </div>
       {%- endif -%}
 
@@ -75,9 +78,8 @@
         <h1 class="product__title">{{ product.title | escape }}</h1>
         <div class="product__price" data-product-price>{%- if has_variant -%}{%- render 'product-price', product: product, variant: selected_variant -%}{%- else -%}<p class="price price--unavailable">{{ 'products.page.price_unavailable' | t }}</p>{%- endif -%}</div>
 
-        {%- if from_feed or item_state != blank or condition != blank -%}
+        {%- if item_state != blank or condition != blank -%}
           <div class="product__status-chips" aria-label="Piece status">
-            {%- if from_feed -%}<span>1 of 1</span>{%- endif -%}
             {%- if item_state != blank -%}<span>{{ item_state | escape }}</span>{%- endif -%}
             {%- if condition != blank -%}<span>{{ condition | escape }}</span>{%- endif -%}
           </div>

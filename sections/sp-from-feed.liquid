@@ -43,6 +43,9 @@
                     assign react_item_state = product.metafields.custom.item_state.value | default: product.metafields.custom.item_state
                     assign react_archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
                     assign react_alt = product.featured_image.alt | default: product.title
+                    if react_size == 0 or react_size == '0'
+                      assign react_size = ''
+                    endif
                   -%}
                   {
                     "title": {{ product.title | json }},
@@ -73,6 +76,9 @@
               assign item_state = product.metafields.custom.item_state.value | default: product.metafields.custom.item_state
               assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
               assign tile_alt = product.featured_image.alt | default: product.title
+              if archive_size == 0 or archive_size == '0'
+                assign archive_size = ''
+              endif
             -%}
             <article class="sp-feed-tile" data-sp-feed-tile>
               <a class="sp-feed-tile__link" href="{{ product.url | escape }}" aria-label="View {{ product.title | escape }}">

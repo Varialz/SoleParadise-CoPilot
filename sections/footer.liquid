@@ -36,24 +36,33 @@
               {%- endif -%}
 
             {%- when 'newsletter' -%}
+              {%- assign newsletter_form_id = 'FooterNewsletter-' | append: block.id -%}
               <div class="footer-block footer-block--newsletter" {{ block.shopify_attributes }}>
                 {%- if block.settings.heading != blank -%}<h2 class="footer-block__heading">{{ block.settings.heading | escape }}</h2>{%- endif -%}
                 {%- if block.settings.text != blank -%}<p class="footer-block__text">{{ block.settings.text | escape | newline_to_br }}</p>{%- endif -%}
-                {%- form 'customer', id: 'FooterNewsletter-' | append: block.id, class: 'footer-newsletter-form' -%}
+                <form
+                  id="{{ newsletter_form_id }}"
+                  class="footer-newsletter-form"
+                  method="post"
+                  action="{{ routes.root_url }}contact#{{ newsletter_form_id }}"
+                  accept-charset="UTF-8"
+                  data-footer-newsletter-form
+                  data-success-message="{{ 'footer.newsletter.success' | t | escape }}"
+                  data-error-message="{{ 'footer.newsletter.error' | t | escape }}"
+                >
+                  <input type="hidden" name="form_type" value="customer">
+                  <input type="hidden" name="utf8" value="✓">
                   <input type="hidden" name="contact[tags]" value="newsletter">
-                  {%- if form.posted_successfully? -%}
-                    <p class="footer-newsletter-form__message" role="status" tabindex="-1" autofocus>{{ 'footer.newsletter.success' | t }}</p>
-                  {%- else -%}
-                    <div class="field footer-newsletter-form__field">
-                      <label class="visually-hidden" for="FooterNewsletter-email-{{ block.id }}">{{ 'footer.newsletter.email_label' | t }}</label>
-                      <div class="footer-newsletter-form__row">
-                        <input id="FooterNewsletter-email-{{ block.id }}" type="email" name="contact[email]" class="field__input footer-newsletter-form__input" value="{{ form.email | escape }}" placeholder="{{ 'footer.newsletter.email_placeholder' | t }}" autocomplete="email" autocorrect="off" autocapitalize="off" required{% if form.errors %} aria-invalid="true" aria-describedby="FooterNewsletter-error-{{ block.id }}" autofocus{% endif %}>
-                        <button type="submit" class="button button--primary footer-newsletter-form__submit">{{ 'footer.newsletter.submit' | t }}</button>
-                      </div>
-                      {%- if form.errors -%}<p id="FooterNewsletter-error-{{ block.id }}" class="field__error" role="alert">{% if form.errors.messages.email != blank %}{{ form.errors.translated_fields.email }} {{ form.errors.messages.email }}{% else %}{{ 'footer.newsletter.error' | t }}{% endif %}</p>{%- endif -%}
+                  <input type="hidden" name="contact[accepts_marketing]" value="true">
+                  <div class="field footer-newsletter-form__field">
+                    <label class="visually-hidden" for="FooterNewsletter-email-{{ block.id }}">{{ 'footer.newsletter.email_label' | t }}</label>
+                    <div class="footer-newsletter-form__row">
+                      <input id="FooterNewsletter-email-{{ block.id }}" type="email" name="contact[email]" class="field__input footer-newsletter-form__input" placeholder="{{ 'footer.newsletter.email_placeholder' | t }}" autocomplete="email" autocorrect="off" autocapitalize="off" aria-describedby="FooterNewsletter-status-{{ block.id }}" required>
+                      <button type="submit" class="button button--primary footer-newsletter-form__submit" data-footer-newsletter-submit>{{ 'footer.newsletter.submit' | t }}</button>
                     </div>
-                  {%- endif -%}
-                {%- endform -%}
+                    <p id="FooterNewsletter-status-{{ block.id }}" class="footer-newsletter-form__message" role="status" aria-live="polite" data-footer-newsletter-status hidden></p>
+                  </div>
+                </form>
               </div>
 
             {%- when 'visit' -%}

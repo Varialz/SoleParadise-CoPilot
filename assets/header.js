@@ -46,10 +46,6 @@
     window.SoleParadiseMotion?.animateMenu?.(panel);
   }
 
-  function animateDrawer(panel, backdrop, open) {
-    window.SoleParadiseMotion?.animateDrawer?.(panel, backdrop, open);
-  }
-
   function syncOverlayHeaders() {
     var scrolled = window.scrollY > 18;
     document.querySelectorAll('[data-header-overlay]').forEach(function (header) {
@@ -108,8 +104,6 @@
     var drawer = header.querySelector('[data-header-drawer]');
     var trigger = header.querySelector('[data-header-drawer-open]');
     var panel = drawer && drawer.querySelector('[data-header-drawer-panel]');
-    var backdrop = drawer && drawer.querySelector('[data-header-drawer-backdrop]');
-    if (panel) animateDrawer(panel, backdrop, false);
     if (drawer) drawer.classList.remove(OPEN_CLASS);
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
     if (panel) {
@@ -125,14 +119,12 @@
     var drawer = header.querySelector('[data-header-drawer]');
     var trigger = header.querySelector('[data-header-drawer-open]');
     var panel = drawer && drawer.querySelector('[data-header-drawer-panel]');
-    var backdrop = drawer && drawer.querySelector('[data-header-drawer-backdrop]');
     if (!drawer || !trigger) return;
     drawer.classList.add(OPEN_CLASS);
     trigger.setAttribute('aria-expanded', 'true');
     if (panel) {
       panel.setAttribute('role', 'dialog');
       panel.setAttribute('aria-modal', 'true');
-      animateDrawer(panel, backdrop, true);
     }
     document.documentElement.classList.add(SCROLL_LOCK_CLASS);
     activeHeader = header;

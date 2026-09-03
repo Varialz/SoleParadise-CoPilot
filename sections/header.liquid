@@ -1,14 +1,11 @@
 {%- liquid
   assign menu = section.settings.menu
   assign sticky = section.settings.enable_sticky_header
+  assign utility_speed = section.settings.utility_speed | default: 24
   assign cart_count = cart.item_count
   assign show_account = false
   if shop.customer_accounts_enabled
     assign show_account = true
-  endif
-  assign utility_url = section.settings.utility_link
-  if utility_url == blank and section.settings.utility_link_label != blank
-    assign utility_url = '/pages/sell-to-paradise'
   endif
   assign overlay_header = false
   if request.page_type == 'index'
@@ -26,12 +23,18 @@
 {%- endif -%}
 <header class="site-header{% if overlay_header %} site-header--overlay{% endif %}{% unless section.settings.show_utility_bar %} site-header--no-utility{% endunless %}" data-header{% if overlay_header %} data-header-overlay{% endif %}>
   {%- if section.settings.show_utility_bar -%}
-    <div class="site-header__utility-bar">
-      <div class="page-width site-header__utility-bar-inner">
-        <p>{{ section.settings.utility_text | escape }}</p>
-        {%- if section.settings.utility_link_label != blank and utility_url != blank -%}
-          <a href="{{ utility_url | escape }}">{{ section.settings.utility_link_label | escape }} <span aria-hidden="true">→</span></a>
-        {%- endif -%}
+    <div class="site-header__utility-bar" role="region" aria-label="Announcement">
+      <p class="visually-hidden">{{ section.settings.utility_text | escape }}</p>
+      <div class="site-header__utility-bar-inner" aria-hidden="true">
+        <div class="site-header__ticker" style="--ticker-duration: {{ utility_speed }}s">
+          {%- for ticker_group in (1..2) -%}
+            <div class="site-header__ticker-group">
+              {%- for ticker_item in (1..4) -%}
+                <span class="site-header__ticker-item">{{ section.settings.utility_text | escape }} <span>✦</span></span>
+              {%- endfor -%}
+            </div>
+          {%- endfor -%}
+        </div>
       </div>
     </div>
   {%- endif -%}
@@ -116,14 +119,6 @@
         {%- endif -%}
       </nav>
 
-      {%- if section.settings.utility_link_label != blank and utility_url != blank -%}
-        <div class="header-drawer__seller">
-          <a class="header-drawer__seller-link" href="{{ utility_url | escape }}">
-            <span>{{ section.settings.utility_link_label | escape }}</span>
-            <span aria-hidden="true">→</span>
-          </a>
-        </div>
-      {%- endif -%}
       <div class="header-drawer__footer">
         <span>Chicago / Illinois</span>
         <span>Authenticated designer resale</span>
@@ -144,8 +139,7 @@
     {"type":"checkbox","id":"enable_sticky_header","label":"Enable sticky header","default":true},
     {"type":"checkbox","id":"show_utility_bar","label":"Show utility bar","default":true},
     {"type":"text","id":"utility_text","label":"Utility text","default":"Chicago / IL · Authenticated designer resale · Worldwide shipping"},
-    {"type":"text","id":"utility_link_label","label":"Utility link label","default":"Sell to Paradise"},
-    {"type":"url","id":"utility_link","label":"Utility link","info":"If blank, Sell to Paradise falls back to /pages/sell-to-paradise."}
+    {"type":"range","id":"utility_speed","label":"Announcement speed","min":12,"max":40,"step":2,"unit":"s","default":24}
   ],
   "enabled_on":{"groups":["header"]}
 }

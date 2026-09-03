@@ -3,7 +3,7 @@
     "hero": {
       "type": "sp-hero",
       "settings": {
-        "eyebrow": "One of one pieces · Curated daily",
+        "eyebrow": "Curated designer pieces · Updated regularly",
         "heading": "CHICAGO\nTO THE WORLD.",
         "copy": "Rare designer, archive and pre-owned pieces selected in Chicago.",
         "button_label": "Shop new arrivals",
@@ -23,12 +23,51 @@
       }
     },
     "arrivals": {
-      "type": "sp-featured-collection",
+      "type": "sp-brand-showcase",
+      "blocks": {
+        "all": {"type":"tab","settings":{"label":"All","button_label":"Shop all new arrivals"}},
+        "clothing": {"type":"tab","settings":{"label":"Clothing","category_match":"clothing","button_label":"Shop all clothing"}},
+        "footwear": {"type":"tab","settings":{"label":"Footwear","category_match":"footwear","button_label":"Shop all footwear"}},
+        "accessories": {"type":"tab","settings":{"label":"Accessories","category_match":"accessories","button_label":"Shop all accessories"}}
+      },
+      "block_order": ["all","clothing","footwear","accessories"],
       "settings": {
         "eyebrow": "Just in",
         "heading": "New arrivals",
-        "limit": 8,
-        "show_secondary_image": true
+        "vendor": "",
+        "product_limit": 8
+      }
+    },
+    "chrome_showcase": {
+      "type": "sp-brand-showcase",
+      "blocks": {
+        "all": {"type":"tab","settings":{"label":"All"}},
+        "tees": {"type":"tab","settings":{"label":"Tees","category_match":"shirt"}},
+        "hoodies": {"type":"tab","settings":{"label":"Hoodies","category_match":"hoodie"}},
+        "hats": {"type":"tab","settings":{"label":"Hats","category_match":"hat"}},
+        "accessories": {"type":"tab","settings":{"label":"Accessories","category_match":"accessories"}}
+      },
+      "block_order": ["all","tees","hoodies","hats","accessories"],
+      "settings": {
+        "heading": "Chrome Hearts",
+        "vendor": "Chrome Hearts",
+        "product_limit": 8
+      }
+    },
+    "other_showcase": {
+      "type": "sp-brand-showcase",
+      "blocks": {
+        "rick": {"type":"tab","settings":{"label":"Rick Owens","vendor":"Rick Owens"}},
+        "bottega": {"type":"tab","settings":{"label":"Bottega Desires","vendor":"Bottega Desires"}},
+        "amiri": {"type":"tab","settings":{"label":"Amiri","vendor":"Amiri"}},
+        "balenciaga": {"type":"tab","settings":{"label":"Balenciaga","vendor":"Balenciaga"}},
+        "gallery": {"type":"tab","settings":{"label":"Gallery Dept.","vendor":"Gallery Dept."}}
+      },
+      "block_order": ["rick","bottega","amiri","balenciaga","gallery"],
+      "settings": {
+        "heading": "Other brands",
+        "vendor": "",
+        "product_limit": 8
       }
     },
     "edit": {
@@ -56,20 +95,6 @@
         "copy": "Edits, arrivals and stories around the pieces."
       }
     },
-    "brands": {
-      "type": "sp-brand-index",
-      "blocks": {
-        "ch": {"type":"brand","settings":{"name":"Chrome Hearts"}},
-        "bd": {"type":"brand","settings":{"name":"Bottega Desires"}},
-        "rick": {"type":"brand","settings":{"name":"Rick Owens"}},
-        "amiri": {"type":"brand","settings":{"name":"Amiri"}},
-        "bal": {"type":"brand","settings":{"name":"Balenciaga"}},
-        "gallery": {"type":"brand","settings":{"name":"Gallery Dept."}},
-        "saint": {"type":"brand","settings":{"name":"Saint Mxxxxxx"}}
-      },
-      "block_order": ["ch","bd","rick","amiri","bal","gallery","saint"],
-      "settings": {"eyebrow":"Designers","heading":"Shop by designer"}
-    },
     "seller": {
       "type": "sp-seller-cta",
       "settings": {
@@ -84,11 +109,11 @@
       "settings": {
         "eyebrow": "Paradise Archive",
         "heading": "GONE, NOT\nFORGOTTEN.",
-        "copy": "Past one-of-one pieces stay visible as proof of what moves through Paradise.",
+        "copy": "Past pieces stay visible as proof of what moves through Paradise.",
         "limit": 6,
         "show_collection_link": true
       }
     }
   },
-  "order": ["hero","feed","arrivals","edit","features","brands","seller","archive"]
+  "order": ["hero","arrivals","chrome_showcase","other_showcase","feed","edit","features","seller","archive"]
 }

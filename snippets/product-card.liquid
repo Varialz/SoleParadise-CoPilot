@@ -74,6 +74,10 @@
     assign condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition
     assign archive_id = product.metafields.custom.archive_id.value | default: product.metafields.custom.archive_id
 
+    if archive_size == 0 or archive_size == '0'
+      assign archive_size = ''
+    endif
+
     assign has_archive_meta = false
     if archive_size != blank or condition != blank or item_state != blank or archive_id != blank
       assign has_archive_meta = true
@@ -90,9 +94,9 @@
         {%- endunless -%}
       {%- endif -%}
 
-      {%- if from_feed -%}
-        <span class="product-card__provenance" aria-label="One of one archive piece">
-          {% if archive_id != blank %}{{ archive_id | escape }}{% else %}1 of 1{% endif %}
+      {%- if from_feed and archive_id != blank -%}
+        <span class="product-card__provenance" aria-label="Archive reference">
+          {{ archive_id | escape }}
         </span>
       {%- endif -%}
 

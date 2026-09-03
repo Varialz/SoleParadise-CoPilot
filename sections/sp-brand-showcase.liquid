@@ -1,0 +1,152 @@
+<section class="brand-showcase" data-brand-showcase data-section-id="{{ section.id }}">
+  <div class="brand-showcase__inner page-width">
+    <header class="brand-showcase__header">
+      {%- if section.settings.eyebrow != blank -%}<p class="brand-showcase__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="brand-showcase__title">{{ section.settings.heading | escape }}</h2>
+    </header>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="brand-showcase__tabs" role="tablist" aria-label="Shop {{ section.settings.heading | escape }} by category">
+        {%- for block in section.blocks -%}
+          {%- assign tab_id = 'BrandShowcaseTab-' | append: section.id | append: '-' | append: block.id -%}
+          {%- assign panel_id = 'BrandShowcasePanel-' | append: section.id | append: '-' | append: block.id -%}
+          <button
+            id="{{ tab_id }}"
+            class="brand-showcase__tab{% if forloop.first %} is-active{% endif %}"
+            type="button"
+            role="tab"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            aria-controls="{{ panel_id }}"
+            tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+            data-brand-showcase-tab
+          >{{ block.settings.label | default: 'All' | escape }}</button>
+        {%- endfor -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign tab_id = 'BrandShowcaseTab-' | append: section.id | append: '-' | append: block.id
+          assign panel_id = 'BrandShowcasePanel-' | append: section.id | append: '-' | append: block.id
+          assign tab_collection = block.settings.collection
+          assign target_vendor = block.settings.vendor | default: section.settings.vendor
+          assign target_vendor_handle = target_vendor | handleize
+          assign target_category = block.settings.category_match
+          assign target_category_handle = target_category | handleize
+          assign products_shown = 0
+          assign cta_url = tab_collection.url
+          if cta_url == blank and target_vendor != blank
+            assign encoded_vendor = target_vendor | url_encode
+            assign cta_url = routes.search_url | append: '?type=product&q=' | append: encoded_vendor
+          endif
+          if cta_url == blank
+            assign cta_url = routes.all_products_collection_url
+          endif
+          assign cta_label = block.settings.button_label
+          if cta_label == blank
+            assign cta_label = 'Shop all ' | append: block.settings.label
+          endif
+        -%}
+        <div
+          id="{{ panel_id }}"
+          class="brand-showcase__panel"
+          role="tabpanel"
+          aria-labelledby="{{ tab_id }}"
+          data-brand-showcase-panel
+          {{ block.shopify_attributes }}
+          {% unless forloop.first %}hidden{% endunless %}
+        >
+          <div class="brand-showcase__carousel">
+            <button type="button" class="brand-showcase__arrow brand-showcase__arrow--previous" aria-label="Previous products" data-brand-showcase-previous>←</button>
+            <div class="brand-showcase__track" data-brand-showcase-track>
+              {%- if tab_collection != blank -%}
+                {%- for product in tab_collection.products limit: section.settings.product_limit -%}
+                  {%- render 'brand-showcase-card', product: product, brand_label: section.settings.heading -%}
+                  {%- assign products_shown = products_shown | plus: 1 -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for product in collections.all.products -%}
+                  {%- liquid
+                    assign vendor_matches = true
+                    assign category_matches = true
+                    if target_vendor_handle != blank
+                      assign product_vendor_handle = product.vendor | handleize
+                      unless product_vendor_handle == target_vendor_handle
+                        assign vendor_matches = false
+                      endunless
+                    endif
+                    if target_category_handle != blank and target_category_handle != 'all'
+                      assign product_type_handle = product.type | handleize
+                      assign product_tags_handle = product.tags | join: ' ' | handleize
+                      unless product_type_handle contains target_category_handle or product_tags_handle contains target_category_handle
+                        assign category_matches = false
+                      endunless
+                    endif
+                  -%}
+                  {%- if vendor_matches and category_matches -%}
+                    {%- render 'brand-showcase-card', product: product, brand_label: section.settings.heading -%}
+                    {%- assign products_shown = products_shown | plus: 1 -%}
+                    {%- if products_shown >= section.settings.product_limit -%}{%- break -%}{%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+
+              {%- if products_shown == 0 and request.design_mode -%}
+                <div class="brand-showcase__empty">
+                  <div>
+                    <p>No products are connected to {{ block.settings.label | default: section.settings.heading | escape }}.</p>
+                    <span>Select a collection in this tab or match its Shopify vendor and product type.</span>
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+            <button type="button" class="brand-showcase__arrow brand-showcase__arrow--next" aria-label="Next products" data-brand-showcase-next>→</button>
+          </div>
+
+          {%- if products_shown > 0 or request.design_mode -%}
+            <div class="brand-showcase__cta-wrap">
+              <a class="brand-showcase__cta" href="{{ cta_url | escape }}">{{ cta_label | escape }}</a>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name":"SP — Brand carousel",
+  "settings":[
+    {"type":"text","id":"eyebrow","label":"Eyebrow"},
+    {"type":"text","id":"heading","label":"Brand heading","default":"Chrome Hearts"},
+    {"type":"text","id":"vendor","label":"Default Shopify vendor","default":"Chrome Hearts","info":"Used when a tab does not have a collection or its own vendor."},
+    {"type":"range","id":"product_limit","label":"Products per tab","min":4,"max":12,"step":1,"default":8}
+  ],
+  "blocks":[
+    {
+      "type":"tab",
+      "name":"Category / brand tab",
+      "limit":8,
+      "settings":[
+        {"type":"text","id":"label","label":"Tab label","default":"All"},
+        {"type":"collection","id":"collection","label":"Collection","info":"Best option: select the exact collection for this tab."},
+        {"type":"text","id":"vendor","label":"Vendor override","info":"Useful when this section is an Other Brands carousel."},
+        {"type":"text","id":"category_match","label":"Product type or tag to match","info":"Used only when no collection is selected. Leave blank for all products from the vendor."},
+        {"type":"text","id":"button_label","label":"Button label"}
+      ]
+    }
+  ],
+  "max_blocks":8,
+  "presets":[
+    {
+      "name":"SP — Brand carousel",
+      "blocks":[
+        {"type":"tab","settings":{"label":"All"}},
+        {"type":"tab","settings":{"label":"Tops","category_match":"Tops"}},
+        {"type":"tab","settings":{"label":"Bottoms","category_match":"Bottoms"}},
+        {"type":"tab","settings":{"label":"Accessories","category_match":"Accessories"}}
+      ]
+    }
+  ]
+}
+{% endschema %}

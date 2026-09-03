@@ -147,6 +147,14 @@ function FeedIsland({ products, onQuickView }) {
 
   const onPointerDown = (event) => {
     if (event.button !== 0) return;
+    // Links and buttons must keep their native click behavior. Capturing their
+    // pointer on the carousel rail causes the eventual click to target the rail
+    // instead, which breaks both Quick view and View piece.
+    if (event.target.closest?.('a, button')) {
+      drag.current.active = false;
+      drag.current.moved = false;
+      return;
+    }
     const rail = railRef.current;
     if (!rail) return;
     drag.current = { active: true, x: event.clientX, left: rail.scrollLeft, moved: false };

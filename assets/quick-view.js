@@ -10,7 +10,6 @@
   const errorState = root.querySelector('[data-quick-view-error]');
   const image = root.querySelector('[data-quick-view-image]');
   const thumbs = root.querySelector('[data-quick-view-thumbs]');
-  const imageIndex = root.querySelector('[data-quick-view-image-index]');
   const vendor = root.querySelector('[data-quick-view-vendor]');
   const title = root.querySelector('[data-quick-view-title]');
   const price = root.querySelector('[data-quick-view-price]');
@@ -127,7 +126,6 @@
     currentImageIndex = boundedIndex;
     image.src = selected.src || selected;
     image.alt = `${currentProduct?.title || 'Product'} — image ${boundedIndex + 1}`;
-    imageIndex.textContent = `${String(boundedIndex + 1).padStart(2, '0')} / ${String(currentImages.length).padStart(2, '0')}`;
     [...thumbs.children].forEach((button, i) => button.classList.toggle('is-active', i === boundedIndex));
   };
 
@@ -139,7 +137,6 @@
     if (!currentImages.length) {
       image.removeAttribute('src');
       image.alt = '';
-      imageIndex.textContent = '00 / 00';
       return;
     }
 
@@ -179,9 +176,12 @@
     const values = [trigger.dataset.size, trigger.dataset.condition, trigger.dataset.itemState].filter(Boolean);
     archiveMeta.replaceChildren();
 
-    if (trigger.dataset.archive === 'true' || values.length) {
+    const suppliedArchiveId = trigger.dataset.archiveId || '';
+
+    if (suppliedArchiveId || values.length) {
       archiveBlock.hidden = false;
-      archiveId.textContent = trigger.dataset.archiveId || '1 of 1';
+      archiveId.hidden = !suppliedArchiveId;
+      archiveId.textContent = suppliedArchiveId;
       values.forEach((value) => {
         const span = document.createElement('span');
         span.textContent = value;
@@ -189,6 +189,8 @@
       });
     } else {
       archiveBlock.hidden = true;
+      archiveId.hidden = true;
+      archiveId.textContent = '';
     }
   };
 
