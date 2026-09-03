@@ -81,6 +81,16 @@ function FeedCard({ product, index, active, onQuickView, onActivate }) {
         h('div', { className: 'mt-1 flex flex-wrap gap-x-2 gap-y-1 text-[8px] uppercase tracking-[0.08em] text-[#7b8188]' }, product.size ? h('span', null, product.size) : null, product.condition ? h('span', null, product.condition) : null, product.itemState ? h('span', null, product.itemState) : null)
       ),
       h('span', { className: 'shrink-0 text-[11px] font-semibold text-[#11151a]' }, product.price)
+    ),
+    h(
+      'a',
+      {
+        href: product.url,
+        className: 'sp-feed-card__mobile-shop',
+        'aria-label': `Shop ${product.title}`
+      },
+      'Shop product',
+      h(ArrowIcon, { direction: 1 })
     )
   );
 }
