@@ -1,5 +1,6 @@
-/* Desktop PDP media containment
-   Keep every product fully visible inside the hero stage without changing mobile behavior. */
+/* Desktop PDP media stage
+   Treat product photography like a premium catalogue: consistent breathing room,
+   full visibility, and no source image gets to dictate the composition. */
 @media (min-width: 1000px) {
   .product-gallery__track {
     min-width: 0;
@@ -7,7 +8,7 @@
 
   .product-gallery__item {
     width: 100%;
-    height: clamp(430px, 58vh, 540px) !important;
+    height: clamp(460px, 60vh, 580px) !important;
     min-height: 0 !important;
     aspect-ratio: auto !important;
     display: none !important;
@@ -20,15 +21,16 @@
     display: grid !important;
   }
 
-  /* Do not stretch portrait photography to the full column.
-     Let the image keep its natural aspect ratio, then cap it inside the stage. */
+  /* Keep the source image at its natural aspect ratio, but constrain it to a
+     deliberate inner stage. Wide tees cannot become billboards; tall bags still
+     receive substantially more vertical room than horizontal room. */
   .product-gallery__item .product-media__image,
   .product-gallery__item .product-gallery__placeholder-svg {
     display: block !important;
     width: auto !important;
     height: auto !important;
-    max-width: min(86%, 620px) !important;
-    max-height: calc(100% - 2rem) !important;
+    max-width: min(74%, 580px) !important;
+    max-height: 84% !important;
     margin: auto !important;
     padding: 0 !important;
     align-self: center !important;
