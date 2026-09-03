@@ -53,7 +53,7 @@
     <script src="{{ 'quick-view-v3.js' | asset_url }}" defer="defer"></script>
     {%- if request.page_type == 'collection' -%}<script src="{{ 'collection.js' | asset_url }}" defer="defer"></script>{%- endif -%}
     {%- if request.page_type == 'product' -%}<script src="{{ 'product.js' | asset_url }}" defer="defer"></script>{%- endif -%}
-    {%- if request.page_type == 'product' -%}<script src="{{ 'product-media-viewer.js' | asset_url }}" defer="defer"></script>{%- endif -%}
+    {%- if request.page_type == 'product' -%}<script src="{{ 'product-media-viewer-v2.js' | asset_url }}" defer="defer"></script>{%- endif -%}
   </head>
   <body class="template-{{ request.page_type | handle }}">
     <a class="skip-link" href="#main-content" tabindex="0">{{ 'accessibility.skip_to_content' | t }}</a>
