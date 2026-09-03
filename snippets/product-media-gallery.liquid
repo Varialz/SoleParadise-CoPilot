@@ -2,6 +2,7 @@
   assign media_count = product.media.size
   assign media_sizes = '(min-width: 1000px) 57vw, 100vw'
   assign track_id = 'ProductMediaTrack-' | append: section_id
+  assign viewer_id = 'ProductMediaViewer-' | append: section_id
 -%}
 
 {%- if media_count > 0 -%}
@@ -19,9 +20,23 @@
             assign item_loading = 'eager'
             assign item_priority = 'high'
           endif
+          assign viewer_alt = media.alt | default: product.title
         -%}
         <div class="product-gallery__item{% if is_active %} is-active{% endif %}" data-product-media-item data-media-id="{{ media.id }}" data-media-type="{{ media.media_type }}">
           {%- render 'product-media', media: media, product: product, is_active: is_active, media_loading: item_loading, media_priority: item_priority, media_sizes: media_sizes -%}
+          {%- if media.media_type == 'image' and media.preview_image != blank -%}
+            <button
+              class="product-gallery__expand no-js-hidden"
+              type="button"
+              data-product-media-expand
+              data-media-id="{{ media.id }}"
+              data-full-image="{{ media.preview_image | image_url: width: 2400 | escape }}"
+              data-full-alt="{{ viewer_alt | escape }}"
+              aria-haspopup="dialog"
+              aria-controls="{{ viewer_id }}"
+              aria-label="View full-size image {{ forloop.index }} of {{ media_count }}"
+            >Expand</button>
+          {%- endif -%}
         </div>
       {%- endfor -%}
     </div>
@@ -57,6 +72,29 @@
         {%- endfor -%}
       </ul>
     {%- endif -%}
+
+    <div class="product-media-viewer" id="{{ viewer_id }}" data-product-media-viewer hidden aria-hidden="true">
+      <button class="product-media-viewer__backdrop" type="button" data-product-media-viewer-close aria-label="Close full-screen image viewer"></button>
+      <div class="product-media-viewer__dialog" data-product-media-viewer-dialog role="dialog" aria-modal="true" aria-label="Full-screen product image viewer" tabindex="-1">
+        <div class="product-media-viewer__toolbar">
+          <span class="product-media-viewer__counter" data-product-media-viewer-counter>1 / 1</span>
+          <div class="product-media-viewer__controls">
+            <button class="product-media-viewer__control" type="button" data-product-media-viewer-zoom-out aria-label="Zoom out">&minus;</button>
+            <button class="product-media-viewer__control product-media-viewer__reset" type="button" data-product-media-viewer-reset aria-label="Reset zoom">100%</button>
+            <button class="product-media-viewer__control" type="button" data-product-media-viewer-zoom-in aria-label="Zoom in">+</button>
+            <button class="product-media-viewer__close" type="button" data-product-media-viewer-close aria-label="Close full-screen image viewer">&times;</button>
+          </div>
+        </div>
+
+        <div class="product-media-viewer__stage" data-product-media-viewer-stage>
+          <img class="product-media-viewer__image" data-product-media-viewer-image src="" alt="" draggable="false" width="2400" height="2400">
+        </div>
+
+        <button class="product-media-viewer__nav product-media-viewer__prev" type="button" data-product-media-viewer-prev aria-label="Previous product image">&#8592;</button>
+        <button class="product-media-viewer__nav product-media-viewer__next" type="button" data-product-media-viewer-next aria-label="Next product image">&#8594;</button>
+        <p class="product-media-viewer__hint">Zoom with + / &minus; or your scroll wheel. Drag the image when zoomed.</p>
+      </div>
+    </div>
   </div>
 {%- else -%}
   <div class="product-gallery product-gallery--empty" data-product-gallery><div class="product-gallery__track"><div class="product-gallery__item is-active">{{ 'product-1' | placeholder_svg_tag: 'product-gallery__placeholder-svg' }}</div></div></div>
