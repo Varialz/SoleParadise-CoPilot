@@ -82,6 +82,11 @@
     if archive_size != blank or condition != blank or item_state != blank or archive_id != blank
       assign has_archive_meta = true
     endif
+
+    assign quick_view_image = ''
+    if featured_image != blank
+      assign quick_view_image = featured_image | image_url: width: 1200
+    endif
   -%}
 
   <article class="product-card{% if from_feed %} product-card--archive{% endif %}" data-sp-reveal>
@@ -114,6 +119,10 @@
         type="button"
         data-quick-view-trigger
         data-product-url="{{ product.url | escape }}"
+        data-preview-title="{{ product.title | escape }}"
+        data-preview-vendor="{{ product.vendor | escape }}"
+        data-preview-price="{{ product.price | money | escape }}"
+        {% if quick_view_image != blank %}data-preview-image="{{ quick_view_image | escape }}"{% endif %}
         data-archive="{% if from_feed %}true{% else %}false{% endif %}"
         {% if archive_id != blank %}data-archive-id="{{ archive_id | escape }}"{% endif %}
         {% if archive_size != blank %}data-size="{{ archive_size | escape }}"{% endif %}
