@@ -24,48 +24,235 @@
     "arrivals": {
       "type": "sp-brand-showcase",
       "blocks": {
-        "all": {"type":"tab","settings":{"label":"All","collection":"","vendor":"","category_match":"","button_label":"Shop all new arrivals"}},
-        "clothing": {"type":"tab","settings":{"label":"Clothing","collection":"","vendor":"","category_match":"clothing","button_label":"Shop all clothing"}},
-        "footwear": {"type":"tab","settings":{"label":"Footwear","collection":"","vendor":"","category_match":"footwear","button_label":"Shop all footwear"}},
-        "accessories": {"type":"tab","settings":{"label":"Accessories","collection":"","vendor":"","category_match":"accessories","button_label":"Shop all accessories"}}
+        "all": {
+          "type": "tab",
+          "settings": {
+            "label": "All",
+            "collection": "",
+            "vendor": "",
+            "category_match": "",
+            "button_label": "Shop all new arrivals"
+          }
+        },
+        "clothing": {
+          "type": "tab",
+          "settings": {
+            "label": "Clothing",
+            "collection": "",
+            "vendor": "",
+            "category_match": "clothing",
+            "button_label": "Shop all clothing"
+          }
+        },
+        "footwear": {
+          "type": "tab",
+          "settings": {
+            "label": "Footwear",
+            "collection": "",
+            "vendor": "",
+            "category_match": "footwear",
+            "button_label": "Shop all footwear"
+          }
+        },
+        "accessories": {
+          "type": "tab",
+          "settings": {
+            "label": "Accessories",
+            "collection": "",
+            "vendor": "",
+            "category_match": "accessories",
+            "button_label": "Shop all accessories"
+          }
+        }
       },
-      "block_order": ["all","clothing","footwear","accessories"],
-      "settings": {"eyebrow":"Just in","heading":"New arrivals","vendor":"","product_limit":8}
+      "block_order": [
+        "all",
+        "clothing",
+        "footwear",
+        "accessories"
+      ],
+      "settings": {
+        "eyebrow": "Just in",
+        "heading": "New arrivals",
+        "vendor": "",
+        "product_limit": 8
+      }
     },
     "trust": {
       "type": "sp-trust-strip",
       "blocks": {
-        "auth": {"type":"item","settings":{"title":"Authenticated","text":"Every piece inspected before listing"}},
-        "chicago": {"type":"item","settings":{"title":"Chicago based","text":"Local shop service and pickup"}},
-        "shipping": {"type":"item","settings":{"title":"Worldwide shipping","text":"Rare pieces delivered with care"}},
-        "inventory": {"type":"item","settings":{"title":"Limited inventory","text":"One-offs move quickly"}}
+        "auth": {
+          "type": "item",
+          "settings": {
+            "title": "Authenticated",
+            "text": "Every piece 100% inspected before listing."
+          }
+        },
+        "chicago": {
+          "type": "item",
+          "settings": {
+            "title": "Chicago based",
+            "text": "Local shop service and pickup"
+          }
+        },
+        "shipping": {
+          "type": "item",
+          "settings": {
+            "title": "Worldwide shipping",
+            "text": "Rare pieces delivered with care"
+          }
+        },
+        "inventory": {
+          "type": "item",
+          "settings": {
+            "title": "Limited inventory",
+            "text": "Timeless pieces fly off the shelves in no time!"
+          }
+        }
       },
-      "block_order": ["auth","chicago","shipping","inventory"],
+      "block_order": [
+        "auth",
+        "chicago",
+        "shipping",
+        "inventory"
+      ],
       "settings": {}
     },
     "chrome_showcase": {
       "type": "sp-brand-showcase",
       "blocks": {
-        "all": {"type":"tab","settings":{"label":"All","collection":"","vendor":"","category_match":"","button_label":""}},
-        "tees": {"type":"tab","settings":{"label":"Tees","collection":"","vendor":"","category_match":"shirt","button_label":""}},
-        "hoodies": {"type":"tab","settings":{"label":"Hoodies","collection":"","vendor":"","category_match":"hoodie","button_label":""}},
-        "hats": {"type":"tab","settings":{"label":"Hats","collection":"","vendor":"","category_match":"hat","button_label":""}},
-        "accessories": {"type":"tab","settings":{"label":"Accessories","collection":"","vendor":"","category_match":"accessories","button_label":""}}
+        "all": {
+          "type": "tab",
+          "settings": {
+            "label": "All",
+            "collection": "",
+            "vendor": "",
+            "category_match": "",
+            "button_label": ""
+          }
+        },
+        "tees": {
+          "type": "tab",
+          "settings": {
+            "label": "Tees",
+            "collection": "",
+            "vendor": "",
+            "category_match": "shirt",
+            "button_label": ""
+          }
+        },
+        "hoodies": {
+          "type": "tab",
+          "settings": {
+            "label": "Hoodies",
+            "collection": "",
+            "vendor": "",
+            "category_match": "hoodie",
+            "button_label": ""
+          }
+        },
+        "hats": {
+          "type": "tab",
+          "settings": {
+            "label": "Hats",
+            "collection": "",
+            "vendor": "",
+            "category_match": "hat",
+            "button_label": ""
+          }
+        },
+        "accessories": {
+          "type": "tab",
+          "settings": {
+            "label": "Accessories",
+            "collection": "",
+            "vendor": "",
+            "category_match": "accessories",
+            "button_label": ""
+          }
+        }
       },
-      "block_order": ["all","tees","hoodies","hats","accessories"],
-      "settings": {"eyebrow":"Designer rotation","heading":"Chrome Hearts","vendor":"Chrome Hearts","product_limit":8}
+      "block_order": [
+        "all",
+        "tees",
+        "hoodies",
+        "hats",
+        "accessories"
+      ],
+      "settings": {
+        "eyebrow": "Designer rotation",
+        "heading": "Chrome Hearts",
+        "vendor": "Chrome Hearts",
+        "product_limit": 8
+      }
     },
     "other_showcase": {
       "type": "sp-brand-showcase",
       "blocks": {
-        "rick": {"type":"tab","settings":{"label":"Rick Owens","collection":"rick-owens","vendor":"Rick Owens","category_match":"Rick Owens","button_label":""}},
-        "amiri": {"type":"tab","settings":{"label":"Amiri","collection":"","vendor":"Amiri","category_match":"","button_label":""}},
-        "balenciaga": {"type":"tab","settings":{"label":"Balenciaga","collection":"","vendor":"Balenciaga","category_match":"","button_label":""}},
-        "bottega": {"type":"tab","settings":{"label":"Bottega Desires","collection":"","vendor":"Bottega Desires","category_match":"","button_label":""}},
-        "gallery": {"type":"tab","settings":{"label":"Gallery Dept.","collection":"","vendor":"Gallery Dept.","category_match":"","button_label":""}}
+        "rick": {
+          "type": "tab",
+          "settings": {
+            "label": "Rick Owens",
+            "collection": "rick-owens",
+            "vendor": "Rick Owens",
+            "category_match": "Rick Owens",
+            "button_label": ""
+          }
+        },
+        "amiri": {
+          "type": "tab",
+          "settings": {
+            "label": "Amiri",
+            "collection": "",
+            "vendor": "Amiri",
+            "category_match": "",
+            "button_label": ""
+          }
+        },
+        "balenciaga": {
+          "type": "tab",
+          "settings": {
+            "label": "Balenciaga",
+            "collection": "",
+            "vendor": "Balenciaga",
+            "category_match": "",
+            "button_label": ""
+          }
+        },
+        "bottega": {
+          "type": "tab",
+          "settings": {
+            "label": "Bottega Desires",
+            "collection": "",
+            "vendor": "Bottega Desires",
+            "category_match": "",
+            "button_label": ""
+          }
+        },
+        "gallery": {
+          "type": "tab",
+          "settings": {
+            "label": "Gallery Dept.",
+            "collection": "",
+            "vendor": "Gallery Dept.",
+            "category_match": "",
+            "button_label": ""
+          }
+        }
       },
-      "block_order": ["rick","amiri","balenciaga","bottega","gallery"],
-      "settings": {"eyebrow":"Across the floor","heading":"More designers","vendor":"","product_limit":8}
+      "block_order": [
+        "rick",
+        "amiri",
+        "balenciaga",
+        "bottega",
+        "gallery"
+      ],
+      "settings": {
+        "eyebrow": "Across the floor",
+        "heading": "More designers",
+        "vendor": "",
+        "product_limit": 8
+      }
     },
     "feed": {
       "type": "sp-from-feed",
@@ -84,7 +271,6 @@
     "flyer": {
       "type": "sp-we-buy-sneakers",
       "settings": {
-        "flyer_image": "",
         "eyebrow": "Sole Paradise / Chicago",
         "heading": "WE BUY\nSNEAKERS.",
         "copy": "Buying sneakers, designer footwear and select pieces in Chicago. Scan the code or hit Instagram to connect directly with the shop.",
@@ -104,5 +290,14 @@
       }
     }
   },
-  "order": ["hero","arrivals","trust","chrome_showcase","other_showcase","feed","flyer","archive"]
+  "order": [
+    "hero",
+    "arrivals",
+    "trust",
+    "chrome_showcase",
+    "other_showcase",
+    "feed",
+    "flyer",
+    "archive"
+  ]
 }
