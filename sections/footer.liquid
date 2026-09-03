@@ -8,6 +8,20 @@
 -%}
 <footer class="site-footer" data-footer>
   <div class="site-footer__main page-width">
+    <div class="site-footer__brand-panel">
+      <div class="site-footer__seal">
+        <img class="site-footer__seal-mark" src="{{ 'sole-paradise-sp-mark.webp' | asset_url }}" alt="Sole Paradise SP mark" width="152" height="152" loading="lazy">
+        <div class="site-footer__seal-copy">
+          <strong>Sole Paradise</strong>
+          <span>Authenticated designer resale. Curated in Chicago and shipped worldwide.</span>
+        </div>
+      </div>
+      <a class="site-footer__connect" href="https://blinq.me/l2wsqXTUZxMn" target="_blank" rel="noopener" aria-label="Connect with Sole Paradise">
+        <img class="site-footer__qr" src="{{ 'sole-paradise-qr.svg' | asset_url }}" alt="" width="184" height="184" loading="lazy">
+        <span class="site-footer__connect-copy"><strong>Scan / Connect</strong>Socials · Contact<br>Chicago / IL</span>
+      </a>
+    </div>
+
     {%- if section.settings.show_logo -%}
       <div class="site-footer__brand">
         <a class="site-footer__logo" href="{{ routes.root_url }}">
