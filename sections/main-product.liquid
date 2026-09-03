@@ -94,6 +94,26 @@
         {%- render 'product-form', product: product, selected_variant: selected_variant, section_id: section.id, show_quantity: section.settings.show_quantity_selector, show_dynamic_checkout: section.settings.enable_dynamic_checkout -%}
       </div>
 
+      <div class="product__pickup" data-product-pickup data-sp-product-reveal>
+        {%- assign pickup_availabilities = selected_variant.store_availabilities | where: 'pick_up_enabled', true -%}
+        <div class="product__pickup-heading">
+          {%- render 'icon', name: 'store', size: 19 -%}
+          <span>In-store availability</span>
+        </div>
+        {%- if pickup_availabilities.size > 0 -%}
+          {%- for availability in pickup_availabilities limit: 2 -%}
+            <div class="product__pickup-location">
+              <strong>{{ availability.location.name | escape }}</strong>
+              <span>{% if availability.available %}Available for pickup{% else %}Currently unavailable{% endif %}</span>
+              {%- if availability.pick_up_time != blank -%}<small>{{ availability.pick_up_time | escape }}</small>{%- endif -%}
+            </div>
+          {%- endfor -%}
+          <p class="product__pickup-note">Availability can change quickly. Contact the store before traveling.</p>
+        {%- else -%}
+          <p class="product__pickup-note">Contact Sole Paradise to confirm local availability.</p>
+        {%- endif -%}
+      </div>
+
       {%- if from_feed and has_archive_details -%}
         <section class="product__archive-panel" aria-labelledby="ArchiveDetails-{{ section.id }}" data-sp-product-reveal>
           <div class="product__archive-panel-head">
@@ -118,23 +138,45 @@
         </section>
       {%- endif -%}
 
-      <div class="product__service-line" data-sp-product-reveal aria-label="Sole Paradise service standards">
-        <span>Inspected in Chicago</span>
-        <span>Secure shipping</span>
-        <span>Rare inventory</span>
-      </div>
-
-      <div class="product__blocks" data-sp-product-reveal>
-        {%- for block in section.blocks -%}
-          {%- case block.type -%}
-            {%- when 'description' -%}{%- if product.description != blank -%}<div class="product__description rte" {{ block.shopify_attributes }}>{{ product.description }}</div>{%- endif -%}
-            {%- when 'sku' -%}<p class="product__sku" data-product-sku {{ block.shopify_attributes }}>{%- if selected_variant.sku != blank -%}<span class="product__sku-label">{{ 'products.page.sku' | t }}</span> <span class="product__sku-value">{{ selected_variant.sku | escape }}</span>{%- endif -%}</p>
-            {%- when 'disclosure' -%}{%- if block.settings.heading != blank and block.settings.content != blank -%}<details class="product__disclosure" {{ block.shopify_attributes }}><summary class="product__disclosure-summary"><span>{{ block.settings.heading | escape }}</span>{%- render 'icon', name: 'chevron-down', size: 16 -%}</summary><div class="product__disclosure-content rte">{{ block.settings.content }}</div></details>{%- endif -%}
-            {%- when 'custom_text' -%}{%- if block.settings.content != blank -%}<div class="product__custom-text rte" {{ block.shopify_attributes }}>{{ block.settings.content }}</div>{%- endif -%}
-          {%- endcase -%}
-        {%- endfor -%}
-      </div>
     </div>
+  </div>
+
+  <section class="product__details-shell" data-product-tabs data-sp-product-reveal aria-label="Product information">
+    <div class="product__tabs" role="tablist" aria-label="Product details">
+      <button id="ProductTabDescription-{{ section.id }}" class="product__tab is-active" type="button" role="tab" aria-selected="true" aria-controls="ProductPanelDescription-{{ section.id }}" data-product-tab="description">Description</button>
+      <button id="ProductTabAuthenticity-{{ section.id }}" class="product__tab" type="button" role="tab" aria-selected="false" aria-controls="ProductPanelAuthenticity-{{ section.id }}" tabindex="-1" data-product-tab="authenticity">Authenticity guarantee</button>
+      <button id="ProductTabFaq-{{ section.id }}" class="product__tab" type="button" role="tab" aria-selected="false" aria-controls="ProductPanelFaq-{{ section.id }}" tabindex="-1" data-product-tab="faq">FAQ</button>
+      <button id="ProductTabPayment-{{ section.id }}" class="product__tab" type="button" role="tab" aria-selected="false" aria-controls="ProductPanelPayment-{{ section.id }}" tabindex="-1" data-product-tab="payment">Payments</button>
+    </div>
+
+    <div id="ProductPanelDescription-{{ section.id }}" class="product__tab-panel rte" role="tabpanel" aria-labelledby="ProductTabDescription-{{ section.id }}" data-product-tab-panel="description">
+      {%- assign description_rendered = false -%}
+      {%- assign sku_rendered = false -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'description' -%}<div class="product__description" {{ block.shopify_attributes }}>{%- if product.description != blank -%}{{ product.description }}{%- else -%}<p>Contact Sole Paradise for additional details about this piece.</p>{%- endif -%}</div>{%- assign description_rendered = true -%}
+          {%- when 'sku' -%}<p class="product__sku" data-product-sku {{ block.shopify_attributes }}>{%- if selected_variant.sku != blank -%}<span class="product__sku-label">{{ 'products.page.sku' | t }}</span> <span class="product__sku-value">{{ selected_variant.sku | escape }}</span>{%- endif -%}</p>{%- assign sku_rendered = true -%}
+        {%- endcase -%}
+      {%- endfor -%}
+      {%- unless description_rendered -%}<div class="product__description">{%- if product.description != blank -%}{{ product.description }}{%- else -%}<p>Contact Sole Paradise for additional details about this piece.</p>{%- endif -%}</div>{%- endunless -%}
+      {%- unless sku_rendered -%}<p class="product__sku" data-product-sku>{%- if selected_variant.sku != blank -%}<span class="product__sku-label">{{ 'products.page.sku' | t }}</span> <span class="product__sku-value">{{ selected_variant.sku | escape }}</span>{%- endif -%}</p>{%- endunless -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'disclosure' -%}{%- if block.settings.heading != blank and block.settings.content != blank -%}<details class="product__disclosure" {{ block.shopify_attributes }}><summary class="product__disclosure-summary"><span>{{ block.settings.heading | escape }}</span>{%- render 'icon', name: 'chevron-down', size: 16 -%}</summary><div class="product__disclosure-content rte">{{ block.settings.content }}</div></details>{%- endif -%}
+          {%- when 'custom_text' -%}{%- if block.settings.content != blank -%}<div class="product__custom-text rte" {{ block.shopify_attributes }}>{{ block.settings.content }}</div>{%- endif -%}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+    <div id="ProductPanelAuthenticity-{{ section.id }}" class="product__tab-panel rte" role="tabpanel" aria-labelledby="ProductTabAuthenticity-{{ section.id }}" data-product-tab-panel="authenticity" hidden>{{ section.settings.authenticity_copy }}</div>
+    <div id="ProductPanelFaq-{{ section.id }}" class="product__tab-panel rte" role="tabpanel" aria-labelledby="ProductTabFaq-{{ section.id }}" data-product-tab-panel="faq" hidden>{{ section.settings.faq_copy }}</div>
+    <div id="ProductPanelPayment-{{ section.id }}" class="product__tab-panel rte" role="tabpanel" aria-labelledby="ProductTabPayment-{{ section.id }}" data-product-tab-panel="payment" hidden>{{ section.settings.payment_copy }}</div>
+  </section>
+
+  <div class="product__service-grid" data-sp-product-reveal aria-label="Sole Paradise service standards">
+    <div class="product__service-item">{%- render 'icon', name: 'package', size: 25 -%}<strong>Free shipping</strong><span>{{ section.settings.shipping_copy | escape }}</span></div>
+    <div class="product__service-item">{%- render 'icon', name: 'phone', size: 25 -%}<strong>Customer service</strong><span>{{ section.settings.service_copy | escape }}</span></div>
+    <div class="product__service-item">{%- render 'icon', name: 'lock', size: 25 -%}<strong>Secure payment</strong><span>{{ section.settings.secure_copy | escape }}</span></div>
+    <div class="product__service-item">{%- render 'icon', name: 'mail', size: 25 -%}<strong>Contact us</strong>{%- assign contact_email = section.settings.contact_email | default: shop.email -%}{%- if contact_email != blank -%}<a href="mailto:{{ contact_email | escape }}">{{ contact_email | escape }}</a>{%- else -%}<span>Message the Sole Paradise team.</span>{%- endif -%}</div>
   </div>
 </div>
 {%- if has_model -%}<script src="{{ 'model-viewer-ui.js' | shopify_asset_url }}" defer="defer"></script>{%- endif -%}
@@ -144,7 +186,14 @@
   "settings":[
     {"type":"checkbox","id":"show_vendor","label":"Show vendor","default":true},
     {"type":"checkbox","id":"show_quantity_selector","label":"Show quantity selector","default":false},
-    {"type":"checkbox","id":"enable_dynamic_checkout","label":"Enable dynamic checkout","default":true,"info":"Shows accelerated wallet buttons below Add to cart."}
+    {"type":"checkbox","id":"enable_dynamic_checkout","label":"Enable dynamic checkout","default":true,"info":"Shows accelerated wallet buttons below Add to cart."},
+    {"type":"richtext","id":"authenticity_copy","label":"Authenticity guarantee","default":"<p>Every piece is individually inspected by Sole Paradise before it is listed. We stand behind the authenticity of every item we sell.</p>"},
+    {"type":"richtext","id":"faq_copy","label":"FAQ","default":"<p>Need measurements, condition details, or help choosing a size? Contact the Sole Paradise team before purchasing and we will help verify the piece.</p>"},
+    {"type":"richtext","id":"payment_copy","label":"Payment information","default":"<p>Checkout is encrypted and processed securely through Shopify. Available accelerated and installment options appear at checkout when eligible.</p>"},
+    {"type":"text","id":"shipping_copy","label":"Free shipping message","default":"Orders over $250 ship free."},
+    {"type":"text","id":"service_copy","label":"Customer service message","default":"Available during store hours for product questions."},
+    {"type":"text","id":"secure_copy","label":"Secure payment message","default":"Checkout information is processed securely."},
+    {"type":"text","id":"contact_email","label":"Contact email"}
   ],
   "blocks":[
     {"type":"description","name":"Description","limit":1,"settings":[]},

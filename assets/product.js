@@ -99,7 +99,7 @@
       '[data-product-price]',
       '[data-product-availability]'
     ];
-    const optional = ['[data-product-sku]'];
+    const optional = ['[data-product-sku]', '[data-product-pickup]'];
 
     if (!required.every((selector) => section.querySelector(selector) && doc.querySelector(selector))) {
       throw new Error('Missing required product fragment');
@@ -185,6 +185,36 @@
     const fallback = section.querySelector('[data-product-selection-form]');
     fallback?.querySelectorAll('select, button').forEach((control) => { control.disabled = true; });
     applyServerState(section);
+
+    const tabs = Array.from(section.querySelectorAll('[data-product-tab]'));
+    const activateTab = (nextTab, moveFocus = false) => {
+      if (!nextTab) return;
+      const key = nextTab.dataset.productTab;
+      tabs.forEach((tab) => {
+        const active = tab === nextTab;
+        tab.classList.toggle('is-active', active);
+        tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        tab.tabIndex = active ? 0 : -1;
+      });
+      section.querySelectorAll('[data-product-tab-panel]').forEach((panel) => {
+        panel.hidden = panel.dataset.productTabPanel !== key;
+      });
+      if (moveFocus) nextTab.focus();
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => activateTab(tab));
+      tab.addEventListener('keydown', (event) => {
+        let nextIndex = null;
+        if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+        if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === 'Home') nextIndex = 0;
+        if (event.key === 'End') nextIndex = tabs.length - 1;
+        if (nextIndex === null) return;
+        event.preventDefault();
+        activateTab(tabs[nextIndex], true);
+      });
+    });
 
     section.addEventListener('change', (event) => {
       const input = event.target.closest('[data-option-value-id]');
