@@ -153,19 +153,9 @@
           "type": "tab",
           "settings": {
             "label": "Rick Owens",
-            "collection": "",
+            "collection": "rick-owens",
             "vendor": "Rick Owens",
             "category_match": "Rick Owens",
-            "button_label": ""
-          }
-        },
-        "bottega": {
-          "type": "tab",
-          "settings": {
-            "label": "Bottega Desires",
-            "collection": "",
-            "vendor": "Bottega Desires",
-            "category_match": "",
             "button_label": ""
           }
         },
@@ -189,6 +179,16 @@
             "button_label": ""
           }
         },
+        "bottega": {
+          "type": "tab",
+          "settings": {
+            "label": "Bottega Desires",
+            "collection": "",
+            "vendor": "Bottega Desires",
+            "category_match": "",
+            "button_label": ""
+          }
+        },
         "gallery": {
           "type": "tab",
           "settings": {
@@ -202,9 +202,9 @@
       },
       "block_order": [
         "rick",
-        "bottega",
         "amiri",
         "balenciaga",
+        "bottega",
         "gallery"
       ],
       "settings": {
