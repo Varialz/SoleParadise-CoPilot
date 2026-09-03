@@ -39,6 +39,40 @@
     panel.focus();
   }
 
+  function navigateTo(url) {
+    window.location.assign(url.toString());
+  }
+
+  function submitFilters(form) {
+    if (!form) return;
+
+    const destination = new URL(form.action || window.location.href, window.location.origin);
+    const params = new URLSearchParams();
+
+    for (const [name, rawValue] of new FormData(form).entries()) {
+      const value = String(rawValue).trim();
+      if (!name || !value) continue;
+      params.append(name, value);
+    }
+
+    params.delete('page');
+    destination.search = params.toString();
+    navigateTo(destination);
+  }
+
+  function submitSort(select) {
+    if (!select) return;
+
+    const destination = new URL(window.location.href);
+    const value = String(select.value || '').trim();
+
+    if (value) destination.searchParams.set('sort_by', value);
+    else destination.searchParams.delete('sort_by');
+
+    destination.searchParams.delete('page');
+    navigateTo(destination);
+  }
+
   function init(section) {
     if (!section || section.dataset.collectionInitialized === 'true') return;
     section.dataset.collectionInitialized = 'true';
@@ -48,14 +82,34 @@
     const close = section.querySelector('[data-collection-drawer-close]');
     const backdrop = section.querySelector('[data-collection-drawer-backdrop]');
     const panel = section.querySelector('[data-collection-drawer-panel]');
+    const filterForm = panel?.querySelector('form');
     const sort = section.querySelector('[data-collection-sort-select]');
-    const sortForm = section.querySelector('[data-collection-sort]');
 
     if (panel) panel.tabIndex = -1;
     if (open) open.addEventListener('click', () => openDrawer(section));
     if (close) close.addEventListener('click', () => closeDrawer(section, true));
     if (backdrop) backdrop.addEventListener('click', () => closeDrawer(section, true));
-    if (sort && sortForm) sort.addEventListener('change', () => sortForm.submit());
+
+    if (filterForm) {
+      filterForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const submitButton = filterForm.querySelector('[type="submit"]');
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.setAttribute('aria-busy', 'true');
+          submitButton.textContent = 'Applying…';
+        }
+        submitFilters(filterForm);
+      });
+    }
+
+    if (sort) {
+      sort.addEventListener('change', () => {
+        sort.disabled = true;
+        sort.setAttribute('aria-busy', 'true');
+        submitSort(sort);
+      });
+    }
   }
 
   document.addEventListener('keydown', (event) => {
