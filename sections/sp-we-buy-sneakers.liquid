@@ -1,0 +1,50 @@
+{%- liquid
+  assign campaign_link = section.settings.instagram_url
+  if campaign_link == blank and settings.social_instagram_link != blank
+    assign campaign_link = settings.social_instagram_link
+  endif
+  if campaign_link == blank
+    assign campaign_link = 'https://www.instagram.com/soleparadise.chicago/'
+  endif
+-%}
+<section class="sp-buy-campaign" data-sp-section aria-labelledby="BuyCampaignTitle-{{ section.id }}">
+  <div class="sp-buy-campaign__grid page-width">
+    <div class="sp-buy-campaign__art" data-sp-reveal>
+      {%- if section.settings.flyer_image != blank -%}
+        {{ section.settings.flyer_image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 38vw, 82vw', widths: '360,480,640,840,1000,1200', class: 'sp-buy-campaign__flyer', alt: section.settings.flyer_image.alt | default: 'Sole Paradise We Buy Sneakers flyer' }}
+      {%- else -%}
+        <img class="sp-buy-campaign__flyer" src="{{ 'sole-paradise-we-buy-sneakers.webp' | asset_url }}" alt="Sole Paradise We Buy Sneakers flyer" width="360" height="878" loading="lazy">
+      {%- endif -%}
+      <span class="sp-buy-campaign__index" aria-hidden="true">06 / CHICAGO</span>
+    </div>
+
+    <div class="sp-buy-campaign__copy" data-sp-reveal>
+      <p class="sp-buy-campaign__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      <h2 class="sp-buy-campaign__title" id="BuyCampaignTitle-{{ section.id }}">{{ section.settings.heading | escape | newline_to_br }}</h2>
+      <p class="sp-buy-campaign__text">{{ section.settings.copy | escape | newline_to_br }}</p>
+      <div class="sp-buy-campaign__actions">
+        <a class="sp-buy-campaign__link" href="{{ campaign_link | escape }}" target="_blank" rel="noopener">{{ section.settings.primary_label | escape }}</a>
+        <a class="sp-buy-campaign__link sp-buy-campaign__link--ghost" href="{{ 'sole-paradise-we-buy-sneakers.webp' | asset_url }}" target="_blank" rel="noopener">View flyer</a>
+      </div>
+      <a class="sp-buy-campaign__qr-row" href="https://blinq.me/l2wsqXTUZxMn" target="_blank" rel="noopener" aria-label="Open Sole Paradise contact card">
+        <img class="sp-buy-campaign__qr" src="{{ 'sole-paradise-qr.svg' | asset_url }}" alt="" width="152" height="152" loading="lazy">
+        <span class="sp-buy-campaign__qr-copy">Scan to connect<br>Sole Paradise / Chicago</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name":"SP — We Buy Sneakers",
+  "settings":[
+    {"type":"image_picker","id":"flyer_image","label":"Full-resolution flyer","info":"Optional. When blank, the supplied Sole Paradise flyer asset is used."},
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Sole Paradise / Chicago"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"WE BUY\nSNEAKERS."},
+    {"type":"textarea","id":"copy","label":"Copy","default":"Selling a pair or designer piece? Use the same direct channels Sole Paradise shares in-store and on social. No separate seller portal — just the real shop connection."},
+    {"type":"url","id":"instagram_url","label":"Instagram / contact link"},
+    {"type":"text","id":"primary_label","label":"Primary button label","default":"Connect with Paradise"}
+  ],
+  "presets":[{"name":"SP — We Buy Sneakers"}]
+}
+{% endschema %}
