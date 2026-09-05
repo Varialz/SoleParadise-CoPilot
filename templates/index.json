@@ -474,6 +474,7 @@
     },
     "archive": {
       "type": "sp-sold-archive",
+      "disabled": true,
       "settings": {
         "eyebrow": "Paradise Archive",
         "heading": "GONE, NOT\nFORGOTTEN.",
