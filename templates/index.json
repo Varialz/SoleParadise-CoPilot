@@ -464,6 +464,7 @@
     },
     "paradise_drop_demo": {
       "type": "sp-paradise-drop",
+      "disabled": true,
       "settings": {
         "drop_number": "003",
         "eyebrow": "LIMITED RELEASE / IN-HAND",
