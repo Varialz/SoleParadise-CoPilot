@@ -42,6 +42,15 @@
         assign mobile_focus_x = block_settings.mobile_focus_x | default: 50
         assign mobile_focus_y = block_settings.mobile_focus_y | default: 60
 
+        if file_name == 'IMG_1341.heic'
+          if focus_y == 55
+            assign focus_y = 80
+          endif
+          if mobile_focus_y == 60
+            assign mobile_focus_y = 70
+          endif
+        endif
+
         if slide_image == blank and file_name != blank
           assign file_image = images[file_name]
         endif
