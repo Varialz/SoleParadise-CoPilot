@@ -15,6 +15,8 @@
         "slide_1341": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/IMG_1341.heic",
+            "mobile_image": "shopify://shop_images/IMG_1341.heic",
             "file_name": "IMG_1341.heic",
             "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050",
             "eyebrow": "New at Sole Paradise",
@@ -46,6 +48,23 @@
             "alt": "Sole Paradise campaign image 2"
           }
         },
+        "slide_5083": {
+          "type": "slide",
+          "settings": {
+            "file_name": "IMG_5083.png",
+            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_5083.png?v=1788410393",
+            "eyebrow": "Newest restock",
+            "heading": "We Are Righteous",
+            "copy": "Shop the latest We Are Righteous arrivals, available now.",
+            "button_label": "Shop We Are Righteous",
+            "button_link": "/search?q=we+are+righteous&type=product",
+            "focus_x": 50,
+            "focus_y": 55,
+            "mobile_focus_x": 50,
+            "mobile_focus_y": 60,
+            "alt": "Sole Paradise campaign image 4"
+          }
+        },
         "slide_0035": {
           "type": "slide",
           "settings": {
@@ -63,21 +82,21 @@
             "alt": "Sole Paradise campaign image 3"
           }
         },
-        "slide_5083": {
+        "slide_6935": {
           "type": "slide",
           "settings": {
-            "file_name": "IMG_5083.png",
-            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_5083.png?v=1788410393",
-            "eyebrow": "Newest restock",
-            "heading": "We Are Righteous",
-            "copy": "Shop the latest We Are Righteous arrivals, available now.",
-            "button_label": "Shop We Are Righteous",
-            "button_link": "/search?q=we+are+righteous&type=product",
+            "file_name": "IMG_6935.png",
+            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_6935.png?v=1788410381",
+            "eyebrow": "Paradise archive",
+            "heading": "Denim Tears",
+            "copy": "Denim Tears is currently sold through. Explore the newest pieces in store.",
+            "button_label": "Shop current arrivals",
+            "button_link": "/collections/all?sort_by=created-descending",
             "focus_x": 50,
             "focus_y": 55,
             "mobile_focus_x": 50,
             "mobile_focus_y": 60,
-            "alt": "Sole Paradise campaign image 4"
+            "alt": "Sole Paradise campaign image 7"
           }
         },
         "slide_5230": {
@@ -113,33 +132,16 @@
             "mobile_focus_y": 60,
             "alt": "Sole Paradise campaign image 6"
           }
-        },
-        "slide_6935": {
-          "type": "slide",
-          "settings": {
-            "file_name": "IMG_6935.png",
-            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_6935.png?v=1788410381",
-            "eyebrow": "Paradise archive",
-            "heading": "Denim Tears",
-            "copy": "Denim Tears is currently sold through. Explore the newest pieces in store.",
-            "button_label": "Shop current arrivals",
-            "button_link": "/collections/all?sort_by=created-descending",
-            "focus_x": 50,
-            "focus_y": 55,
-            "mobile_focus_x": 50,
-            "mobile_focus_y": 60,
-            "alt": "Sole Paradise campaign image 7"
-          }
         }
       },
       "block_order": [
         "slide_1341",
         "slide_6311",
-        "slide_0035",
         "slide_5083",
+        "slide_0035",
+        "slide_6935",
         "slide_5230",
-        "slide_7271",
-        "slide_6935"
+        "slide_7271"
       ],
       "settings": {
         "default_file_name": "IMG_1341.heic",
