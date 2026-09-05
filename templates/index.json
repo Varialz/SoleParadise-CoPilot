@@ -478,8 +478,8 @@
     "flyer": {
       "type": "sp-we-buy-sneakers",
       "settings": {
-        "eyebrow": "Sole Paradise / Chicago",
-        "heading": "WE BUY\nSNEAKERS.",
+        "eyebrow": "",
+        "heading": "We buyback too.",
         "copy": "Buying sneakers, designer footwear and select pieces in Chicago. Hit Instagram to connect directly with the shop.",
         "instagram_url": "",
         "primary_label": "Connect with Paradise"
