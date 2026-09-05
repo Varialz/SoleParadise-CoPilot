@@ -32,6 +32,15 @@
           assign target_vendor_handle = target_vendor | handleize
           assign target_category = block.settings.category_match
           assign target_category_handle = target_category | handleize
+          assign tab_label_handle = block.settings.label | handleize
+
+          if target_category_handle == blank
+            case tab_label_handle
+              when 'tees', 'tee', 't-shirts', 't-shirt', 'shirts', 'shirt', 'hoodies', 'hoodie', 'hats', 'hat', 'caps', 'cap', 'accessories', 'accessory', 'clothing', 'apparel', 'footwear', 'shoes', 'sneakers', 'bottoms', 'pants', 'denim', 'outerwear', 'jackets', 'tops'
+                assign target_category_handle = tab_label_handle
+            endcase
+          endif
+
           assign products_shown = 0
           assign cta_url = tab_collection.url
           if cta_url == blank and target_vendor != blank
@@ -68,20 +77,79 @@
                   {%- liquid
                     assign vendor_matches = true
                     assign category_matches = true
+
+                    assign product_vendor_handle = product.vendor | handleize
+                    assign product_title_handle = product.title | handleize
+                    assign product_tags_handle = product.tags | join: ' ' | handleize
+
                     if target_vendor_handle != blank
-                      assign product_vendor_handle = product.vendor | handleize
-                      unless product_vendor_handle == target_vendor_handle
+                      unless product_vendor_handle == target_vendor_handle or product_title_handle contains target_vendor_handle or product_tags_handle contains target_vendor_handle
                         assign vendor_matches = false
                       endunless
                     endif
+
                     if target_category_handle != blank and target_category_handle != 'all'
+                      assign category_matches = false
                       assign product_type_handle = product.type | handleize
-                      assign product_tags_handle = product.tags | join: ' ' | handleize
-                      unless product_type_handle contains target_category_handle or product_tags_handle contains target_category_handle
-                        assign category_matches = false
-                      endunless
+                      assign product_title_signal = product.title | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
+                      assign product_type_signal = product.type | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
+                      assign product_tags_signal = product.tags | join: ' ' | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
+                      assign catalog_signal = product_title_signal | append: ' ' | append: product_type_signal | append: ' ' | append: product_tags_signal | prepend: ' ' | append: ' '
+
+                      case target_category_handle
+                        when 'tees', 'tee', 't-shirts', 't-shirt', 'shirts', 'shirt'
+                          if product_type_handle contains 'shirt' or product_type_handle contains 'tee' or catalog_signal contains ' t shirt ' or catalog_signal contains ' tshirt ' or catalog_signal contains ' tee ' or catalog_signal contains ' tees ' or catalog_signal contains ' shirt ' or catalog_signal contains ' shirts ' or catalog_signal contains ' short sleeve '
+                            assign category_matches = true
+                          endif
+
+                        when 'hoodies', 'hoodie', 'sweatshirts', 'sweatshirt', 'crewnecks', 'crewneck'
+                          if product_type_handle contains 'hoodie' or product_type_handle contains 'sweatshirt' or product_type_handle contains 'crewneck' or catalog_signal contains ' hoodie ' or catalog_signal contains ' hooded ' or catalog_signal contains ' sweatshirt ' or catalog_signal contains ' crewneck ' or catalog_signal contains ' zip up '
+                            assign category_matches = true
+                          endif
+
+                        when 'hats', 'hat', 'caps', 'cap', 'headwear'
+                          if product_type_handle contains 'hat' or product_type_handle contains 'cap' or product_type_handle contains 'beanie' or catalog_signal contains ' hat ' or catalog_signal contains ' hats ' or catalog_signal contains ' cap ' or catalog_signal contains ' caps ' or catalog_signal contains ' beanie ' or catalog_signal contains ' trucker ' or catalog_signal contains ' snapback ' or catalog_signal contains ' headwear '
+                            assign category_matches = true
+                          endif
+
+                        when 'accessories', 'accessory'
+                          if product_type_handle contains 'accessor' or product_type_handle contains 'bag' or product_type_handle contains 'wallet' or product_type_handle contains 'belt' or product_type_handle contains 'jewel' or product_type_handle contains 'eyewear' or catalog_signal contains ' accessory ' or catalog_signal contains ' accessories ' or catalog_signal contains ' bag ' or catalog_signal contains ' wallet ' or catalog_signal contains ' belt ' or catalog_signal contains ' necklace ' or catalog_signal contains ' bracelet ' or catalog_signal contains ' ring ' or catalog_signal contains ' pendant ' or catalog_signal contains ' chain ' or catalog_signal contains ' sunglasses ' or catalog_signal contains ' glasses ' or catalog_signal contains ' eyewear ' or catalog_signal contains ' keychain ' or catalog_signal contains ' case '
+                            assign category_matches = true
+                          endif
+
+                        when 'footwear', 'shoes', 'shoe', 'sneakers', 'sneaker'
+                          if product_type_handle contains 'shoe' or product_type_handle contains 'sneaker' or product_type_handle contains 'boot' or product_type_handle contains 'slide' or product_type_handle contains 'sandal' or catalog_signal contains ' shoe ' or catalog_signal contains ' shoes ' or catalog_signal contains ' sneaker ' or catalog_signal contains ' sneakers ' or catalog_signal contains ' boot ' or catalog_signal contains ' boots ' or catalog_signal contains ' slide ' or catalog_signal contains ' slides ' or catalog_signal contains ' sandal ' or catalog_signal contains ' sandals ' or catalog_signal contains ' loafer ' or catalog_signal contains ' loafers '
+                            assign category_matches = true
+                          endif
+
+                        when 'bottoms', 'bottom', 'pants', 'pant', 'denim', 'jeans', 'shorts'
+                          if product_type_handle contains 'pant' or product_type_handle contains 'denim' or product_type_handle contains 'jean' or product_type_handle contains 'short' or catalog_signal contains ' pants ' or catalog_signal contains ' pant ' or catalog_signal contains ' jeans ' or catalog_signal contains ' denim ' or catalog_signal contains ' shorts ' or catalog_signal contains ' trouser ' or catalog_signal contains ' trousers ' or catalog_signal contains ' sweatpants '
+                            assign category_matches = true
+                          endif
+
+                        when 'outerwear', 'jackets', 'jacket', 'coats', 'coat'
+                          if product_type_handle contains 'jacket' or product_type_handle contains 'coat' or product_type_handle contains 'outerwear' or catalog_signal contains ' jacket ' or catalog_signal contains ' jackets ' or catalog_signal contains ' coat ' or catalog_signal contains ' coats ' or catalog_signal contains ' outerwear ' or catalog_signal contains ' puffer ' or catalog_signal contains ' vest '
+                            assign category_matches = true
+                          endif
+
+                        when 'tops', 'top'
+                          if product_type_handle contains 'shirt' or product_type_handle contains 'tee' or product_type_handle contains 'hoodie' or product_type_handle contains 'sweatshirt' or product_type_handle contains 'sweater' or catalog_signal contains ' tee ' or catalog_signal contains ' shirt ' or catalog_signal contains ' hoodie ' or catalog_signal contains ' sweatshirt ' or catalog_signal contains ' sweater ' or catalog_signal contains ' crewneck ' or catalog_signal contains ' jersey '
+                            assign category_matches = true
+                          endif
+
+                        when 'clothing', 'apparel'
+                          if product_type_handle contains 'shirt' or product_type_handle contains 'tee' or product_type_handle contains 'hoodie' or product_type_handle contains 'sweatshirt' or product_type_handle contains 'sweater' or product_type_handle contains 'jacket' or product_type_handle contains 'coat' or product_type_handle contains 'pant' or product_type_handle contains 'denim' or product_type_handle contains 'jean' or product_type_handle contains 'short' or catalog_signal contains ' tee ' or catalog_signal contains ' shirt ' or catalog_signal contains ' hoodie ' or catalog_signal contains ' sweatshirt ' or catalog_signal contains ' sweater ' or catalog_signal contains ' jacket ' or catalog_signal contains ' coat ' or catalog_signal contains ' pants ' or catalog_signal contains ' jeans ' or catalog_signal contains ' denim ' or catalog_signal contains ' shorts ' or catalog_signal contains ' trousers ' or catalog_signal contains ' jersey '
+                            assign category_matches = true
+                          endif
+
+                        else
+                          if product_type_handle contains target_category_handle or product_tags_handle contains target_category_handle or product_title_handle contains target_category_handle
+                            assign category_matches = true
+                          endif
+                      endcase
                     endif
                   -%}
+
                   {%- if vendor_matches and category_matches -%}
                     {%- render 'brand-showcase-card', product: product, brand_label: section.settings.heading -%}
                     {%- assign products_shown = products_shown | plus: 1 -%}
@@ -94,7 +162,7 @@
                 <div class="brand-showcase__empty">
                   <div>
                     <p>No products are connected to {{ block.settings.label | default: section.settings.heading | escape }}.</p>
-                    <span>Select a collection in this tab or match its Shopify vendor and product type.</span>
+                    <span>The carousel checks Shopify vendor, title, product type and tags. You can still select an exact collection for manual control.</span>
                   </div>
                 </div>
               {%- endif -%}
@@ -129,9 +197,9 @@
       "limit":8,
       "settings":[
         {"type":"text","id":"label","label":"Tab label","default":"All"},
-        {"type":"collection","id":"collection","label":"Collection","info":"Best option: select the exact collection for this tab."},
+        {"type":"collection","id":"collection","label":"Collection","info":"Optional exact override. Leave blank to let the carousel classify products automatically."},
         {"type":"text","id":"vendor","label":"Vendor override","info":"Useful when this section is an Other Brands carousel."},
-        {"type":"text","id":"category_match","label":"Product type or tag to match","info":"Used only when no collection is selected. Leave blank for all products from the vendor."},
+        {"type":"text","id":"category_match","label":"Category to match","info":"Smart matching reads product title, type and tags. Examples: Tees, Hoodies, Hats, Accessories, Footwear, Bottoms, Outerwear."},
         {"type":"text","id":"button_label","label":"Button label"}
       ]
     }
