@@ -453,6 +453,15 @@
         "show_collection_link": true
       }
     },
+    "passport_demo": {
+      "type": "sp-paradise-passport",
+      "disabled": true,
+      "settings": {
+        "eyebrow": "MEMBERSHIP / REWARDS CONCEPT",
+        "heading": "PARADISE PASSPORT",
+        "copy": "A loyalty concept for the people who keep Paradise moving. Earn miles on every purchase, unlock rewards and rise through the ranks."
+      }
+    },
     "flyer": {
       "type": "sp-we-buy-sneakers",
       "settings": {
@@ -482,6 +491,7 @@
     "chrome_showcase",
     "other_showcase",
     "feed",
+    "passport_demo",
     "flyer",
     "archive"
   ]
