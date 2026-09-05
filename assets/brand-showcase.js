@@ -12,6 +12,27 @@
     if (next) next.disabled = maxScroll <= 2 || track.scrollLeft >= maxScroll - 2;
   }
 
+  function updateCenteredCard(track) {
+    if (!track) return -1;
+    var cards = Array.prototype.slice.call(track.querySelectorAll('.brand-showcase-card'));
+    if (!cards.length) return -1;
+    var trackCenter = track.scrollLeft + (track.clientWidth / 2);
+    var centeredIndex = 0;
+    var closestDistance = Infinity;
+    cards.forEach(function (card, index) {
+      var cardCenter = card.offsetLeft + (card.offsetWidth / 2);
+      var distance = Math.abs(cardCenter - trackCenter);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        centeredIndex = index;
+      }
+    });
+    cards.forEach(function (card, index) {
+      card.classList.toggle('is-centered', index === centeredIndex);
+    });
+    return centeredIndex;
+  }
+
   function activateTab(section, activeTab, focusTab) {
     var tabs = section.querySelectorAll('[data-brand-showcase-tab]');
     var panels = section.querySelectorAll('[data-brand-showcase-panel]');
@@ -52,13 +73,24 @@
       var next = panel.querySelector('[data-brand-showcase-next]');
       function scroll(direction) {
         if (!track) return;
-        track.scrollBy({ left: Math.max(260, track.clientWidth * 0.86) * direction, behavior: 'smooth' });
+        var cards = Array.prototype.slice.call(track.querySelectorAll('.brand-showcase-card'));
+        if (!cards.length) return;
+        var currentIndex = updateCenteredCard(track);
+        var targetIndex = Math.max(0, Math.min(cards.length - 1, currentIndex + direction));
+        var target = cards[targetIndex];
+        var targetLeft = target.offsetLeft + (target.offsetWidth / 2) - (track.clientWidth / 2);
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        track.scrollTo({ left: targetLeft, behavior: reduceMotion ? 'auto' : 'smooth' });
       }
       if (previous) previous.addEventListener('click', function () { scroll(-1); });
       if (next) next.addEventListener('click', function () { scroll(1); });
       if (track) track.addEventListener('scroll', function () {
-        window.requestAnimationFrame(function () { updateArrows(panel); });
+        window.requestAnimationFrame(function () {
+          updateArrows(panel);
+          updateCenteredCard(track);
+        });
       }, { passive: true });
+      updateCenteredCard(track);
     });
     window.requestAnimationFrame(function () {
       section.querySelectorAll('[data-brand-showcase-panel]').forEach(updateArrows);
