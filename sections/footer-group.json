@@ -6,7 +6,7 @@
       "type": "footer",
       "blocks": {
         "menu": {"type":"menu","settings":{"heading":"Explore","menu":"footer"}},
-        "visit": {"type":"visit","settings":{"heading":"Chicago"}},
+        "visit": {"type":"visit","settings":{"heading":"Chicago","text":"<p>Planning an in-store visit? Reserve a time with Sole Paradise through Waitwhile.</p>","cta_label":"Reserve a visit","cta_url":"https://waitwhile.com/locations/soleparadise"}},
         "newsletter": {"type":"newsletter","settings":{"heading":"Paradise dispatch"}},
         "social": {"type":"social","settings":{"heading":"Follow us"}}
       },
