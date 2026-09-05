@@ -11,7 +11,80 @@
   "sections": {
     "hero": {
       "type": "sp-hero",
+      "blocks": {
+        "slide_1341": {
+          "type": "slide",
+          "settings": {
+            "file_name": "IMG_1341.heic",
+            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050",
+            "alt": "Sole Paradise campaign image 1"
+          }
+        },
+        "slide_6311": {
+          "type": "slide",
+          "settings": {
+            "file_name": "IMG_6311.png",
+            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_6311.png?v=1788410399",
+            "alt": "Sole Paradise campaign image 2"
+          }
+        },
+        "slide_0035": {
+          "type": "slide",
+          "settings": {
+            "file_name": "IMG_0035.png",
+            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_0035.png?v=1788410392",
+            "alt": "Sole Paradise campaign image 3"
+          }
+        },
+        "slide_5083": {
+          "type": "slide",
+          "settings": {
+            "file_name": "IMG_5083.png",
+            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_5083.png?v=1788410393",
+            "alt": "Sole Paradise campaign image 4"
+          }
+        },
+        "slide_5230": {
+          "type": "slide",
+          "settings": {
+            "file_name": "IMG_5230.png",
+            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_5230.png?v=1788410389",
+            "alt": "Sole Paradise campaign image 5"
+          }
+        },
+        "slide_7271": {
+          "type": "slide",
+          "settings": {
+            "file_name": "IMG_7271.png",
+            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_7271.png?v=1788410383",
+            "alt": "Sole Paradise campaign image 6"
+          }
+        },
+        "slide_6935": {
+          "type": "slide",
+          "settings": {
+            "file_name": "IMG_6935.png",
+            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_6935.png?v=1788410381",
+            "alt": "Sole Paradise campaign image 7"
+          }
+        }
+      },
+      "block_order": [
+        "slide_1341",
+        "slide_6311",
+        "slide_0035",
+        "slide_5083",
+        "slide_5230",
+        "slide_7271",
+        "slide_6935"
+      ],
       "settings": {
+        "default_file_name": "IMG_1341.heic",
+        "default_image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050",
+        "autoplay": true,
+        "autoplay_speed": 6,
+        "transition_speed": 700,
+        "show_controls": true,
         "eyebrow": "Curated designer pieces · Updated regularly",
         "heading": "CHICAGO\nTO THE WORLD.",
         "copy": "Rare designer, archive and pre-owned pieces selected in Chicago.",
