@@ -52,6 +52,14 @@
     ]
   },
   {
+    "name":"Fulfillment messaging",
+    "settings":[
+      {"type":"checkbox","id":"show_temporary_fulfillment","label":"Show delivery and pickup messages","default":true,"info":"Temporary storefront messaging. Turn this off immediately if the client does not approve the service."},
+      {"type":"text","id":"same_day_delivery_text","label":"Delivery message","default":"Same Day Uber Delivery"},
+      {"type":"text","id":"pickup_today_text","label":"Pickup message","default":"Available for Pickup Today"}
+    ]
+  },
+  {
     "name":"Social media",
     "settings":[
       {"type":"text","id":"social_instagram_link","label":"Instagram URL"},

@@ -95,20 +95,20 @@
       </div>
 
       <div class="product__pickup" data-product-pickup data-sp-product-reveal>
-        {%- assign pickup_availabilities = selected_variant.store_availabilities | where: 'pick_up_enabled', true -%}
         <div class="product__pickup-heading">
           {%- render 'icon', name: 'store', size: 19 -%}
-          <span>In-store availability</span>
+          <span>Delivery &amp; pickup</span>
         </div>
-        {%- if pickup_availabilities.size > 0 -%}
-          {%- for availability in pickup_availabilities limit: 2 -%}
-            <div class="product__pickup-location">
-              <strong>{{ availability.location.name | escape }}</strong>
-              <span>{% if availability.available %}Available for pickup{% else %}Currently unavailable{% endif %}</span>
-              {%- if availability.pick_up_time != blank -%}<small>{{ availability.pick_up_time | escape }}</small>{%- endif -%}
-            </div>
-          {%- endfor -%}
-          <p class="product__pickup-note">Availability can change quickly. Contact the store before traveling.</p>
+        {%- if settings.show_temporary_fulfillment and is_available -%}
+          <div class="product__pickup-location">
+            <strong>{{ settings.same_day_delivery_text | escape }}</strong>
+            <span>Chicago-area delivery — contact the shop after checkout to coordinate.</span>
+          </div>
+          <div class="product__pickup-location">
+            <strong>{{ settings.pickup_today_text | escape }}</strong>
+            <span>In-hand at Sole Paradise.</span>
+          </div>
+          <p class="product__pickup-note">Timing and eligibility must be confirmed with the store.</p>
         {%- else -%}
           <p class="product__pickup-note">Contact Sole Paradise to confirm local availability.</p>
         {%- endif -%}

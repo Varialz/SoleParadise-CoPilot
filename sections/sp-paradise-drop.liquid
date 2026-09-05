@@ -1,0 +1,117 @@
+{%- liquid
+  assign drop_collection = section.settings.collection
+  if drop_collection == blank
+    assign drop_collection = collections.all
+  endif
+-%}
+<section class="sp-drop" id="ParadiseDrop-{{ section.id }}">
+  <div class="page-width sp-drop__inner">
+    <header class="sp-drop__head" data-sp-reveal>
+      <div class="sp-drop__number"><span>PARADISE DROP</span><strong>{{ section.settings.drop_number | escape }}</strong></div>
+      <div class="sp-drop__title">
+        <p>{{ section.settings.eyebrow | escape }}</p>
+        <h2>{{ section.settings.heading | newline_to_br }}</h2>
+      </div>
+      <div class="sp-drop__launch">
+        <span>NEXT RELEASE</span>
+        <strong>{{ section.settings.launch_time | escape }}</strong>
+        <small>{{ section.settings.copy | escape }}</small>
+      </div>
+    </header>
+
+    <div class="sp-drop__rail" role="list">
+      {%- for product in drop_collection.products limit: 3 -%}
+        {%- liquid
+          assign drop_size = product.metafields.custom.size.value | default: product.metafields.custom.size
+          assign drop_condition = product.metafields.custom.condition.value | default: product.metafields.custom.condition | default: 'Authenticated'
+        -%}
+        <article class="sp-drop-card" role="listitem" data-sp-reveal>
+          <a class="sp-drop-card__media" href="{{ product.url }}" aria-label="View {{ product.title | escape }}">
+            <div class="sp-drop-card__flags"><span>IN HAND</span>{% if product.available %}<span>AVAILABLE NOW</span>{% else %}<span>SOLD</span>{% endif %}</div>
+            {%- if product.featured_image != blank -%}
+              {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '320,480,640,900', sizes: '(min-width: 990px) 30vw, 78vw', alt: product.featured_image.alt }}
+            {%- else -%}{{ 'product-1' | placeholder_svg_tag }}{%- endif -%}
+            <span class="sp-drop-card__view">VIEW PIECE ↗</span>
+          </a>
+          <div class="sp-drop-card__body">
+            <div class="sp-drop-card__identity"><p>{{ product.vendor | escape }}</p><h3>{{ product.title | escape }}</h3></div>
+            <div class="sp-drop-card__price">{{ product.price | money }}</div>
+            <div class="sp-drop-card__facts">
+              {%- if drop_size != blank and drop_size != '0' -%}<span>SIZE {{ drop_size | escape }}</span>{%- endif -%}
+              <span>{{ drop_condition | escape }}</span>
+              <span>LIMITED STOCK</span>
+            </div>
+            {%- if product.available -%}
+              <div class="sp-drop-card__fulfillment"><span>{{ settings.same_day_delivery_text | escape }}</span><span>{{ settings.pickup_today_text | escape }}</span></div>
+            {%- endif -%}
+          </div>
+        </article>
+      {%- else -%}
+        {%- for i in (1..3) -%}
+          <article class="sp-drop-card sp-drop-card--placeholder" role="listitem" data-sp-reveal>
+            <div class="sp-drop-card__media"><div class="sp-drop-card__flags"><span>IN HAND</span><span>AVAILABLE NOW</span></div>{{ 'product-' | append: i | placeholder_svg_tag }}<span class="sp-drop-card__view">VIEW PIECE ↗</span></div>
+            <div class="sp-drop-card__body"><div class="sp-drop-card__identity"><p>SOLE PARADISE</p><h3>DROP PIECE {{ i }}</h3></div><div class="sp-drop-card__price">$—</div><div class="sp-drop-card__facts"><span>SIZE —</span><span>AUTHENTICATED</span><span>LIMITED STOCK</span></div><div class="sp-drop-card__fulfillment"><span>{{ settings.same_day_delivery_text | escape }}</span><span>{{ settings.pickup_today_text | escape }}</span></div></div>
+          </article>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+
+    <footer class="sp-drop__footer" data-sp-reveal>
+      <p>Every Paradise Drop is authenticated, photographed in-house and available while inventory lasts.</p>
+      {%- if section.settings.button_label != blank -%}<a href="{{ drop_collection.url }}">{{ section.settings.button_label | escape }} <span>↗</span></a>{%- endif -%}
+    </footer>
+  </div>
+</section>
+
+{% style %}
+  #ParadiseDrop-{{ section.id }}{background:#050b13;color:#f7fbff;border-block:1px solid #203142}
+  #ParadiseDrop-{{ section.id }} .sp-drop__inner{padding-top:clamp(55px,7vw,105px);padding-bottom:clamp(55px,7vw,105px)}
+  #ParadiseDrop-{{ section.id }} .sp-drop__head{display:grid;grid-template-columns:.42fr 1.25fr .58fr;gap:clamp(24px,4vw,70px);align-items:end;margin-bottom:42px;padding-bottom:28px;border-bottom:1px solid #263543}
+  #ParadiseDrop-{{ section.id }} .sp-drop__number span,#ParadiseDrop-{{ section.id }} .sp-drop__launch span,#ParadiseDrop-{{ section.id }} .sp-drop__title p{display:block;margin:0 0 10px;color:#79cff5;font:700 10px/1 monospace;letter-spacing:.16em}
+  #ParadiseDrop-{{ section.id }} .sp-drop__number strong{font-size:clamp(50px,7vw,94px);font-weight:400;line-height:.8;letter-spacing:-.06em}
+  #ParadiseDrop-{{ section.id }} .sp-drop__title h2{margin:0;color:inherit;font-size:clamp(40px,6vw,82px);font-weight:500;line-height:.88;letter-spacing:-.055em;text-transform:uppercase}
+  #ParadiseDrop-{{ section.id }} .sp-drop__launch strong{display:block;font-size:16px;letter-spacing:.04em}
+  #ParadiseDrop-{{ section.id }} .sp-drop__launch small{display:block;margin-top:13px;color:#8997a5;font-size:11px;line-height:1.5}
+  #ParadiseDrop-{{ section.id }} .sp-drop__rail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card{min-width:0;background:#fff;color:#09111c}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__media{position:relative;display:block;aspect-ratio:4/5;overflow:hidden;background:#f2f4f5;color:inherit;text-decoration:none}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__media img,#ParadiseDrop-{{ section.id }} .sp-drop-card__media svg{width:90%;height:90%;margin:5%;object-fit:contain;transition:transform .35s ease}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card:hover .sp-drop-card__media img{transform:scale(1.025)}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__flags{position:absolute;z-index:2;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;gap:8px}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__flags span{padding:7px 8px;background:#071321;color:#fff;font:700 8px/1 monospace;letter-spacing:.1em}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__flags span+span{background:#79cff5;color:#06111d}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__view{position:absolute;z-index:2;right:12px;bottom:12px;padding:9px 10px;background:#fff;color:#09111c;font:700 9px/1 monospace;letter-spacing:.08em}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__body{display:grid;grid-template-columns:1fr auto;gap:14px;padding:18px}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__identity p{margin:0 0 6px;color:#1675a6;font:800 9px/1 monospace;letter-spacing:.12em;text-transform:uppercase}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__identity h3{margin:0;font-size:15px;font-weight:600;line-height:1.25;letter-spacing:-.02em}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__price{font-size:14px;font-weight:700}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__facts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;padding-top:13px;border-top:1px solid #dfe4e7}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__facts span{padding:6px 7px;background:#f0f3f5;color:#45515d;font:700 8px/1 monospace;letter-spacing:.07em}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__fulfillment{grid-column:1/-1;display:flex;justify-content:space-between;gap:10px;color:#1675a6;font:700 8px/1.3 monospace;letter-spacing:.05em;text-transform:uppercase}
+  #ParadiseDrop-{{ section.id }} .sp-drop-card__fulfillment span:before{content:'●';margin-right:6px;color:#2b9954}
+  #ParadiseDrop-{{ section.id }} .sp-drop__footer{display:flex;justify-content:space-between;gap:30px;align-items:center;margin-top:28px}
+  #ParadiseDrop-{{ section.id }} .sp-drop__footer p{max-width:510px;margin:0;color:#8997a5;font-size:12px;line-height:1.5}
+  #ParadiseDrop-{{ section.id }} .sp-drop__footer a{color:#fff;font:700 10px/1 monospace;letter-spacing:.12em;text-decoration:none}
+  #ParadiseDrop-{{ section.id }} .sp-drop__footer a span{color:#79cff5;margin-left:8px}
+  @media(max-width:900px){#ParadiseDrop-{{ section.id }} .sp-drop__head{grid-template-columns:.45fr 1fr}#ParadiseDrop-{{ section.id }} .sp-drop__launch{grid-column:1/-1}#ParadiseDrop-{{ section.id }} .sp-drop__rail{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:calc(var(--container-page-gutter) * -1);padding-inline:var(--container-page-gutter);scrollbar-width:none}#ParadiseDrop-{{ section.id }} .sp-drop-card{flex:0 0 min(82vw,390px);scroll-snap-align:start}}
+  @media(max-width:560px){#ParadiseDrop-{{ section.id }} .sp-drop__head{grid-template-columns:1fr;gap:24px}#ParadiseDrop-{{ section.id }} .sp-drop__launch{grid-column:auto}#ParadiseDrop-{{ section.id }} .sp-drop__number{display:flex;align-items:end;justify-content:space-between}#ParadiseDrop-{{ section.id }} .sp-drop__number strong{font-size:58px}#ParadiseDrop-{{ section.id }} .sp-drop__footer{align-items:flex-start;flex-direction:column}}
+{% endstyle %}
+
+{% schema %}
+{
+  "name":"Paradise Drop demo",
+  "tag":"section",
+  "class":"sp-paradise-drop-section",
+  "settings":[
+    {"type":"text","id":"drop_number","label":"Drop number","default":"003"},
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"LIMITED RELEASE / IN-HAND"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"THE PARADISE\nDROP"},
+    {"type":"text","id":"launch_time","label":"Launch time","default":"FRIDAY / 7 PM CT"},
+    {"type":"textarea","id":"copy","label":"Launch note","default":"Preview the release. Once a piece is gone, it enters the Paradise Archive."},
+    {"type":"collection","id":"collection","label":"Drop collection"},
+    {"type":"text","id":"button_label","label":"Button label","default":"ENTER THE DROP"}
+  ],
+  "presets":[{"name":"Paradise Drop demo"}],
+  "enabled_on":{"templates":["index"]}
+}
+{% endschema %}

@@ -148,6 +148,12 @@
 
       {%- render 'product-price', product: product -%}
       <p class="product-card__trust" aria-label="Store assurances"><span>Authenticated</span><span>Chicago</span></p>
+      {%- if settings.show_temporary_fulfillment and product.available -%}
+        <p class="product-card__fulfillment" aria-label="Fulfillment options">
+          <span>{{ settings.same_day_delivery_text | escape }}</span>
+          <span>{{ settings.pickup_today_text | escape }}</span>
+        </p>
+      {%- endif -%}
     </div>
   </article>
 {%- endif -%}

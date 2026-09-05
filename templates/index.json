@@ -462,6 +462,19 @@
         "copy": "A loyalty concept for the people who keep Paradise moving. Earn miles on every purchase, unlock rewards and rise through the ranks."
       }
     },
+    "paradise_drop_demo": {
+      "type": "sp-paradise-drop",
+      "disabled": true,
+      "settings": {
+        "drop_number": "003",
+        "eyebrow": "LIMITED RELEASE / IN-HAND",
+        "heading": "THE PARADISE\nDROP",
+        "launch_time": "FRIDAY / 7 PM CT",
+        "copy": "Preview the release. Once a piece is gone, it enters the Paradise Archive.",
+        "collection": "",
+        "button_label": "ENTER THE DROP"
+      }
+    },
     "flyer": {
       "type": "sp-we-buy-sneakers",
       "settings": {
@@ -493,6 +506,7 @@
     "other_showcase",
     "feed",
     "passport_demo",
+    "paradise_drop_demo",
     "flyer",
     "archive"
   ]
