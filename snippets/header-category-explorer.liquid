@@ -1,0 +1,60 @@
+<section
+  id="HeaderCategoryExplorer-{{ section.id }}"
+  class="header-drawer__view header-drawer__view--explorer header-drawer__category-explorer"
+  data-header-explorer="categories"
+  aria-hidden="true"
+>
+  <div class="header-drawer__explorer-head">
+    <button type="button" class="header-drawer__explorer-back" data-header-explorer-back aria-label="Back to main menu">
+      <span aria-hidden="true">←</span>
+      <span>Back</span>
+    </button>
+    <span class="header-drawer__explorer-title">Categories</span>
+    <a class="header-drawer__explorer-all" href="{{ routes.all_products_collection_url }}">Shop all</a>
+  </div>
+
+  <div class="header-drawer__explorer-intro">
+    <p class="header-drawer__explorer-kicker">Shop the floor</p>
+    <h2>Find your lane.</h2>
+    <p>Jump straight into the part of the store you want, then keep browsing the full catalogue from there.</p>
+  </div>
+
+  <div class="header-category-explorer">
+    <div class="header-category-explorer__preview" aria-live="polite">
+      <div class="header-category-explorer__preview-index">01 / 07</div>
+      <div class="header-category-explorer__preview-icons" aria-hidden="true">
+        <span class="is-active" data-category-preview-icon="tees">{%- render 'category-icon', name: 'tees' -%}</span>
+        <span data-category-preview-icon="hoodies">{%- render 'category-icon', name: 'hoodies' -%}</span>
+        <span data-category-preview-icon="footwear">{%- render 'category-icon', name: 'footwear' -%}</span>
+        <span data-category-preview-icon="bottoms">{%- render 'category-icon', name: 'bottoms' -%}</span>
+        <span data-category-preview-icon="accessories">{%- render 'category-icon', name: 'accessories' -%}</span>
+        <span data-category-preview-icon="outerwear">{%- render 'category-icon', name: 'outerwear' -%}</span>
+        <span data-category-preview-icon="headwear">{%- render 'category-icon', name: 'headwear' -%}</span>
+      </div>
+      <div class="header-category-explorer__preview-copy">
+        <div class="is-active" data-category-preview-copy="tees"><strong>Tees</strong><span>Graphic tees, designer tops and daily rotation pieces.</span></div>
+        <div data-category-preview-copy="hoodies"><strong>Hoodies</strong><span>Heavyweight layers, zip-ups and statement fleece.</span></div>
+        <div data-category-preview-copy="footwear"><strong>Footwear</strong><span>Sneakers, runners, boots and everyday pairs.</span></div>
+        <div data-category-preview-copy="bottoms"><strong>Bottoms</strong><span>Denim, trousers, cargos, shorts and sweats.</span></div>
+        <div data-category-preview-copy="accessories"><strong>Accessories</strong><span>Bags, jewelry, eyewear and finishing pieces.</span></div>
+        <div data-category-preview-copy="outerwear"><strong>Outerwear</strong><span>Jackets, coats, puffers and seasonal layers.</span></div>
+        <div data-category-preview-copy="headwear"><strong>Headwear</strong><span>Caps, truckers and beanies from the floor.</span></div>
+      </div>
+    </div>
+
+    <nav class="header-category-explorer__list" aria-label="Shop all categories">
+      <a href="{{ routes.search_url }}?q=tee&amp;type=product" data-category-explorer-link data-category-preview-target="tees" data-category-index="01 / 07"><span>Tees</span><span>Explore →</span></a>
+      <a href="{{ routes.search_url }}?q=hoodie&amp;type=product" data-category-explorer-link data-category-preview-target="hoodies" data-category-index="02 / 07"><span>Hoodies</span><span>Explore →</span></a>
+      <a href="{{ routes.search_url }}?q=shoes&amp;type=product" data-category-explorer-link data-category-preview-target="footwear" data-category-index="03 / 07"><span>Footwear</span><span>Explore →</span></a>
+      <a href="{{ routes.search_url }}?q=pants&amp;type=product" data-category-explorer-link data-category-preview-target="bottoms" data-category-index="04 / 07"><span>Bottoms</span><span>Explore →</span></a>
+      <a href="{{ routes.search_url }}?q=accessories&amp;type=product" data-category-explorer-link data-category-preview-target="accessories" data-category-index="05 / 07"><span>Accessories</span><span>Explore →</span></a>
+      <a href="{{ routes.search_url }}?q=jacket&amp;type=product" data-category-explorer-link data-category-preview-target="outerwear" data-category-index="06 / 07"><span>Outerwear</span><span>Explore →</span></a>
+      <a href="{{ routes.search_url }}?q=hat&amp;type=product" data-category-explorer-link data-category-preview-target="headwear" data-category-index="07 / 07"><span>Headwear</span><span>Explore →</span></a>
+    </nav>
+  </div>
+
+  <div class="header-drawer__explorer-footer">
+    <span>{{ collections.all.products_count }} pieces across the catalogue</span>
+    <a href="{{ routes.all_products_collection_url }}?sort_by=created-descending">Browse newest first →</a>
+  </div>
+</section>
