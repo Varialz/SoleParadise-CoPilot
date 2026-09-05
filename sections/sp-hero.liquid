@@ -106,10 +106,7 @@
             {%- if slide_image != blank -%}
               {%- assign resolved_alt = slide_alt | default: slide_image.alt -%}
               {{ slide_image | image_url: width: 2400 | image_tag: loading: slide_loading, fetchpriority: slide_priority, sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: resolved_alt }}
-            {%- elsif file_image != blank -%}
-              {%- assign resolved_alt = slide_alt | default: file_image.alt -%}
-              {{ file_image | image_url: width: 2400 | image_tag: loading: slide_loading, fetchpriority: slide_priority, sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: resolved_alt }}
-            {%- else -%}
+            {%- elsif slide_url != blank -%}
               <img
                 class="sp-hero__image"
                 src="{{ slide_url | escape }}"
@@ -119,6 +116,9 @@
                 width="2400"
                 height="1600"
               >
+            {%- else -%}
+              {%- assign resolved_alt = slide_alt | default: file_image.alt -%}
+              {{ file_image | image_url: width: 2400 | image_tag: loading: slide_loading, fetchpriority: slide_priority, sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: resolved_alt }}
             {%- endif -%}
           </picture>
         </div>
