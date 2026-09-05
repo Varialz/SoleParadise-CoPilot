@@ -10,9 +10,10 @@
     endif
   endif
 
+  assign default_file_name = section.settings.default_file_name | strip
   assign default_file_image = blank
-  if section.settings.default_file_name != blank
-    assign default_file_image = images[section.settings.default_file_name]
+  if default_file_name != blank
+    assign default_file_image = images[default_file_name]
   endif
   assign default_image_url = section.settings.default_image_url | strip
 -%}
@@ -28,15 +29,41 @@
   <div class="sp-hero__media" data-sp-hero-media>
     {%- assign rendered_slides = 0 -%}
 
+    {%- if default_file_image != blank -%}
+      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
+        <picture>
+          {{ default_file_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: 'Sole Paradise campaign image' }}
+        </picture>
+      </div>
+      {%- assign rendered_slides = 1 -%}
+    {%- elsif default_image_url != blank -%}
+      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
+        <picture>
+          <img
+            class="sp-hero__image"
+            src="{{ default_image_url | escape }}"
+            alt="Sole Paradise campaign image"
+            loading="eager"
+            fetchpriority="high"
+            width="2400"
+            height="1600"
+          >
+        </picture>
+      </div>
+      {%- assign rendered_slides = 1 -%}
+    {%- endif -%}
+
     {%- for block in section.blocks -%}
       {%- liquid
-        assign slide_image = block.settings.image
+        assign block_settings = block.settings
+        assign slide_image = block_settings.image
+        assign file_name = block_settings.file_name | strip
         assign file_image = blank
-        assign slide_url = block.settings.image_url | strip
-        assign slide_alt = block.settings.alt | strip
+        assign slide_url = block_settings.image_url | strip
+        assign slide_alt = block_settings.alt | strip
 
-        if slide_image == blank and block.settings.file_name != blank
-          assign file_image = images[block.settings.file_name]
+        if slide_image == blank and file_name != blank
+          assign file_image = images[file_name]
         endif
 
         assign has_slide = false
@@ -64,10 +91,10 @@
           {{ block.shopify_attributes }}
         >
           <picture>
-            {%- if block.settings.mobile_image != blank -%}
+            {%- if block_settings.mobile_image != blank -%}
               <source
                 media="(max-width: 749px)"
-                srcset="{{ block.settings.mobile_image | image_url: width: 750 }} 750w, {{ block.settings.mobile_image | image_url: width: 1000 }} 1000w"
+                srcset="{{ block_settings.mobile_image | image_url: width: 750 }} 750w, {{ block_settings.mobile_image | image_url: width: 1000 }} 1000w"
                 sizes="100vw"
               >
             {%- endif -%}
@@ -94,29 +121,7 @@
       {%- endif -%}
     {%- endfor -%}
 
-    {%- if rendered_slides == 0 and default_file_image != blank -%}
-      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
-        <picture>
-          {{ default_file_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: 'Sole Paradise campaign image' }}
-        </picture>
-      </div>
-      {%- assign rendered_slides = 1 -%}
-    {%- elsif rendered_slides == 0 and default_image_url != blank -%}
-      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
-        <picture>
-          <img
-            class="sp-hero__image"
-            src="{{ default_image_url | escape }}"
-            alt="Sole Paradise campaign image"
-            loading="eager"
-            fetchpriority="high"
-            width="2400"
-            height="1600"
-          >
-        </picture>
-      </div>
-      {%- assign rendered_slides = 1 -%}
-    {%- elsif rendered_slides == 0 and fallback_image != blank -%}
+    {%- if rendered_slides == 0 and fallback_image != blank -%}
       <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
         <picture>
           {%- if section.settings.mobile_image != blank -%}
@@ -176,9 +181,9 @@
 {
   "name":"SP — Hero",
   "settings":[
-    {"type":"text","id":"default_file_name","label":"Default Shopify Files image","default":"IMG_1341.heic","info":"Used as the first hero image until slideshow blocks are added."},
+    {"type":"text","id":"default_file_name","label":"Default Shopify Files image","default":"IMG_1341.heic","info":"Kept as slide 1 until you clear this field."},
     {"type":"text","id":"default_image_url","label":"Default image URL fallback","default":"https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050"},
-    {"type":"image_picker","id":"image","label":"Fallback campaign image","info":"Used only when no slideshow blocks or default Files image can resolve."},
+    {"type":"image_picker","id":"image","label":"Fallback campaign image","info":"Used only when no slideshow/default image can resolve."},
     {"type":"image_picker","id":"mobile_image","label":"Fallback mobile image","info":"Optional portrait crop for the fallback image."},
     {"type":"checkbox","id":"autoplay","label":"Autoplay slideshow","default":true},
     {"type":"range","id":"autoplay_speed","label":"Time per slide","min":4,"max":10,"step":1,"unit":"s","default":6},
