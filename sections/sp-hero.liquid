@@ -29,30 +29,6 @@
   <div class="sp-hero__media" data-sp-hero-media>
     {%- assign rendered_slides = 0 -%}
 
-    {%- if default_file_image != blank -%}
-      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
-        <picture>
-          {{ default_file_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: 'Sole Paradise campaign image' }}
-        </picture>
-      </div>
-      {%- assign rendered_slides = 1 -%}
-    {%- elsif default_image_url != blank -%}
-      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
-        <picture>
-          <img
-            class="sp-hero__image"
-            src="{{ default_image_url | escape }}"
-            alt="Sole Paradise campaign image"
-            loading="eager"
-            fetchpriority="high"
-            width="2400"
-            height="1600"
-          >
-        </picture>
-      </div>
-      {%- assign rendered_slides = 1 -%}
-    {%- endif -%}
-
     {%- for block in section.blocks -%}
       {%- liquid
         assign block_settings = block.settings
@@ -61,6 +37,10 @@
         assign file_image = blank
         assign slide_url = block_settings.image_url | strip
         assign slide_alt = block_settings.alt | strip
+        assign focus_x = block_settings.focus_x | default: 50
+        assign focus_y = block_settings.focus_y | default: 55
+        assign mobile_focus_x = block_settings.mobile_focus_x | default: 50
+        assign mobile_focus_y = block_settings.mobile_focus_y | default: 60
 
         if slide_image == blank and file_name != blank
           assign file_image = images[file_name]
@@ -88,6 +68,7 @@
           data-hero-slide
           data-slide-index="{{ rendered_slides | minus: 1 }}"
           aria-hidden="{% if rendered_slides == 1 %}false{% else %}true{% endif %}"
+          style="--hero-focus-x:{{ focus_x }}%;--hero-focus-y:{{ focus_y }}%;--hero-mobile-focus-x:{{ mobile_focus_x }}%;--hero-mobile-focus-y:{{ mobile_focus_y }}%"
           {{ block.shopify_attributes }}
         >
           <picture>
@@ -121,7 +102,29 @@
       {%- endif -%}
     {%- endfor -%}
 
-    {%- if rendered_slides == 0 and fallback_image != blank -%}
+    {%- if rendered_slides == 0 and default_file_image != blank -%}
+      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false" style="--hero-focus-x:50%;--hero-focus-y:80%;--hero-mobile-focus-x:50%;--hero-mobile-focus-y:70%">
+        <picture>
+          {{ default_file_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: 'Sole Paradise campaign image' }}
+        </picture>
+      </div>
+      {%- assign rendered_slides = 1 -%}
+    {%- elsif rendered_slides == 0 and default_image_url != blank -%}
+      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false" style="--hero-focus-x:50%;--hero-focus-y:80%;--hero-mobile-focus-x:50%;--hero-mobile-focus-y:70%">
+        <picture>
+          <img
+            class="sp-hero__image"
+            src="{{ default_image_url | escape }}"
+            alt="Sole Paradise campaign image"
+            loading="eager"
+            fetchpriority="high"
+            width="2400"
+            height="1600"
+          >
+        </picture>
+      </div>
+      {%- assign rendered_slides = 1 -%}
+    {%- elsif rendered_slides == 0 and fallback_image != blank -%}
       <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
         <picture>
           {%- if section.settings.mobile_image != blank -%}
@@ -181,7 +184,7 @@
 {
   "name":"SP — Hero",
   "settings":[
-    {"type":"text","id":"default_file_name","label":"Default Shopify Files image","default":"IMG_1341.heic","info":"Kept as slide 1 until you clear this field."},
+    {"type":"text","id":"default_file_name","label":"Default Shopify Files image","default":"IMG_1341.heic","info":"Fallback only when no campaign slide blocks have usable images."},
     {"type":"text","id":"default_image_url","label":"Default image URL fallback","default":"https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050"},
     {"type":"image_picker","id":"image","label":"Fallback campaign image","info":"Used only when no slideshow/default image can resolve."},
     {"type":"image_picker","id":"mobile_image","label":"Fallback mobile image","info":"Optional portrait crop for the fallback image."},
@@ -204,8 +207,12 @@
       "settings":[
         {"type":"image_picker","id":"image","label":"Image"},
         {"type":"image_picker","id":"mobile_image","label":"Mobile image","info":"Optional phone-specific crop."},
-        {"type":"text","id":"file_name","label":"Shopify Files filename","info":"Use the exact filename from Content → Files, for example IMG_1341.heic."},
+        {"type":"text","id":"file_name","label":"Shopify Files filename","info":"Use the exact filename from Content → Files."},
         {"type":"text","id":"image_url","label":"Fallback CDN URL","info":"Optional fallback when the Files filename cannot resolve."},
+        {"type":"range","id":"focus_x","label":"Desktop focal point — horizontal","min":0,"max":100,"step":5,"unit":"%","default":50},
+        {"type":"range","id":"focus_y","label":"Desktop focal point — vertical","min":0,"max":100,"step":5,"unit":"%","default":55},
+        {"type":"range","id":"mobile_focus_x","label":"Mobile focal point — horizontal","min":0,"max":100,"step":5,"unit":"%","default":50},
+        {"type":"range","id":"mobile_focus_y","label":"Mobile focal point — vertical","min":0,"max":100,"step":5,"unit":"%","default":60},
         {"type":"text","id":"alt","label":"Alt text","default":"Sole Paradise campaign image"}
       ]
     }
