@@ -14,10 +14,11 @@
     const currentLabel = hero.querySelector('[data-hero-current]');
     const totalLabel = hero.querySelector('[data-hero-total]');
     const toggle = hero.querySelector('[data-hero-toggle]');
-    const eyebrow = hero.querySelector('[data-hero-eyebrow]');
-    const heading = hero.querySelector('[data-hero-heading]');
-    const description = hero.querySelector('[data-hero-description]');
-    const button = hero.querySelector('[data-hero-button]');
+    const copyRegion = hero.querySelector('[data-hero-copy-region]');
+    const eyebrow = copyRegion?.querySelector('[data-hero-eyebrow]');
+    const heading = copyRegion?.querySelector('[data-hero-heading]');
+    const description = copyRegion?.querySelector('[data-hero-description]');
+    const button = copyRegion?.querySelector('[data-hero-button]');
 
     let index = slides.findIndex((slide) => slide.classList.contains('is-active'));
     if (index < 0) index = 0;
