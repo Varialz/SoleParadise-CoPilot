@@ -1,0 +1,55 @@
+/* Sole Paradise contact hub */
+.sp-contact{background:#fff;color:var(--sp-brand-ink,#0b1119)}
+.sp-contact__hero{padding:clamp(4rem,8vw,7.5rem) 0 clamp(2.5rem,5vw,4.5rem);border-bottom:1px solid var(--sp-brand-line,#dce3e8)}
+.sp-contact__hero-grid{display:grid;gap:2rem;align-items:end}
+.sp-contact__kicker{margin:0 0 .9rem;color:var(--sp-brand-blue-strong,#4b9bb9);font:800 .62rem/1.2 monospace;letter-spacing:.13em;text-transform:uppercase}
+.sp-contact__title{max-width:8ch;margin:0;font-size:clamp(4rem,10vw,9rem);line-height:.78;letter-spacing:-.075em;text-transform:uppercase}
+.sp-contact__intro{max-width:31rem;margin:0;color:var(--sp-brand-muted,#667382);font-size:clamp(.9rem,1.2vw,1.04rem);line-height:1.65}
+
+.sp-contact__channels{padding:clamp(2.5rem,5vw,4.5rem) 0}
+.sp-contact__channel-grid{display:grid;border-top:1px solid var(--sp-brand-line,#dce3e8);border-left:1px solid var(--sp-brand-line,#dce3e8)}
+.sp-contact__channel{position:relative;display:flex;min-height:176px;flex-direction:column;justify-content:space-between;gap:1.5rem;padding:1.35rem;border-right:1px solid var(--sp-brand-line,#dce3e8);border-bottom:1px solid var(--sp-brand-line,#dce3e8);color:inherit;text-decoration:none;background:#fff;transition:background .18s ease,color .18s ease,border-color .18s ease}
+.sp-contact__channel:hover,.sp-contact__channel:focus-visible{background:var(--sp-brand-navy,#0a2854);color:#fff;outline:none}
+.sp-contact__channel-index{color:var(--sp-brand-blue-strong,#4b9bb9);font:800 .54rem/1 monospace;letter-spacing:.1em;text-transform:uppercase}
+.sp-contact__channel:hover .sp-contact__channel-index,.sp-contact__channel:focus-visible .sp-contact__channel-index{color:var(--sp-brand-blue,#7eccf3)}
+.sp-contact__channel-label{display:block;margin-bottom:.4rem;font:800 .62rem/1.2 monospace;letter-spacing:.11em;text-transform:uppercase}
+.sp-contact__channel-value{display:block;max-width:22rem;font-size:clamp(1.05rem,2vw,1.55rem);line-height:1.08;letter-spacing:-.025em;overflow-wrap:anywhere}
+.sp-contact__channel-arrow{position:absolute;right:1rem;top:1rem;font-size:1rem}
+.sp-contact__channel--static{cursor:default}
+.sp-contact__channel--static:hover{background:#fff;color:inherit}
+
+.sp-contact__form-section{background:var(--sp-brand-navy-deep,#061a38);color:#fff;padding:clamp(3.5rem,7vw,7rem) 0}
+.sp-contact__form-grid{display:grid;gap:clamp(2.5rem,5vw,6rem)}
+.sp-contact__form-copy{max-width:30rem}
+.sp-contact__form-copy .sp-contact__kicker{color:var(--sp-brand-blue,#7eccf3)}
+.sp-contact__form-title{max-width:8ch;margin:0 0 1.25rem;font-size:clamp(2.8rem,6vw,5.8rem);line-height:.86;letter-spacing:-.06em;text-transform:uppercase}
+.sp-contact__form-copy p{margin:0;color:rgba(255,255,255,.66);font-size:.9rem;line-height:1.65}
+.sp-contact__form{display:grid;gap:1rem}
+.sp-contact__field{display:grid;gap:.45rem}
+.sp-contact__field label{color:var(--sp-brand-blue,#7eccf3);font:800 .56rem/1.2 monospace;letter-spacing:.1em;text-transform:uppercase}
+.sp-contact__field input,.sp-contact__field textarea{width:100%;border:1px solid rgba(255,255,255,.24);border-radius:0;background:transparent;color:#fff;font:inherit;padding:.85rem .9rem;outline:none}
+.sp-contact__field input{min-height:48px}
+.sp-contact__field textarea{min-height:150px;resize:vertical}
+.sp-contact__field input:focus,.sp-contact__field textarea:focus{border-color:var(--sp-brand-blue,#7eccf3)}
+.sp-contact__field input::placeholder,.sp-contact__field textarea::placeholder{color:rgba(255,255,255,.36)}
+.sp-contact__form-row{display:grid;gap:1rem}
+.sp-contact__submit{display:inline-flex;min-height:50px;align-items:center;justify-content:center;justify-self:start;padding:.8rem 1.2rem;border:1px solid var(--sp-brand-blue,#7eccf3);border-radius:0;background:var(--sp-brand-blue,#7eccf3);color:var(--sp-brand-navy-deep,#061a38);font:800 .62rem/1 monospace;letter-spacing:.11em;text-transform:uppercase;cursor:pointer}
+.sp-contact__submit:hover,.sp-contact__submit:focus-visible{background:#fff;border-color:#fff;outline:none}
+.sp-contact__status{margin:0;padding:.9rem 1rem;border:1px solid rgba(126,204,243,.35);color:#fff;font-size:.8rem;line-height:1.5}
+.sp-contact__errors{margin:0;padding:1rem 1rem 1rem 2rem;border:1px solid rgba(255,255,255,.28);color:#fff;font-size:.8rem}
+.sp-contact__smallprint{margin-top:1.25rem;color:rgba(255,255,255,.45);font:700 .54rem/1.55 monospace;letter-spacing:.06em;text-transform:uppercase}
+
+@media(min-width:750px){
+  .sp-contact__hero-grid{grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr)}
+  .sp-contact__channel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sp-contact__form-grid{grid-template-columns:minmax(280px,.78fr) minmax(0,1.22fr);align-items:start}
+  .sp-contact__form-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(min-width:1000px){.sp-contact__channel-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:749px){
+  .sp-contact__hero{padding-top:3rem}
+  .sp-contact__title{font-size:clamp(3.8rem,18vw,6rem)}
+  .sp-contact__channel{min-height:140px}
+  .sp-contact__submit{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.sp-contact__channel{transition:none}}
