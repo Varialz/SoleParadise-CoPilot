@@ -202,3 +202,67 @@
     </div>
   {%- endif -%}
 {%- endif -%}
+
+<script>
+(function(){
+  function initStage(stage){
+    if(!stage || stage.dataset.designerStageInitialized === 'true') return;
+    var buttons = stage.querySelectorAll('[data-designer-stage-brand]');
+    var mediaItems = stage.querySelectorAll('[data-designer-stage-media]');
+    if(!buttons.length || !mediaItems.length) return;
+    stage.dataset.designerStageInitialized = 'true';
+    var nameTarget = stage.querySelector('[data-designer-stage-name]');
+    var productTarget = stage.querySelector('[data-designer-stage-product]');
+    var shopTarget = stage.querySelector('[data-designer-stage-shop]');
+    var indexTarget = stage.querySelector('[data-designer-stage-index]');
+    var watermarkTarget = stage.querySelector('[data-designer-stage-watermark]');
+
+    function activate(handle){
+      var media = null;
+      for(var i=0;i<mediaItems.length;i+=1){
+        if(mediaItems[i].getAttribute('data-designer-stage-media') === handle){media = mediaItems[i];break;}
+      }
+      if(!media) return;
+      var name = media.getAttribute('data-designer-name') || 'Designer';
+      var url = media.getAttribute('data-designer-url') || '#';
+      var product = media.getAttribute('data-designer-product') || 'Current inventory';
+      var index = String(media.getAttribute('data-designer-index') || '1').padStart(2,'0');
+      var total = String(media.getAttribute('data-designer-total') || mediaItems.length).padStart(2,'0');
+      for(var j=0;j<mediaItems.length;j+=1){mediaItems[j].classList.toggle('is-active',mediaItems[j]===media);}
+      for(var k=0;k<buttons.length;k+=1){
+        var active = buttons[k].getAttribute('data-designer-stage-brand') === handle;
+        buttons[k].classList.toggle('is-active',active);
+        buttons[k].setAttribute('aria-pressed',active?'true':'false');
+      }
+      if(nameTarget) nameTarget.textContent = name;
+      if(productTarget) productTarget.textContent = product;
+      if(watermarkTarget) watermarkTarget.textContent = name;
+      if(indexTarget) indexTarget.textContent = index + ' / ' + total;
+      if(shopTarget){shopTarget.href=url;shopTarget.textContent='Shop '+name+' →';shopTarget.setAttribute('aria-label','Shop '+name);}
+    }
+
+    for(var b=0;b<buttons.length;b+=1){
+      (function(button){
+        var handle = button.getAttribute('data-designer-stage-brand');
+        button.addEventListener('mouseenter',function(){activate(handle);});
+        button.addEventListener('focus',function(){activate(handle);});
+        button.addEventListener('click',function(){activate(handle);});
+        button.addEventListener('pointerdown',function(){activate(handle);},{passive:true});
+      })(buttons[b]);
+    }
+    var initial = stage.querySelector('[data-designer-stage-media].is-active') || mediaItems[0];
+    activate(initial.getAttribute('data-designer-stage-media'));
+  }
+  function initAll(scope){
+    var root = scope || document;
+    if(root.matches && root.matches('[data-designer-stage]')) initStage(root);
+    var stages = root.querySelectorAll ? root.querySelectorAll('[data-designer-stage]') : [];
+    for(var i=0;i<stages.length;i+=1) initStage(stages[i]);
+  }
+  initAll(document);
+  if(!window.__spDesignerStageFallbackBound){
+    window.__spDesignerStageFallbackBound = true;
+    document.addEventListener('shopify:section:load',function(event){initAll(event.target);});
+  }
+})();
+</script>
