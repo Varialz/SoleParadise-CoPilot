@@ -287,74 +287,6 @@
         "product_limit": 8
       }
     },
-    "other_showcase": {
-      "type": "sp-brand-showcase",
-      "blocks": {
-        "rick": {
-          "type": "tab",
-          "settings": {
-            "label": "Rick Owens",
-            "collection": "rick-owens",
-            "vendor": "Rick Owens",
-            "category_match": "Rick Owens",
-            "button_label": ""
-          }
-        },
-        "amiri": {
-          "type": "tab",
-          "settings": {
-            "label": "Amiri",
-            "collection": "",
-            "vendor": "Amiri",
-            "category_match": "",
-            "button_label": ""
-          }
-        },
-        "balenciaga": {
-          "type": "tab",
-          "settings": {
-            "label": "Balenciaga",
-            "collection": "",
-            "vendor": "Balenciaga",
-            "category_match": "",
-            "button_label": ""
-          }
-        },
-        "bottega": {
-          "type": "tab",
-          "settings": {
-            "label": "Bottega Desires",
-            "collection": "",
-            "vendor": "Bottega Desires",
-            "category_match": "",
-            "button_label": ""
-          }
-        },
-        "gallery": {
-          "type": "tab",
-          "settings": {
-            "label": "Gallery Dept.",
-            "collection": "",
-            "vendor": "Gallery Dept.",
-            "category_match": "",
-            "button_label": ""
-          }
-        }
-      },
-      "block_order": [
-        "rick",
-        "amiri",
-        "balenciaga",
-        "bottega",
-        "gallery"
-      ],
-      "settings": {
-        "eyebrow": "",
-        "heading": "More designers",
-        "vendor": "",
-        "product_limit": 8
-      }
-    },
     "feed": {
       "type": "sp-from-feed",
       "blocks": {
@@ -453,6 +385,74 @@
         "show_collection_link": true
       }
     },
+    "other_showcase": {
+      "type": "sp-brand-showcase",
+      "blocks": {
+        "rick": {
+          "type": "tab",
+          "settings": {
+            "label": "Rick Owens",
+            "collection": "rick-owens",
+            "vendor": "Rick Owens",
+            "category_match": "Rick Owens",
+            "button_label": ""
+          }
+        },
+        "amiri": {
+          "type": "tab",
+          "settings": {
+            "label": "Amiri",
+            "collection": "",
+            "vendor": "Amiri",
+            "category_match": "",
+            "button_label": ""
+          }
+        },
+        "balenciaga": {
+          "type": "tab",
+          "settings": {
+            "label": "Balenciaga",
+            "collection": "",
+            "vendor": "Balenciaga",
+            "category_match": "",
+            "button_label": ""
+          }
+        },
+        "bottega": {
+          "type": "tab",
+          "settings": {
+            "label": "Bottega Desires",
+            "collection": "",
+            "vendor": "Bottega Desires",
+            "category_match": "",
+            "button_label": ""
+          }
+        },
+        "gallery": {
+          "type": "tab",
+          "settings": {
+            "label": "Gallery Dept.",
+            "collection": "",
+            "vendor": "Gallery Dept.",
+            "category_match": "",
+            "button_label": ""
+          }
+        }
+      },
+      "block_order": [
+        "rick",
+        "amiri",
+        "balenciaga",
+        "bottega",
+        "gallery"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "More designers",
+        "vendor": "",
+        "product_limit": 8
+      }
+    },
     "passport_demo": {
       "type": "sp-paradise-passport",
       "disabled": true,
@@ -503,8 +503,8 @@
     "arrivals",
     "trust",
     "chrome_showcase",
-    "other_showcase",
     "feed",
+    "other_showcase",
     "passport_demo",
     "paradise_drop_demo",
     "flyer",
