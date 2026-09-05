@@ -15,6 +15,7 @@
 .template-index .sp-section-title,.template-index .brand-showcase__title{max-width:15ch;font-size:clamp(2.15rem,3.7vw,4.1rem)!important;line-height:.95!important;letter-spacing:-.045em!important}
 .template-index .brand-showcase__header{text-align:center}
 .template-index .brand-showcase__title{margin-inline:auto}
+.template-index .brand-showcase__tabs{width:max-content;max-width:100%;margin-inline:auto!important;justify-content:flex-start!important}
 .template-index .sp-section-head{align-items:center!important;justify-content:center;text-align:center}
 .template-index .sp-section-head>div,.template-index .sp-section-head>p,.template-index .sp-feed__intro{margin-inline:auto}
 .template-index .brand-showcase__inner{padding-block:clamp(5rem,8vw,8.5rem)}
