@@ -78,6 +78,44 @@
       assign archive_size = ''
     endif
 
+    assign size_option_position = 0
+    for option in product.options_with_values
+      assign option_name = option.name | downcase
+      if option_name contains 'size'
+        assign size_option_position = option.position
+        break
+      endif
+    endfor
+
+    assign available_card_sizes = ''
+    assign seen_card_sizes = '|'
+    if size_option_position > 0
+      for variant in product.variants
+        if variant.available
+          assign variant_size = ''
+          case size_option_position
+            when 1
+              assign variant_size = variant.option1
+            when 2
+              assign variant_size = variant.option2
+            when 3
+              assign variant_size = variant.option3
+          endcase
+
+          if variant_size != blank and variant_size != 'Default Title'
+            assign size_token = '|' | append: variant_size | append: '|'
+            unless seen_card_sizes contains size_token
+              if available_card_sizes != blank
+                assign available_card_sizes = available_card_sizes | append: ' · '
+              endif
+              assign available_card_sizes = available_card_sizes | append: variant_size
+              assign seen_card_sizes = seen_card_sizes | append: variant_size | append: '|'
+            endunless
+          endif
+        endif
+      endfor
+    endif
+
     assign has_archive_meta = false
     if archive_size != blank or condition != blank or item_state != blank or archive_id != blank
       assign has_archive_meta = true
@@ -125,7 +163,7 @@
         {% if quick_view_image != blank %}data-preview-image="{{ quick_view_image | escape }}"{% endif %}
         data-archive="{% if from_feed %}true{% else %}false{% endif %}"
         {% if archive_id != blank %}data-archive-id="{{ archive_id | escape }}"{% endif %}
-        {% if archive_size != blank %}data-size="{{ archive_size | escape }}"{% endif %}
+        {% if archive_size != blank %}data-size="{{ archive_size | escape }}"{% elsif available_card_sizes != blank %}data-size="{{ available_card_sizes | escape }}"{% endif %}
         {% if condition != blank %}data-condition="{{ condition | escape }}"{% endif %}
         {% if item_state != blank %}data-item-state="{{ item_state | escape }}"{% endif %}
         aria-label="Quick view {{ product.title | escape }}"
@@ -143,6 +181,12 @@
           {%- if archive_size != blank -%}<span>{{ archive_size | escape }}</span>{%- endif -%}
           {%- if condition != blank -%}<span>{{ condition | escape }}</span>{%- endif -%}
           {%- if item_state != blank -%}<span>{{ item_state | escape }}</span>{%- endif -%}
+        </p>
+      {%- endif -%}
+
+      {%- if archive_size == blank and available_card_sizes != blank -%}
+        <p class="product-card__archive-meta product-card__size-meta" aria-label="Available sizes">
+          <span>Sizes {{ available_card_sizes | escape }}</span>
         </p>
       {%- endif -%}
 
