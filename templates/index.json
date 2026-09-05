@@ -144,6 +144,8 @@
       "settings": {
         "default_file_name": "IMG_1341.heic",
         "default_image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050",
+        "image": "shopify://shop_images/IMG_1341.heic",
+        "mobile_image": "shopify://shop_images/IMG_1341.heic",
         "autoplay": true,
         "autoplay_speed": 6,
         "transition_speed": 700,
