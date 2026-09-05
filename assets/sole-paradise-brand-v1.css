@@ -132,21 +132,14 @@
 
 /* WE BUY SNEAKERS CAMPAIGN */
 .sp-buy-campaign{padding:clamp(4rem,8vw,8rem) 0;background:var(--sp-brand-black);color:#fff;border-block:1px solid rgba(126,204,243,.18)}
-.sp-buy-campaign__grid{display:grid;gap:clamp(2rem,5vw,6rem);align-items:center}
-.sp-buy-campaign__art{position:relative;max-width:24rem;margin:auto}
-.sp-buy-campaign__flyer{display:block;width:100%;height:auto;border:1px solid rgba(126,204,243,.24);background:#000}
-.sp-buy-campaign__index{position:absolute;top:.8rem;left:.8rem;padding:.45rem .55rem;background:var(--sp-brand-blue);color:var(--sp-brand-navy-deep);font:800 .54rem/1 monospace;letter-spacing:.1em}
-.sp-buy-campaign__copy{max-width:34rem}
+.sp-buy-campaign__grid{display:block}
+.sp-buy-campaign__copy{max-width:62rem;margin-inline:auto}
 .sp-buy-campaign__eyebrow{margin:0 0 1rem;color:var(--sp-brand-blue);font:800 .62rem/1.2 monospace;letter-spacing:.13em;text-transform:uppercase}
 .sp-buy-campaign__title{max-width:8ch;margin:0 0 1.2rem;color:#fff;font-size:clamp(3rem,7vw,6.8rem);line-height:.86;letter-spacing:-.06em;text-transform:uppercase}
 .sp-buy-campaign__text{max-width:31rem;margin:0 0 1.6rem;color:rgba(255,255,255,.68);font-size:.92rem;line-height:1.65}
 .sp-buy-campaign__actions{display:flex;flex-wrap:wrap;gap:.65rem}
 .sp-buy-campaign__link{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.75rem 1rem;border:1px solid var(--sp-brand-blue);color:var(--sp-brand-navy-deep);background:var(--sp-brand-blue);font:800 .62rem/1 monospace;letter-spacing:.11em;text-decoration:none;text-transform:uppercase}
-.sp-buy-campaign__link--ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
 .sp-buy-campaign__link:hover{background:#fff;border-color:#fff;color:var(--sp-brand-navy-deep)}
-.sp-buy-campaign__qr-row{display:flex;align-items:center;gap:1rem;margin-top:2rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,.14);text-decoration:none}
-.sp-buy-campaign__qr{width:76px;height:76px;object-fit:cover;background:var(--sp-brand-blue)}
-.sp-buy-campaign__qr-copy{color:rgba(255,255,255,.62);font:700 .56rem/1.5 monospace;letter-spacing:.08em;text-transform:uppercase}
 
 /* FOOTER */
 .site-footer{background:var(--sp-brand-navy-deep)!important;color:#fff!important;border-top:0!important}
@@ -170,7 +163,6 @@
 .site-footer__utility{border-color:rgba(126,204,243,.18)!important}
 
 @media(min-width:750px){
-  .sp-buy-campaign__grid{grid-template-columns:minmax(280px,.82fr) minmax(360px,1.18fr)}
   .site-footer__brand-panel{grid-template-columns:1fr auto;align-items:center}
 }
 
@@ -185,8 +177,6 @@
   .sp-trust__item:nth-last-child(-n+2){border-bottom:0}
   .product-card__trust{font-size:.47rem}
   .sp-buy-campaign{padding:3.5rem 0}
-  .sp-buy-campaign__grid{gap:2.25rem}
-  .sp-buy-campaign__art{width:min(78vw,20rem)}
   .sp-buy-campaign__title{font-size:clamp(2.8rem,15vw,4.5rem)}
   .sp-buy-campaign__actions{display:grid}
   .sp-buy-campaign__link{width:100%}
