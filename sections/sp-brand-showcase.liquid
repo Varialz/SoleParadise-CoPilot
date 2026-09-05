@@ -95,7 +95,15 @@
                         assign product_title_signal = product.title | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
                         assign product_type_signal = product.type | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
                         assign product_tags_signal = product.tags | join: ' ' | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
-                        assign catalog_signal = product_title_signal | append: ' ' | append: product_type_signal | append: ' ' | append: product_tags_signal | prepend: ' ' | append: ' '
+                        assign product_taxonomy_signal = ''
+                        if product.category != blank
+                          assign product_taxonomy_signal = product.category.name | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
+                          for taxonomy_ancestor in product.category.ancestors
+                            assign taxonomy_ancestor_name = taxonomy_ancestor.name | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
+                            assign product_taxonomy_signal = product_taxonomy_signal | append: ' ' | append: taxonomy_ancestor_name
+                          endfor
+                        endif
+                        assign catalog_signal = product_title_signal | append: ' ' | append: product_type_signal | append: ' ' | append: product_tags_signal | append: ' ' | append: product_taxonomy_signal | prepend: ' ' | append: ' '
 
                         case target_category_handle
                           when 'tees', 'tee', 't-shirts', 't-shirt', 'shirts', 'shirt'
@@ -119,12 +127,12 @@
                             endif
 
                           when 'footwear', 'shoes', 'shoe', 'sneakers', 'sneaker'
-                            if product_type_handle contains 'shoe' or product_type_handle contains 'sneaker' or product_type_handle contains 'boot' or product_type_handle contains 'slide' or product_type_handle contains 'sandal' or catalog_signal contains ' shoe ' or catalog_signal contains ' shoes ' or catalog_signal contains ' sneaker ' or catalog_signal contains ' sneakers ' or catalog_signal contains ' boot ' or catalog_signal contains ' boots ' or catalog_signal contains ' slide ' or catalog_signal contains ' slides ' or catalog_signal contains ' sandal ' or catalog_signal contains ' sandals ' or catalog_signal contains ' loafer ' or catalog_signal contains ' loafers '
+                            if product_type_handle contains 'shoe' or product_type_handle contains 'sneaker' or product_type_handle contains 'boot' or product_type_handle contains 'slide' or product_type_handle contains 'sandal' or catalog_signal contains ' footwear ' or catalog_signal contains ' shoe ' or catalog_signal contains ' shoes ' or catalog_signal contains ' sneaker ' or catalog_signal contains ' sneakers ' or catalog_signal contains ' boot ' or catalog_signal contains ' boots ' or catalog_signal contains ' slide ' or catalog_signal contains ' slides ' or catalog_signal contains ' sandal ' or catalog_signal contains ' sandals ' or catalog_signal contains ' loafer ' or catalog_signal contains ' loafers ' or catalog_signal contains ' ramones ' or catalog_signal contains ' ramone ' or catalog_signal contains ' geobasket ' or catalog_signal contains ' geobaskets ' or catalog_signal contains ' geth runner ' or catalog_signal contains ' geth runners ' or catalog_signal contains ' mega bumper ' or catalog_signal contains ' bogun ' or catalog_signal contains ' cargobasket ' or catalog_signal contains ' cargo basket ' or catalog_signal contains ' abstract low ' or catalog_signal contains ' abstract high '
                               assign category_matches = true
                             endif
 
                           when 'bottoms', 'bottom', 'pants', 'pant', 'denim', 'jeans', 'shorts'
-                            if product_type_handle contains 'pant' or product_type_handle contains 'denim' or product_type_handle contains 'jean' or product_type_handle contains 'short' or catalog_signal contains ' pants ' or catalog_signal contains ' pant ' or catalog_signal contains ' jeans ' or catalog_signal contains ' denim ' or catalog_signal contains ' shorts ' or catalog_signal contains ' trouser ' or catalog_signal contains ' trousers ' or catalog_signal contains ' sweatpants '
+                            if product_type_handle contains 'pant' or product_type_handle contains 'denim' or product_type_handle contains 'jean' or product_type_handle contains 'short' or catalog_signal contains ' bottoms ' or catalog_signal contains ' pants ' or catalog_signal contains ' pant ' or catalog_signal contains ' jeans ' or catalog_signal contains ' denim ' or catalog_signal contains ' shorts ' or catalog_signal contains ' trouser ' or catalog_signal contains ' trousers ' or catalog_signal contains ' sweatpants '
                               assign category_matches = true
                             endif
 
@@ -134,17 +142,17 @@
                             endif
 
                           when 'tops', 'top'
-                            if product_type_handle contains 'shirt' or product_type_handle contains 'tee' or product_type_handle contains 'hoodie' or product_type_handle contains 'sweatshirt' or product_type_handle contains 'sweater' or catalog_signal contains ' tee ' or catalog_signal contains ' shirt ' or catalog_signal contains ' hoodie ' or catalog_signal contains ' sweatshirt ' or catalog_signal contains ' sweater ' or catalog_signal contains ' crewneck ' or catalog_signal contains ' jersey '
+                            if product_type_handle contains 'shirt' or product_type_handle contains 'tee' or product_type_handle contains 'hoodie' or product_type_handle contains 'sweatshirt' or product_type_handle contains 'sweater' or catalog_signal contains ' tops ' or catalog_signal contains ' tee ' or catalog_signal contains ' shirt ' or catalog_signal contains ' hoodie ' or catalog_signal contains ' sweatshirt ' or catalog_signal contains ' sweater ' or catalog_signal contains ' crewneck ' or catalog_signal contains ' jersey '
                               assign category_matches = true
                             endif
 
                           when 'clothing', 'apparel'
-                            if product_type_handle contains 'shirt' or product_type_handle contains 'tee' or product_type_handle contains 'hoodie' or product_type_handle contains 'sweatshirt' or product_type_handle contains 'sweater' or product_type_handle contains 'jacket' or product_type_handle contains 'coat' or product_type_handle contains 'pant' or product_type_handle contains 'denim' or product_type_handle contains 'jean' or product_type_handle contains 'short' or catalog_signal contains ' tee ' or catalog_signal contains ' shirt ' or catalog_signal contains ' hoodie ' or catalog_signal contains ' sweatshirt ' or catalog_signal contains ' sweater ' or catalog_signal contains ' jacket ' or catalog_signal contains ' coat ' or catalog_signal contains ' pants ' or catalog_signal contains ' jeans ' or catalog_signal contains ' denim ' or catalog_signal contains ' shorts ' or catalog_signal contains ' trousers ' or catalog_signal contains ' jersey '
+                            if product_type_handle contains 'shirt' or product_type_handle contains 'tee' or product_type_handle contains 'hoodie' or product_type_handle contains 'sweatshirt' or product_type_handle contains 'sweater' or product_type_handle contains 'jacket' or product_type_handle contains 'coat' or product_type_handle contains 'pant' or product_type_handle contains 'denim' or product_type_handle contains 'jean' or product_type_handle contains 'short' or catalog_signal contains ' clothing ' or catalog_signal contains ' apparel ' or catalog_signal contains ' tee ' or catalog_signal contains ' shirt ' or catalog_signal contains ' hoodie ' or catalog_signal contains ' sweatshirt ' or catalog_signal contains ' sweater ' or catalog_signal contains ' jacket ' or catalog_signal contains ' coat ' or catalog_signal contains ' pants ' or catalog_signal contains ' jeans ' or catalog_signal contains ' denim ' or catalog_signal contains ' shorts ' or catalog_signal contains ' trousers ' or catalog_signal contains ' jersey '
                               assign category_matches = true
                             endif
 
                           else
-                            if product_type_handle contains target_category_handle or product_tags_handle contains target_category_handle or product_title_handle contains target_category_handle
+                            if product_type_handle contains target_category_handle or product_tags_handle contains target_category_handle or product_title_handle contains target_category_handle or catalog_signal contains target_category_handle
                               assign category_matches = true
                             endif
                         endcase
@@ -163,7 +171,7 @@
                   <div class="brand-showcase__empty">
                     <div>
                       <p>No products are connected to {{ block.settings.label | default: section.settings.heading | escape }}.</p>
-                      <span>The carousel checks Shopify vendor, title, product type and tags. You can still select an exact collection for manual control.</span>
+                      <span>The carousel checks Shopify taxonomy, vendor, title, product type and tags. You can still select an exact collection for manual control.</span>
                     </div>
                   </div>
                 {%- endif -%}
@@ -201,7 +209,7 @@
         {"type":"text","id":"label","label":"Tab label","default":"All"},
         {"type":"collection","id":"collection","label":"Collection","info":"Optional exact override. Leave blank to let the carousel classify products automatically."},
         {"type":"text","id":"vendor","label":"Vendor override","info":"Useful when this section is an Other Brands carousel."},
-        {"type":"text","id":"category_match","label":"Category to match","info":"Smart matching reads product title, type and tags. Examples: Tees, Hoodies, Hats, Accessories, Footwear, Bottoms, Outerwear."},
+        {"type":"text","id":"category_match","label":"Category to match","info":"Smart matching reads Shopify taxonomy, product title, type and tags. Examples: Tees, Hoodies, Hats, Accessories, Footwear, Bottoms, Outerwear."},
         {"type":"text","id":"button_label","label":"Button label"}
       ]
     }
