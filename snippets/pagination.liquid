@@ -1,9 +1,27 @@
 {%- if paginate.pages > 1 -%}
-<nav class="pagination" aria-label="{{ 'collection.pagination.label' | t }}">
-  <div class="pagination__inner">
-    {%- if paginate.previous -%}<a class="pagination__link pagination__link--previous" href="{{ paginate.previous.url }}">← <span>{{ 'collection.pagination.previous' | t }}</span></a>{%- endif -%}
-    <span class="pagination__status">{{ 'collection.pagination.page' | t: number: paginate.current_page }} / {{ paginate.pages }}</span>
-    {%- if paginate.next -%}<a class="pagination__link pagination__link--next" href="{{ paginate.next.url }}"><span>{{ 'collection.pagination.next' | t }}</span> →</a>{%- endif -%}
-  </div>
-</nav>
+  {%- liquid
+    assign shown_count = paginate.current_page | times: paginate.page_size
+    if shown_count > paginate.items
+      assign shown_count = paginate.items
+    endif
+    assign progress = shown_count | times: 100 | divided_by: paginate.items
+  -%}
+  <nav class="pagination pagination--progressive" aria-label="{{ 'collection.pagination.label' | t }}" data-pagination data-current-page="{{ paginate.current_page }}" data-total-pages="{{ paginate.pages }}">
+    <div class="pagination__progress-head">
+      <span data-pagination-count>Showing {{ shown_count }} of {{ paginate.items }} pieces</span>
+      <span>Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
+    </div>
+    <div class="pagination__progress" aria-hidden="true"><span style="width:{{ progress }}%"></span></div>
+    <div class="pagination__actions">
+      {%- if paginate.next -%}
+        <a class="pagination__load-more" href="{{ paginate.next.url }}" data-pagination-next><span data-pagination-label>Load more pieces</span><span aria-hidden="true">↓</span></a>
+        <p class="pagination__hint">More inventory loads automatically as you continue.</p>
+      {%- else -%}
+        <p class="pagination__complete">You’ve reached the end of the selection.</p>
+      {%- endif -%}
+    </div>
+    <div class="pagination__sentinel" data-pagination-sentinel aria-hidden="true"></div>
+    <p class="visually-hidden" role="status" aria-live="polite" data-pagination-status></p>
+    <noscript><div class="pagination__fallback">{%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">← {{ 'collection.pagination.previous' | t }}</a>{%- endif -%}<span>{{ 'collection.pagination.page' | t: number: paginate.current_page }} / {{ paginate.pages }}</span>{%- if paginate.next -%}<a href="{{ paginate.next.url }}">{{ 'collection.pagination.next' | t }} →</a>{%- endif -%}</div></noscript>
+  </nav>
 {%- endif -%}
