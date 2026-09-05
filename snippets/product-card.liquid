@@ -116,6 +116,21 @@
       endfor
     endif
 
+    assign card_catalog_signal = product.type | append: ' ' | append: product.title | append: ' ' | append: product.tags | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' ' | prepend: ' ' | append: ' '
+    assign card_is_accessory = false
+    if card_catalog_signal contains ' accessory ' or card_catalog_signal contains ' accessories ' or card_catalog_signal contains ' bag ' or card_catalog_signal contains ' wallet ' or card_catalog_signal contains ' belt ' or card_catalog_signal contains ' jewelry ' or card_catalog_signal contains ' jewellery ' or card_catalog_signal contains ' necklace ' or card_catalog_signal contains ' bracelet ' or card_catalog_signal contains ' ring ' or card_catalog_signal contains ' pendant ' or card_catalog_signal contains ' chain ' or card_catalog_signal contains ' sunglasses ' or card_catalog_signal contains ' glasses ' or card_catalog_signal contains ' eyewear ' or card_catalog_signal contains ' keychain ' or card_catalog_signal contains ' hat ' or card_catalog_signal contains ' cap ' or card_catalog_signal contains ' beanie '
+      assign card_is_accessory = true
+    endif
+
+    if archive_size == blank and available_card_sizes == blank and card_is_accessory and product.available
+      assign available_card_sizes = 'OS'
+    endif
+
+    assign card_size_prefix = 'Sizes'
+    unless available_card_sizes contains ' · '
+      assign card_size_prefix = 'Size'
+    endunless
+
     assign has_archive_meta = false
     if archive_size != blank or condition != blank or item_state != blank or archive_id != blank
       assign has_archive_meta = true
@@ -186,7 +201,7 @@
 
       {%- if archive_size == blank and available_card_sizes != blank -%}
         <p class="product-card__archive-meta product-card__size-meta" aria-label="Available sizes">
-          <span>Sizes {{ available_card_sizes | escape }}</span>
+          <span>{{ card_size_prefix }} {{ available_card_sizes | escape }}</span>
         </p>
       {%- endif -%}
 
