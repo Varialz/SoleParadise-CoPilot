@@ -25,3 +25,55 @@
   padding: 3%;
   object-fit: contain;
 }
+
+/* Mobile filters must live above the storefront chrome and use the visual viewport. */
+@media(max-width:999px){
+  html.collection-scroll-lock,
+  html.collection-scroll-lock body{overflow:hidden}
+  .sp-collection__filters{
+    position:fixed!important;
+    inset:0!important;
+    z-index:9999;
+    display:block;
+    width:100vw;
+    height:100vh;
+    height:100dvh;
+    visibility:hidden;
+    opacity:0;
+    pointer-events:none;
+    isolation:isolate;
+  }
+  .sp-collection__filters.is-open{
+    visibility:visible;
+    opacity:1;
+    pointer-events:auto;
+  }
+  .sp-collection__filters-backdrop{
+    display:block;
+    position:fixed!important;
+    inset:0!important;
+    z-index:0;
+    width:100vw;
+    height:100vh;
+    height:100dvh;
+    background:rgba(6,31,74,.56);
+    border:0;
+    touch-action:none;
+  }
+  .sp-collection__filters-panel{
+    position:fixed!important;
+    top:0!important;
+    bottom:0!important;
+    left:0!important;
+    z-index:1;
+    width:min(390px,92vw);
+    height:100vh;
+    height:100dvh;
+    max-height:100dvh;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    background:#fff;
+    padding:1.1rem max(1.1rem,env(safe-area-inset-left)) calc(1.1rem + env(safe-area-inset-bottom));
+  }
+}
