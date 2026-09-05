@@ -238,7 +238,7 @@
             "label": "Tees",
             "collection": "",
             "vendor": "",
-            "category_match": "shirt, tee, t-shirt.",
+            "category_match": "tee",
             "button_label": ""
           }
         },
@@ -258,7 +258,7 @@
             "label": "Hats",
             "collection": "",
             "vendor": "",
-            "category_match": "hat, cap",
+            "category_match": "hat",
             "button_label": ""
           }
         },
