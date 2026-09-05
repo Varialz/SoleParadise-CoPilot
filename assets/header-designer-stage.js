@@ -23,8 +23,8 @@
       const name = media.getAttribute('data-designer-name') || 'Designer';
       const url = media.getAttribute('data-designer-url') || '#';
       const product = media.getAttribute('data-designer-product') || 'Current inventory';
-      const index = media.getAttribute('data-designer-index') || '01';
-      const total = media.getAttribute('data-designer-total') || String(mediaItems.length).padStart(2, '0');
+      const index = String(media.getAttribute('data-designer-index') || '1').padStart(2, '0');
+      const total = String(media.getAttribute('data-designer-total') || mediaItems.length).padStart(2, '0');
 
       mediaItems.forEach((item) => {
         item.classList.toggle('is-active', item === media);
