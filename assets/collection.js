@@ -29,6 +29,25 @@
     return null;
   }
 
+  function restoreDrawerToSection(section) {
+    if (!section) return;
+
+    const drawer = getDrawer(section);
+    const layout = section.querySelector('.sp-collection__layout');
+    const results = section.querySelector('.sp-collection__results');
+    if (!drawer || !layout) return;
+
+    if (drawer.parentElement !== layout) {
+      layout.insertBefore(drawer, results || layout.firstChild);
+    }
+  }
+
+  function portalDrawerToBody(section) {
+    const drawer = getDrawer(section);
+    if (!drawer) return;
+    if (drawer.parentElement !== document.body) document.body.appendChild(drawer);
+  }
+
   function prepareSection(section) {
     if (!section) return;
     section.setAttribute('data-collection-enhanced', '');
@@ -36,16 +55,31 @@
     const drawer = getDrawer(section);
     if (!drawer) return;
 
+    const trigger = getTrigger(section);
     const panel = drawer.querySelector('[data-collection-drawer-panel]');
     if (panel) panel.tabIndex = -1;
 
-    drawer.setAttribute('aria-hidden', drawer.classList.contains('is-open') ? 'false' : 'true');
-
-    // Portaling the drawer to <body> prevents transformed/sticky storefront
-    // ancestors from clipping or covering it on mobile Safari/Chrome.
-    if (drawer.parentElement !== document.body) {
-      document.body.appendChild(drawer);
+    if (desktop.matches) {
+      // Desktop needs the filter <aside> to remain the first column of the
+      // collection grid. Removing it causes the results to auto-place into
+      // the 190-220px sidebar track.
+      restoreDrawerToSection(section);
+      drawer.classList.remove('is-open');
+      drawer.setAttribute('aria-hidden', 'false');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      if (panel) {
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-modal');
+      }
+      document.documentElement.classList.remove('collection-scroll-lock');
+      document.body.classList.remove('collection-scroll-lock');
+      return;
     }
+
+    // Only mobile/tablet uses the body portal. This prevents sticky/transformed
+    // storefront ancestors from clipping the full-screen drawer.
+    portalDrawerToBody(section);
+    drawer.setAttribute('aria-hidden', drawer.classList.contains('is-open') ? 'false' : 'true');
   }
 
   function closeDrawer(section, returnFocus) {
@@ -57,7 +91,7 @@
 
     if (drawer) {
       drawer.classList.remove('is-open');
-      drawer.setAttribute('aria-hidden', 'true');
+      drawer.setAttribute('aria-hidden', desktop.matches ? 'false' : 'true');
     }
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
     if (panel) {
@@ -68,6 +102,7 @@
     document.documentElement.classList.remove('collection-scroll-lock');
     document.body.classList.remove('collection-scroll-lock');
 
+    if (desktop.matches) restoreDrawerToSection(section);
     if (returnFocus && trigger) trigger.focus();
     if (activeSection === section) activeSection = null;
   }
@@ -93,7 +128,6 @@
     document.body.classList.add('collection-scroll-lock');
     activeSection = section;
 
-    // Force the first paint after portaling before focusing the panel.
     window.requestAnimationFrame(function () {
       panel.focus();
     });
@@ -193,14 +227,15 @@
     if (event.key === 'Escape' && activeSection) closeDrawer(activeSection, true);
   });
 
+  function handleBreakpointChange(event) {
+    if (event.matches && activeSection) closeDrawer(activeSection, false);
+    prepareAll(document);
+  }
+
   if (desktop.addEventListener) {
-    desktop.addEventListener('change', function (event) {
-      if (event.matches && activeSection) closeDrawer(activeSection, false);
-    });
+    desktop.addEventListener('change', handleBreakpointChange);
   } else if (desktop.addListener) {
-    desktop.addListener(function (event) {
-      if (event.matches && activeSection) closeDrawer(activeSection, false);
-    });
+    desktop.addListener(handleBreakpointChange);
   }
 
   document.addEventListener('shopify:section:load', function (event) {
