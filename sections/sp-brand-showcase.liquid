@@ -57,7 +57,15 @@
             endif
             assign cta_label = block.settings.button_label
             if cta_label == blank
-              assign cta_label = 'Shop all ' | append: block.settings.label
+              if tab_label_handle == 'all'
+                if target_vendor != blank
+                  assign cta_label = 'Shop all ' | append: target_vendor
+                else
+                  assign cta_label = 'Shop all pieces'
+                endif
+              else
+                assign cta_label = 'Shop all ' | append: block.settings.label
+              endif
             endif
           -%}
           <div
