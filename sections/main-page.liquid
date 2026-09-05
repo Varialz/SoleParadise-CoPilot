@@ -1,27 +1,153 @@
 {{ 'page.css' | asset_url | stylesheet_tag }}
 
-<section class="sp-page page-width section-spacing">
-  <header class="sp-page__head" data-sp-reveal>
-    <div>
-      <p class="sp-kicker">Sole Paradise / Information</p>
-      <h1>{{ page.title | escape }}</h1>
-    </div>
-    <p class="sp-page__meta">Chicago / {{ 'now' | date: '%Y' }}</p>
-  </header>
+{%- if page.handle == 'contact' -%}
+  {{ 'contact-page.css' | asset_url | stylesheet_tag }}
+  {%- liquid
+    assign contact_email = section.settings.contact_email | strip
+    if contact_email == blank
+      assign contact_email = 'contact@shopsoleparadisechicago.com'
+    endif
 
-  {%- if page.content != blank -%}
-    <div class="sp-page__body rte" data-sp-reveal>{{ page.content }}</div>
-  {%- elsif request.design_mode -%}
-    <div class="sp-page__body"><p class="sp-page__empty">Theme setup: add page content in Shopify Admin. This note is only visible in the Theme Editor.</p></div>
-  {%- endif -%}
-</section>
+    assign instagram_url = section.settings.instagram_url | strip
+    if instagram_url == blank and settings.social_instagram_link != blank
+      assign instagram_url = settings.social_instagram_link
+    endif
+    if instagram_url == blank
+      assign instagram_url = 'https://www.instagram.com/soleparadise.chicago/'
+    endif
+
+    assign reservation_url = section.settings.reservation_url | strip
+    if reservation_url == blank
+      assign reservation_url = 'https://waitwhile.com/locations/soleparadise'
+    endif
+
+    assign contact_form_id = 'ContactForm-' | append: section.id
+  -%}
+
+  <section class="sp-contact" data-sp-section>
+    <header class="sp-contact__hero">
+      <div class="page-width sp-contact__hero-grid">
+        <div data-sp-reveal>
+          <p class="sp-contact__kicker">Sole Paradise / Chicago</p>
+          <h1 class="sp-contact__title">Contact.</h1>
+        </div>
+        <p class="sp-contact__intro" data-sp-reveal>Questions about a piece, an order, a reservation, or visiting the shop? Choose the channel that makes the most sense and reach Sole Paradise directly.</p>
+      </div>
+    </header>
+
+    <div class="sp-contact__channels">
+      <div class="page-width sp-contact__channel-grid" data-sp-reveal>
+        <a class="sp-contact__channel" href="{{ instagram_url | escape }}" target="_blank" rel="noopener">
+          <span class="sp-contact__channel-index">01 / Social</span>
+          <span>
+            <span class="sp-contact__channel-label">Instagram</span>
+            <span class="sp-contact__channel-value">@soleparadise.chicago</span>
+          </span>
+          <span class="sp-contact__channel-arrow" aria-hidden="true">↗</span>
+        </a>
+
+        <a class="sp-contact__channel" href="mailto:{{ contact_email | escape }}">
+          <span class="sp-contact__channel-index">02 / Email</span>
+          <span>
+            <span class="sp-contact__channel-label">Email</span>
+            <span class="sp-contact__channel-value">{{ contact_email | escape }}</span>
+          </span>
+          <span class="sp-contact__channel-arrow" aria-hidden="true">↗</span>
+        </a>
+
+        <a class="sp-contact__channel" href="{{ reservation_url | escape }}" target="_blank" rel="noopener">
+          <span class="sp-contact__channel-index">03 / Visit</span>
+          <span>
+            <span class="sp-contact__channel-label">Reservations</span>
+            <span class="sp-contact__channel-value">Reserve a visit to Sole Paradise</span>
+          </span>
+          <span class="sp-contact__channel-arrow" aria-hidden="true">↗</span>
+        </a>
+
+        <div class="sp-contact__channel sp-contact__channel--static">
+          <span class="sp-contact__channel-index">04 / Local</span>
+          <span>
+            <span class="sp-contact__channel-label">Based in</span>
+            <span class="sp-contact__channel-value">Chicago, Illinois</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sp-contact__form-section">
+      <div class="page-width sp-contact__form-grid">
+        <div class="sp-contact__form-copy" data-sp-reveal>
+          <p class="sp-contact__kicker">Direct message / Website</p>
+          <h2 class="sp-contact__form-title">Send a message.</h2>
+          <p>Use the form for product questions, order support, partnerships, or anything that does not need an immediate reservation response.</p>
+          <div class="sp-contact__smallprint">For appointment times, use Reservations above. For quick product questions, Instagram is usually the fastest channel.</div>
+        </div>
+
+        <div data-sp-reveal>
+          {%- form 'contact', id: contact_form_id, class: 'sp-contact__form' -%}
+            {%- if form.posted_successfully? -%}
+              <p class="sp-contact__status" role="status">Message sent. Sole Paradise will get back to you as soon as possible.</p>
+            {%- endif -%}
+
+            {%- if form.errors -%}
+              <div class="sp-contact__errors" role="alert">{{ form.errors | default_errors }}</div>
+            {%- endif -%}
+
+            <div class="sp-contact__form-row">
+              <div class="sp-contact__field">
+                <label for="ContactName-{{ section.id }}">Name</label>
+                <input id="ContactName-{{ section.id }}" type="text" name="contact[name]" autocomplete="name" value="{% if form.name %}{{ form.name | escape }}{% elsif customer %}{{ customer.name | escape }}{% endif %}" placeholder="Your name">
+              </div>
+              <div class="sp-contact__field">
+                <label for="ContactEmail-{{ section.id }}">Email</label>
+                <input id="ContactEmail-{{ section.id }}" type="email" name="contact[email]" autocomplete="email" autocorrect="off" autocapitalize="off" value="{% if form.email %}{{ form.email | escape }}{% elsif customer %}{{ customer.email | escape }}{% endif %}" placeholder="you@example.com" required>
+              </div>
+            </div>
+
+            <div class="sp-contact__field">
+              <label for="ContactPhone-{{ section.id }}">Phone <span aria-hidden="true">/ optional</span></label>
+              <input id="ContactPhone-{{ section.id }}" type="tel" name="contact[phone]" autocomplete="tel" value="{% if form.phone %}{{ form.phone | escape }}{% elsif customer and customer.phone %}{{ customer.phone | escape }}{% endif %}" placeholder="(312) 000-0000">
+            </div>
+
+            <div class="sp-contact__field">
+              <label for="ContactMessage-{{ section.id }}">Message</label>
+              <textarea id="ContactMessage-{{ section.id }}" name="contact[body]" placeholder="What can we help with?" required>{{ form.body }}</textarea>
+            </div>
+
+            <button class="sp-contact__submit" type="submit">Send message</button>
+          {%- endform -%}
+        </div>
+      </div>
+    </div>
+  </section>
+{%- else -%}
+  <section class="sp-page page-width section-spacing">
+    <header class="sp-page__head" data-sp-reveal>
+      <div>
+        <p class="sp-kicker">Sole Paradise / Information</p>
+        <h1>{{ page.title | escape }}</h1>
+      </div>
+      <p class="sp-page__meta">Chicago / {{ 'now' | date: '%Y' }}</p>
+    </header>
+
+    {%- if page.content != blank -%}
+      <div class="sp-page__body rte" data-sp-reveal>{{ page.content }}</div>
+    {%- elsif request.design_mode -%}
+      <div class="sp-page__body"><p class="sp-page__empty">Theme setup: add page content in Shopify Admin. This note is only visible in the Theme Editor.</p></div>
+    {%- endif -%}
+  </section>
+{%- endif -%}
 
 {% schema %}
 {
   "name":"Page",
   "tag":"section",
   "class":"page-section",
-  "settings":[],
+  "settings":[
+    {"type":"text","id":"contact_email","label":"Contact page email","default":"contact@shopsoleparadisechicago.com","info":"Create this mailbox before launch, or replace it with the address the shop wants customers to use."},
+    {"type":"text","id":"instagram_url","label":"Contact page Instagram URL","default":"https://www.instagram.com/soleparadise.chicago/"},
+    {"type":"text","id":"reservation_url","label":"Contact page reservation URL","default":"https://waitwhile.com/locations/soleparadise"}
+  ],
   "enabled_on":{"templates":["page"]}
 }
 {% endschema %}
