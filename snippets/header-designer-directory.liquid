@@ -1,5 +1,5 @@
 {%- comment -%}
-  Dynamic designer preview for the main navigation drawer.
+  Kinetic designer preview for the main navigation drawer.
   Shopify Product Vendor remains the source of truth; the full roster lives in
   the secondary Designer Explorer panel.
 {%- endcomment -%}
@@ -24,47 +24,143 @@
         assign visible_designer_count = visible_designer_count | plus: 1
       endunless
     endfor
+
+    assign designer_stage_count = visible_designer_count | at_most: designer_preview_limit
   -%}
 
   {%- if visible_designer_count > 0 -%}
-    <div class="header-drawer__designers" aria-labelledby="HeaderDrawerDesigners-{{ section.id }}">
+    <div class="header-drawer__designers header-drawer__designers--stage" aria-labelledby="HeaderDrawerDesigners-{{ section.id }}">
       <div class="header-drawer__shop-head header-drawer__designers-head">
         <p id="HeaderDrawerDesigners-{{ section.id }}">{{ section.settings.designer_directory_label | default: 'Shop by designer' | escape }}</p>
-        <button
-          type="button"
-          class="header-drawer__view-all"
-          data-header-explorer-open="designers"
-          aria-controls="HeaderDesignerExplorer-{{ section.id }}"
-        >View all {{ visible_designer_count }}</button>
+        <span class="header-designer-stage__count">{{ visible_designer_count }} labels</span>
       </div>
 
-      <div class="header-drawer__designer-preview" role="list">
-        {%- assign preview_rendered = 0 -%}
-        {%- for vendor in shop.vendors -%}
+      <div class="header-designer-stage" data-designer-stage>
+        <div class="header-designer-stage__media" aria-hidden="true">
           {%- liquid
-            assign vendor_is_excluded = false
-            assign vendor_handle = vendor | handleize
-            for excluded_vendor in designer_exclusions
-              assign excluded_vendor_handle = excluded_vendor | strip | handleize
-              if excluded_vendor_handle != blank and excluded_vendor_handle == vendor_handle
-                assign vendor_is_excluded = true
-                break
-              endif
-            endfor
-            assign encoded_vendor = vendor | url_encode
-            assign vendor_url = '/collections/vendors?q=' | append: encoded_vendor | append: '&sort_by=created-descending'
+            assign preview_rendered = 0
+            assign stage_first_vendor_name = ''
+            assign stage_first_vendor_url = ''
+            assign stage_first_product_title = 'Current inventory'
           -%}
+          {%- for vendor in shop.vendors -%}
+            {%- liquid
+              assign vendor_is_excluded = false
+              assign vendor_handle = vendor | handleize
+              for excluded_vendor in designer_exclusions
+                assign excluded_vendor_handle = excluded_vendor | strip | handleize
+                if excluded_vendor_handle != blank and excluded_vendor_handle == vendor_handle
+                  assign vendor_is_excluded = true
+                  break
+                endif
+              endfor
+            -%}
 
-          {%- unless vendor_is_excluded or vendor == blank -%}
-            {%- if preview_rendered < designer_preview_limit -%}
-              <a class="header-drawer__designer" href="{{ vendor_url | escape }}" role="listitem">
-                <span>{{ vendor | escape }}</span>
-                <span class="header-drawer__designer-arrow" aria-hidden="true">→</span>
-              </a>
-              {%- assign preview_rendered = preview_rendered | plus: 1 -%}
-            {%- endif -%}
-          {%- endunless -%}
-        {%- endfor -%}
+            {%- unless vendor_is_excluded or vendor == blank -%}
+              {%- if preview_rendered < designer_preview_limit -%}
+                {%- liquid
+                  assign encoded_vendor = vendor | url_encode
+                  assign vendor_url = '/collections/vendors?q=' | append: encoded_vendor | append: '&sort_by=created-descending'
+                  assign featured_product = blank
+                  assign featured_product_title = 'Current inventory'
+                  for product in collections.all.products limit: 50
+                    if product.available and product.vendor == vendor
+                      assign featured_product = product
+                      assign featured_product_title = product.title
+                      break
+                    endif
+                  endfor
+
+                  if preview_rendered == 0
+                    assign stage_first_vendor_name = vendor
+                    assign stage_first_vendor_url = vendor_url
+                    assign stage_first_product_title = featured_product_title
+                  endif
+                  assign stage_item_number = preview_rendered | plus: 1
+                -%}
+                <div
+                  class="header-designer-stage__media-item{% if preview_rendered == 0 %} is-active{% endif %}"
+                  data-designer-stage-media="{{ vendor_handle }}"
+                  data-designer-name="{{ vendor | escape }}"
+                  data-designer-url="{{ vendor_url | escape }}"
+                  data-designer-product="{{ featured_product_title | escape }}"
+                  data-designer-index="{{ stage_item_number }}"
+                  data-designer-total="{{ designer_stage_count }}"
+                >
+                  {%- if featured_product != blank and featured_product.featured_image -%}
+                    {{ featured_product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '360,560,760,900', sizes: '(max-width: 749px) 100vw, 560px', alt: '' }}
+                  {%- else -%}
+                    <span class="header-designer-stage__media-fallback">{{ vendor | escape }}</span>
+                  {%- endif -%}
+                </div>
+                {%- assign preview_rendered = preview_rendered | plus: 1 -%}
+              {%- endif -%}
+            {%- endunless -%}
+          {%- endfor -%}
+        </div>
+
+        <div class="header-designer-stage__topline">
+          <span>Select a label</span>
+          <span data-designer-stage-index>01 / {{ designer_stage_count }}</span>
+        </div>
+
+        <div class="header-designer-stage__watermark" data-designer-stage-watermark aria-hidden="true">{{ stage_first_vendor_name | escape }}</div>
+
+        <div class="header-designer-stage__reels" aria-label="Featured designers">
+          {%- for stage_row in (1..2) -%}
+            <div class="header-designer-stage__reel{% if stage_row == 2 %} header-designer-stage__reel--reverse{% endif %}">
+              <div class="header-designer-stage__track">
+                {%- for stage_copy in (1..2) -%}
+                  {%- assign preview_rendered = 0 -%}
+                  {%- for vendor in shop.vendors -%}
+                    {%- liquid
+                      assign vendor_is_excluded = false
+                      assign vendor_handle = vendor | handleize
+                      for excluded_vendor in designer_exclusions
+                        assign excluded_vendor_handle = excluded_vendor | strip | handleize
+                        if excluded_vendor_handle != blank and excluded_vendor_handle == vendor_handle
+                          assign vendor_is_excluded = true
+                          break
+                        endif
+                      endfor
+                    -%}
+                    {%- unless vendor_is_excluded or vendor == blank -%}
+                      {%- if preview_rendered < designer_preview_limit -%}
+                        <button
+                          type="button"
+                          class="header-designer-stage__brand{% if preview_rendered == 0 %} is-active{% endif %}"
+                          data-designer-stage-brand="{{ vendor_handle }}"
+                          aria-pressed="{% if preview_rendered == 0 %}true{% else %}false{% endif %}"
+                          {% unless stage_row == 1 and stage_copy == 1 %}tabindex="-1"{% endunless %}
+                        >{{ vendor | escape }}</button>
+                        {%- assign preview_rendered = preview_rendered | plus: 1 -%}
+                      {%- endif -%}
+                    {%- endunless -%}
+                  {%- endfor -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <div class="header-designer-stage__selected" aria-live="polite">
+          <div class="header-designer-stage__selected-copy">
+            <span class="header-designer-stage__eyebrow">Current designer</span>
+            <strong data-designer-stage-name>{{ stage_first_vendor_name | escape }}</strong>
+            <span class="header-designer-stage__product" data-designer-stage-product>{{ stage_first_product_title | escape }}</span>
+          </div>
+          <a class="header-designer-stage__shop" data-designer-stage-shop href="{{ stage_first_vendor_url | escape }}">Shop {{ stage_first_vendor_name | escape }} →</a>
+        </div>
+
+        <div class="header-designer-stage__footer">
+          <span>Vendor-powered · updates with inventory</span>
+          <button
+            type="button"
+            class="header-designer-stage__explore"
+            data-header-explorer-open="designers"
+            aria-controls="HeaderDesignerExplorer-{{ section.id }}"
+          >Explore all {{ visible_designer_count }} designers →</button>
+        </div>
       </div>
     </div>
   {%- endif -%}
