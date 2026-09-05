@@ -105,62 +105,76 @@
         <button type="button" class="site-header__trigger header-drawer__close no-js-hidden" aria-label="{{ 'header.close_menu' | t }}" data-header-drawer-close>{%- render 'icon', name: 'close' -%}</button>
       </div>
 
-      <div class="header-drawer__shop" aria-labelledby="HeaderDrawerShop-{{ section.id }}">
-        <div class="header-drawer__shop-head">
-          <p id="HeaderDrawerShop-{{ section.id }}">Shop by category</p>
-          <a href="{{ routes.all_products_collection_url }}">View all</a>
-        </div>
-        <div class="header-drawer__categories">
-          <a class="header-drawer__category" href="{{ routes.search_url }}?q=tee&amp;type=product">
-            <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'tees' -%}</span>
-            <span>Tees</span>
-          </a>
-          <a class="header-drawer__category" href="{{ routes.search_url }}?q=hoodie&amp;type=product">
-            <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'hoodies' -%}</span>
-            <span>Hoodies</span>
-          </a>
-          <a class="header-drawer__category" href="{{ routes.search_url }}?q=shoes&amp;type=product">
-            <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'footwear' -%}</span>
-            <span>Footwear</span>
-          </a>
-          <a class="header-drawer__category" href="{{ routes.search_url }}?q=pants&amp;type=product">
-            <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'bottoms' -%}</span>
-            <span>Bottoms</span>
-          </a>
-          <a class="header-drawer__category" href="{{ routes.search_url }}?q=accessories&amp;type=product">
-            <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'accessories' -%}</span>
-            <span>Accessories</span>
-          </a>
-        </div>
-      </div>
+      <div class="header-drawer__viewport" data-header-drawer-viewport>
+        <div class="header-drawer__view header-drawer__view--main is-active" data-header-drawer-view="main" aria-hidden="false">
+          <div class="header-drawer__shop" aria-labelledby="HeaderDrawerShop-{{ section.id }}">
+            <div class="header-drawer__shop-head">
+              <p id="HeaderDrawerShop-{{ section.id }}">Shop by category</p>
+              <button
+                type="button"
+                class="header-drawer__view-all no-js-hidden"
+                data-header-explorer-open="categories"
+                aria-controls="HeaderCategoryExplorer-{{ section.id }}"
+              >View all</button>
+            </div>
+            <div class="header-drawer__categories">
+              <a class="header-drawer__category" href="{{ routes.search_url }}?q=tee&amp;type=product">
+                <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'tees' -%}</span>
+                <span>Tees</span>
+              </a>
+              <a class="header-drawer__category" href="{{ routes.search_url }}?q=hoodie&amp;type=product">
+                <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'hoodies' -%}</span>
+                <span>Hoodies</span>
+              </a>
+              <a class="header-drawer__category" href="{{ routes.search_url }}?q=shoes&amp;type=product">
+                <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'footwear' -%}</span>
+                <span>Footwear</span>
+              </a>
+              <a class="header-drawer__category" href="{{ routes.search_url }}?q=pants&amp;type=product">
+                <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'bottoms' -%}</span>
+                <span>Bottoms</span>
+              </a>
+              <a class="header-drawer__category" href="{{ routes.search_url }}?q=accessories&amp;type=product">
+                <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'accessories' -%}</span>
+                <span>Accessories</span>
+              </a>
+            </div>
+          </div>
 
-      {%- render 'header-designer-directory', section: section -%}
+          {%- render 'header-designer-directory', section: section -%}
 
-      <nav class="header-drawer__nav" aria-label="Primary navigation">
-        {%- if menu != blank -%}
-          {%- render 'header-menu-mobile', menu: menu, section_id: section.id -%}
-        {%- else -%}
-          <ul class="header-nav-mobile__list header-nav-mobile__list--fallback list-unstyled">
-            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?sort_by=created-descending">New</a></div></li>
-            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}">Shop</a></div></li>
-            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.collections_url }}">Designers</a></div></li>
-            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Clothing">Clothing</a></div></li>
-            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Footwear">Footwear</a></div></li>
-            <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="/pages/contact">Contact</a></div></li>
-          </ul>
+          <nav class="header-drawer__nav" aria-label="Primary navigation">
+            {%- if menu != blank -%}
+              {%- render 'header-menu-mobile', menu: menu, section_id: section.id -%}
+            {%- else -%}
+              <ul class="header-nav-mobile__list header-nav-mobile__list--fallback list-unstyled">
+                <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?sort_by=created-descending">New</a></div></li>
+                <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}">Shop</a></div></li>
+                <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.collections_url }}">Designers</a></div></li>
+                <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Clothing">Clothing</a></div></li>
+                <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Footwear">Footwear</a></div></li>
+                <li class="header-nav-mobile__item"><div class="header-nav-mobile__row"><a class="header-nav-mobile__link" href="/pages/contact">Contact</a></div></li>
+              </ul>
+            {%- endif -%}
+          </nav>
+
+          <a class="header-drawer__reservation" href="https://waitwhile.com/locations/soleparadise" target="_blank" rel="noopener">Make a reservation <span aria-hidden="true">↗</span></a>
+
+          <div class="header-drawer__footer">
+            <span>Chicago / Illinois</span>
+            <span>Authenticated designer resale</span>
+            <span>Worldwide shipping</span>
+          </div>
+          {%- if show_account -%}
+            <div class="header-drawer__utility"><a class="header-drawer__utility-link" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">{%- render 'icon', name: 'account' -%}{% if customer %}{{ 'header.account' | t }}{% else %}{{ 'header.sign_in' | t }}{% endif %}</a></div>
+          {%- endif -%}
+        </div>
+
+        {%- render 'header-category-explorer', section: section -%}
+        {%- if section.settings.show_designer_directory and shop.vendors.size > 0 -%}
+          {%- render 'header-designer-explorer', section: section -%}
         {%- endif -%}
-      </nav>
-
-      <a class="header-drawer__reservation" href="https://waitwhile.com/locations/soleparadise" target="_blank" rel="noopener">Make a reservation <span aria-hidden="true">↗</span></a>
-
-      <div class="header-drawer__footer">
-        <span>Chicago / Illinois</span>
-        <span>Authenticated designer resale</span>
-        <span>Worldwide shipping</span>
       </div>
-      {%- if show_account -%}
-        <div class="header-drawer__utility"><a class="header-drawer__utility-link" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">{%- render 'icon', name: 'account' -%}{% if customer %}{{ 'header.account' | t }}{% else %}{{ 'header.sign_in' | t }}{% endif %}</a></div>
-      {%- endif -%}
     </div>
   </div>
 </header>
@@ -176,6 +190,7 @@
     {"type":"range","id":"utility_speed","label":"Announcement speed","min":12,"max":40,"step":2,"unit":"s","default":24},
     {"type":"checkbox","id":"show_designer_directory","label":"Show designer directory","default":true},
     {"type":"text","id":"designer_directory_label","label":"Designer directory heading","default":"Shop by designer"},
+    {"type":"range","id":"designer_preview_limit","label":"Designers shown before View all","min":4,"max":10,"step":1,"default":6},
     {"type":"text","id":"designer_exclusions","label":"Designer vendors to hide","default":"Other","info":"Comma-separated Product Vendor values that should not appear in the menu."}
   ],
   "enabled_on":{"groups":["header"]}
