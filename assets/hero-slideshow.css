@@ -1,0 +1,28 @@
+/* Sole Paradise homepage hero slideshow */
+.sp-hero--slideshow .sp-hero__media{position:absolute;inset:0!important;overflow:hidden;background:var(--sp-brand-black,#08090b)}
+.sp-hero--slideshow .sp-hero__slide{position:absolute;inset:0;z-index:0;opacity:0;visibility:hidden;transition:opacity var(--hero-transition,700ms) ease,visibility 0s linear var(--hero-transition,700ms);pointer-events:none}
+.sp-hero--slideshow .sp-hero__slide.is-active{z-index:1;opacity:1;visibility:visible;transition-delay:0s}
+.sp-hero--slideshow .sp-hero__slide picture{display:block;width:100%;height:100%}
+.sp-hero--slideshow .sp-hero__slide .sp-hero__image{display:block;width:100%;height:100%;max-width:none;object-fit:cover;object-position:center center}
+.sp-hero--slideshow .sp-hero__inner,.sp-hero--slideshow .sp-hero__veil,.sp-hero--slideshow .sp-horizon,.sp-hero--slideshow .sp-hero__footer{position:relative;z-index:3}
+.sp-hero--slideshow .sp-hero__footer{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:1rem}
+.sp-hero--slideshow .sp-hero__footer>span:last-child{justify-self:end;text-align:right}
+.sp-hero__slideshow-controls{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:38px;padding:.25rem;border:1px solid rgba(255,255,255,.22);background:rgba(3,10,21,.54);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.sp-hero__slide-control,.sp-hero__slide-toggle{display:inline-flex;align-items:center;justify-content:center;height:30px;border:0;background:transparent;color:#fff;font:800 .56rem/1 monospace;letter-spacing:.08em;text-transform:uppercase}
+.sp-hero__slide-control{width:30px;font-size:.9rem}
+.sp-hero__slide-toggle{min-width:52px;padding:0 .45rem;border-left:1px solid rgba(255,255,255,.18)}
+.sp-hero__slide-control:hover,.sp-hero__slide-control:focus-visible,.sp-hero__slide-toggle:hover,.sp-hero__slide-toggle:focus-visible{background:var(--sp-brand-blue,#7eccf3);color:var(--sp-brand-navy-deep,#061a38);outline:none}
+.sp-hero__slide-counter{min-width:54px;text-align:center;color:var(--sp-brand-blue,#7eccf3);font:800 .56rem/1 monospace;letter-spacing:.09em}
+
+@media(max-width:749px){
+  .sp-hero--slideshow .sp-hero__footer{grid-template-columns:minmax(0,1fr) auto;gap:.65rem}
+  .sp-hero--slideshow .sp-hero__footer>span:last-child{display:none}
+  .sp-hero__slideshow-controls{justify-self:end;gap:.25rem;min-height:36px}
+  .sp-hero__slide-control{width:28px;height:28px}
+  .sp-hero__slide-toggle{height:28px;min-width:48px;font-size:.5rem}
+  .sp-hero__slide-counter{min-width:48px;font-size:.5rem}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .sp-hero--slideshow .sp-hero__slide{transition:none!important}
+}
