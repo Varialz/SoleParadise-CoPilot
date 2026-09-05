@@ -173,7 +173,7 @@
         "accessories"
       ],
       "settings": {
-        "eyebrow": "Just in",
+        "eyebrow": "",
         "heading": "New arrivals",
         "vendor": "",
         "product_limit": 8
@@ -281,7 +281,7 @@
         "accessories"
       ],
       "settings": {
-        "eyebrow": "Designer rotation",
+        "eyebrow": "",
         "heading": "Chrome Hearts",
         "vendor": "Chrome Hearts",
         "product_limit": 8
@@ -349,7 +349,7 @@
         "gallery"
       ],
       "settings": {
-        "eyebrow": "Across the floor",
+        "eyebrow": "",
         "heading": "More designers",
         "vendor": "",
         "product_limit": 8
@@ -358,13 +358,13 @@
     "feed": {
       "type": "sp-from-feed",
       "settings": {
-        "eyebrow": "From the feed",
+        "eyebrow": "An ig post caught your eye?",
         "heading": "Shop the post",
-        "copy": "Fresh arrivals, one-offs and details straight from the floor.",
+        "copy": "",
         "collection": "",
         "limit": 6,
         "enhanced_react_feed": true,
-        "instagram_url": "",
+        "instagram_url": "https://www.instagram.com/soleparadise.chicago/",
         "instagram_label": "@soleparadise.chicago",
         "show_collection_link": true
       }
