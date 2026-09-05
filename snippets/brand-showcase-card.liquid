@@ -1,8 +1,68 @@
 {%- liquid
   assign showcase_image = product.featured_image
   assign showcase_vendor = product.vendor | default: brand_label
+  assign showcase_archive_size = product.metafields.custom.size.value | default: product.metafields.custom.size
+
+  if showcase_archive_size == 0 or showcase_archive_size == '0'
+    assign showcase_archive_size = ''
+  endif
+
+  assign showcase_size_option_position = 0
+  for option in product.options_with_values
+    assign showcase_option_name = option.name | downcase
+    if showcase_option_name contains 'size'
+      assign showcase_size_option_position = option.position
+      break
+    endif
+  endfor
+
+  assign showcase_sizes = ''
+  assign showcase_seen_sizes = '|'
+  if showcase_archive_size != blank
+    assign showcase_sizes = showcase_archive_size
+  elsif showcase_size_option_position > 0
+    for variant in product.variants
+      if variant.available
+        assign showcase_variant_size = ''
+        case showcase_size_option_position
+          when 1
+            assign showcase_variant_size = variant.option1
+          when 2
+            assign showcase_variant_size = variant.option2
+          when 3
+            assign showcase_variant_size = variant.option3
+        endcase
+
+        if showcase_variant_size != blank and showcase_variant_size != 'Default Title'
+          assign showcase_size_token = '|' | append: showcase_variant_size | append: '|'
+          unless showcase_seen_sizes contains showcase_size_token
+            if showcase_sizes != blank
+              assign showcase_sizes = showcase_sizes | append: ' · '
+            endif
+            assign showcase_sizes = showcase_sizes | append: showcase_variant_size
+            assign showcase_seen_sizes = showcase_seen_sizes | append: showcase_variant_size | append: '|'
+          endunless
+        endif
+      endif
+    endfor
+  endif
+
+  assign showcase_catalog_signal = product.type | append: ' ' | append: product.title | append: ' ' | append: product.tags | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' ' | prepend: ' ' | append: ' '
+  assign showcase_is_accessory = false
+  if showcase_catalog_signal contains ' accessory ' or showcase_catalog_signal contains ' accessories ' or showcase_catalog_signal contains ' bag ' or showcase_catalog_signal contains ' wallet ' or showcase_catalog_signal contains ' belt ' or showcase_catalog_signal contains ' jewelry ' or showcase_catalog_signal contains ' jewellery ' or showcase_catalog_signal contains ' necklace ' or showcase_catalog_signal contains ' bracelet ' or showcase_catalog_signal contains ' ring ' or showcase_catalog_signal contains ' pendant ' or showcase_catalog_signal contains ' chain ' or showcase_catalog_signal contains ' sunglasses ' or showcase_catalog_signal contains ' glasses ' or showcase_catalog_signal contains ' eyewear ' or showcase_catalog_signal contains ' keychain ' or showcase_catalog_signal contains ' hat ' or showcase_catalog_signal contains ' cap ' or showcase_catalog_signal contains ' beanie '
+    assign showcase_is_accessory = true
+  endif
+
+  if showcase_sizes == blank and showcase_is_accessory and product.available
+    assign showcase_sizes = 'OS'
+  endif
+
+  assign showcase_size_prefix = 'Sizes'
+  unless showcase_sizes contains ' · '
+    assign showcase_size_prefix = 'Size'
+  endunless
 -%}
-<article class="brand-showcase-card">
+<article class="brand-showcase-card" data-product-handle="{{ product.handle | escape }}">
   <a class="brand-showcase-card__link" href="{{ product.url | escape }}">
     <div class="brand-showcase-card__media">
       {%- if showcase_image != blank -%}
@@ -21,6 +81,9 @@
     </div>
     {%- if showcase_vendor != blank -%}<p class="brand-showcase-card__vendor">{{ showcase_vendor | escape }}</p>{%- endif -%}
     <h3 class="brand-showcase-card__title">{{ product.title | escape }}</h3>
+    {%- if showcase_sizes != blank -%}
+      <p class="brand-showcase-card__size" aria-label="Available size">{{ showcase_size_prefix }} {{ showcase_sizes | escape }}</p>
+    {%- endif -%}
     <p class="brand-showcase-card__price">{% if product.price_varies %}From {% endif %}{{ product.price | money }}</p>
   </a>
 </article>
