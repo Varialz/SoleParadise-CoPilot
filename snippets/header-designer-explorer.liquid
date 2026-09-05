@@ -1,0 +1,112 @@
+{%- liquid
+  assign designer_exclusions_raw = section.settings.designer_exclusions | default: 'Other'
+  assign designer_exclusions = designer_exclusions_raw | split: ','
+  assign visible_designer_count = 0
+  assign alpha_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  assign alphabet = 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,#' | split: ','
+
+  for vendor in shop.vendors
+    assign vendor_is_excluded = false
+    assign vendor_handle = vendor | handleize
+    for excluded_vendor in designer_exclusions
+      assign excluded_vendor_handle = excluded_vendor | strip | handleize
+      if excluded_vendor_handle != blank and excluded_vendor_handle == vendor_handle
+        assign vendor_is_excluded = true
+        break
+      endif
+    endfor
+    unless vendor_is_excluded or vendor == blank
+      assign visible_designer_count = visible_designer_count | plus: 1
+    endunless
+  endfor
+-%}
+
+<section
+  id="HeaderDesignerExplorer-{{ section.id }}"
+  class="header-drawer__view header-drawer__view--explorer header-drawer__designer-explorer"
+  data-header-explorer="designers"
+  aria-hidden="true"
+>
+  <div class="header-drawer__explorer-head">
+    <button type="button" class="header-drawer__explorer-back" data-header-explorer-back aria-label="Back to main menu">
+      <span aria-hidden="true">←</span>
+      <span>Back</span>
+    </button>
+    <span class="header-drawer__explorer-title">Designers</span>
+    <span class="header-drawer__explorer-count">{{ visible_designer_count }} labels</span>
+  </div>
+
+  <div class="header-drawer__explorer-intro header-drawer__explorer-intro--designers">
+    <p class="header-drawer__explorer-kicker">Designer directory</p>
+    <h2>Browse the roster.</h2>
+    <p>Every label below comes directly from the Product Vendor field in Shopify.</p>
+
+    <div class="header-designer-search">
+      <label class="visually-hidden" for="HeaderDesignerSearch-{{ section.id }}">Search designers</label>
+      <input
+        id="HeaderDesignerSearch-{{ section.id }}"
+        type="search"
+        placeholder="Search designers"
+        autocomplete="off"
+        data-designer-search
+        data-explorer-initial-focus
+      >
+      <button type="button" data-designer-search-clear hidden>Clear</button>
+    </div>
+  </div>
+
+  <div class="header-designer-alphabet" aria-label="Filter designers by first letter">
+    <button type="button" class="is-active" data-designer-letter="all" aria-pressed="true">All</button>
+    {%- for letter in alphabet -%}
+      <button type="button" data-designer-letter="{{ letter }}" aria-pressed="false">{{ letter }}</button>
+    {%- endfor -%}
+  </div>
+
+  <div class="header-designer-explorer__status" data-designer-status aria-live="polite">Showing {{ visible_designer_count }} designers</div>
+
+  <div class="header-designer-explorer__list" data-designer-results>
+    {%- assign last_letter = '' -%}
+    {%- for vendor in shop.vendors -%}
+      {%- liquid
+        assign vendor_is_excluded = false
+        assign vendor_handle = vendor | handleize
+        for excluded_vendor in designer_exclusions
+          assign excluded_vendor_handle = excluded_vendor | strip | handleize
+          if excluded_vendor_handle != blank and excluded_vendor_handle == vendor_handle
+            assign vendor_is_excluded = true
+            break
+          endif
+        endfor
+      -%}
+
+      {%- unless vendor_is_excluded or vendor == blank -%}
+        {%- liquid
+          assign vendor_letter = vendor | strip | slice: 0, 1 | upcase
+          unless alpha_chars contains vendor_letter
+            assign vendor_letter = '#'
+          endunless
+          assign encoded_vendor = vendor | url_encode
+          assign vendor_url = '/collections/vendors?q=' | append: encoded_vendor | append: '&sort_by=created-descending'
+        -%}
+
+        {%- if vendor_letter != last_letter -%}
+          <div class="header-designer-explorer__letter" data-designer-group-label="{{ vendor_letter }}">{{ vendor_letter }}</div>
+          {%- assign last_letter = vendor_letter -%}
+        {%- endif -%}
+
+        <a
+          class="header-designer-explorer__entry"
+          href="{{ vendor_url | escape }}"
+          data-designer-entry
+          data-designer-name="{{ vendor | downcase | escape }}"
+          data-designer-letter="{{ vendor_letter }}"
+        >
+          <span>{{ vendor | escape }}</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      {%- endunless -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="header-designer-explorer__empty" data-designer-empty hidden>No designers match that search.</div>
+</section>
