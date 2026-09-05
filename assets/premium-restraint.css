@@ -76,6 +76,47 @@
   .brand-showcase-card__media{background:transparent}
 }
 
+/* Collection desktop must always consume the available catalog width. */
+@media(min-width:1000px){
+  .template-collection .sp-collection__layout,
+  .template-collection .sp-collection__results,
+  .template-collection .sp-product-grid--collection{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    justify-self:stretch!important;
+  }
+  .template-collection .sp-collection__layout{align-items:start!important}
+  .template-collection .sp-collection__layout:not(.sp-collection__layout--filters){
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+  .template-collection .sp-collection__layout--filters{
+    grid-template-columns:minmax(190px,220px) minmax(0,1fr)!important;
+  }
+  .template-collection .sp-product-grid--collection{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:clamp(1.7rem,2.2vw,2.5rem) clamp(.9rem,1.4vw,1.4rem)!important;
+    align-items:start!important;
+    justify-items:stretch!important;
+  }
+  .template-collection .sp-product-grid--collection .product-card{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    justify-self:stretch!important;
+  }
+  .template-collection .sp-product-grid--collection .product-card__media{
+    width:100%!important;
+    min-width:0!important;
+  }
+}
+@media(min-width:1400px){
+  .template-collection .sp-product-grid--collection{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+}
+
 /* Collection filter is portaled to body by collection.js. Keep this final in the cascade
    so mobile storefront polish cannot clip, hide, or resize the drawer unexpectedly. */
 @media(max-width:999px){
