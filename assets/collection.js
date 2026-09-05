@@ -4,39 +4,99 @@
   const desktop = window.matchMedia('(min-width: 1000px)');
   let activeSection = null;
 
-  function closeDrawer(section, returnFocus = false) {
+  function getTrigger(section) {
+    return section ? section.querySelector('[data-collection-drawer-open]') : null;
+  }
+
+  function getDrawer(section) {
+    const trigger = getTrigger(section);
+    const drawerId = trigger ? trigger.getAttribute('aria-controls') : '';
+    if (drawerId) {
+      const byId = document.getElementById(drawerId);
+      if (byId) return byId;
+    }
+    return section ? section.querySelector('[data-collection-drawer]') : null;
+  }
+
+  function getSectionForDrawer(drawer) {
+    if (!drawer || !drawer.id) return null;
+    const triggers = document.querySelectorAll('[data-collection-drawer-open]');
+    for (let i = 0; i < triggers.length; i += 1) {
+      if (triggers[i].getAttribute('aria-controls') === drawer.id) {
+        return triggers[i].closest('[data-collection]');
+      }
+    }
+    return null;
+  }
+
+  function prepareSection(section) {
     if (!section) return;
-    const drawer = section.querySelector('[data-collection-drawer]');
-    const trigger = section.querySelector('[data-collection-drawer-open]');
-    const panel = section.querySelector('[data-collection-drawer-panel]');
-    const backdrop = section.querySelector('[data-collection-drawer-backdrop]');
-    window.SoleParadiseMotion?.animateDrawer?.(panel, backdrop, false);
-    if (drawer) drawer.classList.remove('is-open');
+    section.setAttribute('data-collection-enhanced', '');
+
+    const drawer = getDrawer(section);
+    if (!drawer) return;
+
+    const panel = drawer.querySelector('[data-collection-drawer-panel]');
+    if (panel) panel.tabIndex = -1;
+
+    drawer.setAttribute('aria-hidden', drawer.classList.contains('is-open') ? 'false' : 'true');
+
+    // Portaling the drawer to <body> prevents transformed/sticky storefront
+    // ancestors from clipping or covering it on mobile Safari/Chrome.
+    if (drawer.parentElement !== document.body) {
+      document.body.appendChild(drawer);
+    }
+  }
+
+  function closeDrawer(section, returnFocus) {
+    if (!section) return;
+
+    const drawer = getDrawer(section);
+    const trigger = getTrigger(section);
+    const panel = drawer ? drawer.querySelector('[data-collection-drawer-panel]') : null;
+
+    if (drawer) {
+      drawer.classList.remove('is-open');
+      drawer.setAttribute('aria-hidden', 'true');
+    }
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
     if (panel) {
       panel.removeAttribute('role');
       panel.removeAttribute('aria-modal');
     }
+
     document.documentElement.classList.remove('collection-scroll-lock');
+    document.body.classList.remove('collection-scroll-lock');
+
     if (returnFocus && trigger) trigger.focus();
     if (activeSection === section) activeSection = null;
   }
 
   function openDrawer(section) {
-    if (desktop.matches) return;
-    const drawer = section.querySelector('[data-collection-drawer]');
-    const trigger = section.querySelector('[data-collection-drawer-open]');
-    const panel = section.querySelector('[data-collection-drawer-panel]');
-    const backdrop = section.querySelector('[data-collection-drawer-backdrop]');
+    if (!section || desktop.matches) return;
+
+    prepareSection(section);
+
+    const drawer = getDrawer(section);
+    const trigger = getTrigger(section);
+    const panel = drawer ? drawer.querySelector('[data-collection-drawer-panel]') : null;
+
     if (!drawer || !trigger || !panel) return;
+
     drawer.classList.add('is-open');
+    drawer.setAttribute('aria-hidden', 'false');
     trigger.setAttribute('aria-expanded', 'true');
     panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-modal', 'true');
+
     document.documentElement.classList.add('collection-scroll-lock');
+    document.body.classList.add('collection-scroll-lock');
     activeSection = section;
-    window.SoleParadiseMotion?.animateDrawer?.(panel, backdrop, true);
-    panel.focus();
+
+    // Force the first paint after portaling before focusing the panel.
+    window.requestAnimationFrame(function () {
+      panel.focus();
+    });
   }
 
   function navigateTo(url) {
@@ -48,12 +108,13 @@
 
     const destination = new URL(form.action || window.location.href, window.location.origin);
     const params = new URLSearchParams();
+    const formData = new FormData(form);
 
-    for (const [name, rawValue] of new FormData(form).entries()) {
+    formData.forEach(function (rawValue, name) {
       const value = String(rawValue).trim();
-      if (!name || !value) continue;
+      if (!name || !value) return;
       params.append(name, value);
-    }
+    });
 
     params.delete('page');
     destination.search = params.toString();
@@ -73,54 +134,86 @@
     navigateTo(destination);
   }
 
-  function init(section) {
-    if (!section || section.dataset.collectionInitialized === 'true') return;
-    section.dataset.collectionInitialized = 'true';
-    section.setAttribute('data-collection-enhanced', '');
+  function prepareAll(scope) {
+    if (!scope) return;
 
-    const open = section.querySelector('[data-collection-drawer-open]');
-    const close = section.querySelector('[data-collection-drawer-close]');
-    const backdrop = section.querySelector('[data-collection-drawer-backdrop]');
-    const panel = section.querySelector('[data-collection-drawer-panel]');
-    const filterForm = panel?.querySelector('form');
-    const sort = section.querySelector('[data-collection-sort-select]');
-
-    if (panel) panel.tabIndex = -1;
-    if (open) open.addEventListener('click', () => openDrawer(section));
-    if (close) close.addEventListener('click', () => closeDrawer(section, true));
-    if (backdrop) backdrop.addEventListener('click', () => closeDrawer(section, true));
-
-    if (filterForm) {
-      filterForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const submitButton = filterForm.querySelector('[type="submit"]');
-        if (submitButton) {
-          submitButton.disabled = true;
-          submitButton.setAttribute('aria-busy', 'true');
-          submitButton.textContent = 'Applying…';
-        }
-        submitFilters(filterForm);
-      });
+    if (scope.matches && scope.matches('[data-collection]')) {
+      prepareSection(scope);
     }
 
-    if (sort) {
-      sort.addEventListener('change', () => {
-        sort.disabled = true;
-        sort.setAttribute('aria-busy', 'true');
-        submitSort(sort);
-      });
+    if (scope.querySelectorAll) {
+      const sections = scope.querySelectorAll('[data-collection]');
+      for (let i = 0; i < sections.length; i += 1) prepareSection(sections[i]);
     }
   }
 
-  document.addEventListener('keydown', (event) => {
+  document.addEventListener('click', function (event) {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) return;
+
+    const open = target.closest('[data-collection-drawer-open]');
+    if (open) {
+      event.preventDefault();
+      openDrawer(open.closest('[data-collection]'));
+      return;
+    }
+
+    const close = target.closest('[data-collection-drawer-close], [data-collection-drawer-backdrop]');
+    if (close) {
+      event.preventDefault();
+      const drawer = close.closest('[data-collection-drawer]');
+      closeDrawer(getSectionForDrawer(drawer), true);
+    }
+  });
+
+  document.addEventListener('submit', function (event) {
+    const form = event.target;
+    if (!form || !form.closest || !form.closest('[data-collection-drawer-panel]')) return;
+
+    event.preventDefault();
+    const submitButton = form.querySelector('[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.setAttribute('aria-busy', 'true');
+      submitButton.textContent = 'Applying…';
+    }
+    submitFilters(form);
+  });
+
+  document.addEventListener('change', function (event) {
+    const select = event.target;
+    if (!select || !select.matches || !select.matches('[data-collection-sort-select]')) return;
+
+    select.disabled = true;
+    select.setAttribute('aria-busy', 'true');
+    submitSort(select);
+  });
+
+  document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape' && activeSection) closeDrawer(activeSection, true);
   });
 
-  desktop.addEventListener?.('change', (event) => {
-    if (event.matches && activeSection) closeDrawer(activeSection, false);
+  if (desktop.addEventListener) {
+    desktop.addEventListener('change', function (event) {
+      if (event.matches && activeSection) closeDrawer(activeSection, false);
+    });
+  } else if (desktop.addListener) {
+    desktop.addListener(function (event) {
+      if (event.matches && activeSection) closeDrawer(activeSection, false);
+    });
+  }
+
+  document.addEventListener('shopify:section:load', function (event) {
+    prepareAll(event.target);
   });
 
-  window.theme = window.theme || {};
-  if (window.theme.onSectionLoad) window.theme.onSectionLoad('[data-collection]', init);
-  else document.querySelectorAll('[data-collection]').forEach(init);
+  function start() {
+    prepareAll(document);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start, { once: true });
+  } else {
+    start();
+  }
 })();
