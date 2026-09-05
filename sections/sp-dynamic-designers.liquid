@@ -17,12 +17,24 @@
         for product in collections.all.products
           if product.available and product.vendor != blank
             assign vendor_handle = product.vendor | handleize
+            assign vendor_name = product.vendor
+
+            if vendor_handle == 'other'
+              assign identity_title = product.title | downcase
+              assign identity_tags = product.tags | join: ' ' | downcase
+              assign identity_signal = identity_title | append: ' ' | append: identity_tags
+              if identity_signal contains 'righteous'
+                assign vendor_handle = 'righteous'
+                assign vendor_name = 'Righteous'
+              endif
+            endif
+
             assign vendor_token = '|' | append: vendor_handle | append: '|'
             if vendor_handle != exclude_vendor_handle
               unless vendor_seen contains vendor_token
                 assign vendor_seen = vendor_seen | append: vendor_handle | append: '|'
                 assign vendor_handles_serialized = vendor_handles_serialized | append: vendor_handle | append: '|||'
-                assign vendor_names_serialized = vendor_names_serialized | append: product.vendor | append: '|||'
+                assign vendor_names_serialized = vendor_names_serialized | append: vendor_name | append: '|||'
               endunless
             endif
           endif
@@ -86,7 +98,17 @@
                 <button type="button" class="brand-showcase__arrow brand-showcase__arrow--previous" aria-label="Previous {{ vendor_name | escape }} products" data-brand-showcase-previous>←</button>
                 <div class="brand-showcase__track" data-brand-showcase-track>
                   {%- for product in collections.all.products -%}
-                    {%- assign product_vendor_handle = product.vendor | handleize -%}
+                    {%- liquid
+                      assign product_vendor_handle = product.vendor | handleize
+                      if product_vendor_handle == 'other'
+                        assign identity_title = product.title | downcase
+                        assign identity_tags = product.tags | join: ' ' | downcase
+                        assign identity_signal = identity_title | append: ' ' | append: identity_tags
+                        if identity_signal contains 'righteous'
+                          assign product_vendor_handle = 'righteous'
+                        endif
+                      endif
+                    -%}
                     {%- if product.available and product_vendor_handle == vendor_handle -%}
                       {%- liquid
                         assign available_count = available_count | plus: 1
