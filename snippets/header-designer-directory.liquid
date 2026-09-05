@@ -43,7 +43,8 @@
                 break
               endif
             endfor
-            assign vendor_url = '/collections/vendors?q=' | append: vendor | url_encode | append: '&sort_by=created-descending'
+            assign encoded_vendor = vendor | url_encode
+            assign vendor_url = '/collections/vendors?q=' | append: encoded_vendor | append: '&sort_by=created-descending'
           -%}
 
           {%- unless vendor_is_excluded or vendor == blank -%}
