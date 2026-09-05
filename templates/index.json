@@ -114,8 +114,8 @@
         "transition_speed": 700,
         "show_controls": true,
         "eyebrow": "Curated designer pieces · Updated regularly",
-        "heading": "CHICAGO\nTO THE WORLD.",
-        "copy": "Rare designer, archive and pre-owned pieces selected in Chicago.",
+        "heading": "Welcome to Sole Paradise",
+        "copy": "",
         "button_label": "Shop new arrivals",
         "button_link": "",
         "index_label": "",
@@ -435,7 +435,12 @@
           }
         }
       },
-      "block_order": ["post_chrome_fit", "post_abc_fit", "post_st_vanity_fit", "post_pearlized_vans"],
+      "block_order": [
+        "post_chrome_fit",
+        "post_abc_fit",
+        "post_st_vanity_fit",
+        "post_pearlized_vans"
+      ],
       "settings": {
         "eyebrow": "An ig post caught your eye?",
         "heading": "Shop the post",
