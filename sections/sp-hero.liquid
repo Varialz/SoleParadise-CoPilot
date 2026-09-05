@@ -9,6 +9,12 @@
       assign using_inventory_image = true
     endif
   endif
+
+  assign default_file_image = blank
+  if section.settings.default_file_name != blank
+    assign default_file_image = images[section.settings.default_file_name]
+  endif
+  assign default_image_url = section.settings.default_image_url | strip
 -%}
 <section
   class="sp-hero sp-hero--editorial sp-hero--slideshow"
@@ -88,7 +94,29 @@
       {%- endif -%}
     {%- endfor -%}
 
-    {%- if rendered_slides == 0 and fallback_image != blank -%}
+    {%- if rendered_slides == 0 and default_file_image != blank -%}
+      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
+        <picture>
+          {{ default_file_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: 'Sole Paradise campaign image' }}
+        </picture>
+      </div>
+      {%- assign rendered_slides = 1 -%}
+    {%- elsif rendered_slides == 0 and default_image_url != blank -%}
+      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
+        <picture>
+          <img
+            class="sp-hero__image"
+            src="{{ default_image_url | escape }}"
+            alt="Sole Paradise campaign image"
+            loading="eager"
+            fetchpriority="high"
+            width="2400"
+            height="1600"
+          >
+        </picture>
+      </div>
+      {%- assign rendered_slides = 1 -%}
+    {%- elsif rendered_slides == 0 and fallback_image != blank -%}
       <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
         <picture>
           {%- if section.settings.mobile_image != blank -%}
@@ -134,7 +162,7 @@
     {%- if rendered_slides > 1 and section.settings.show_controls -%}
       <div class="sp-hero__slideshow-controls" data-hero-controls aria-label="Hero slideshow controls">
         <button class="sp-hero__slide-control" type="button" data-hero-prev aria-label="Previous slide">←</button>
-        <span class="sp-hero__slide-counter" aria-live="polite"><span data-hero-current>01</span> / <span data-hero-total>{{ rendered_slides | prepend: '0' | slice: -2, 2 }}</span></span>
+        <span class="sp-hero__slide-counter" aria-live="polite"><span data-hero-current>01</span> / <span data-hero-total>{{ rendered_slides }}</span></span>
         <button class="sp-hero__slide-control" type="button" data-hero-next aria-label="Next slide">→</button>
         {%- if section.settings.autoplay -%}<button class="sp-hero__slide-toggle" type="button" data-hero-toggle aria-pressed="false">Pause</button>{%- endif -%}
       </div>
@@ -148,7 +176,9 @@
 {
   "name":"SP — Hero",
   "settings":[
-    {"type":"image_picker","id":"image","label":"Fallback campaign image","info":"Used only when no slideshow blocks have usable images."},
+    {"type":"text","id":"default_file_name","label":"Default Shopify Files image","default":"IMG_1341.heic","info":"Used as the first hero image until slideshow blocks are added."},
+    {"type":"text","id":"default_image_url","label":"Default image URL fallback","default":"https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050"},
+    {"type":"image_picker","id":"image","label":"Fallback campaign image","info":"Used only when no slideshow blocks or default Files image can resolve."},
     {"type":"image_picker","id":"mobile_image","label":"Fallback mobile image","info":"Optional portrait crop for the fallback image."},
     {"type":"checkbox","id":"autoplay","label":"Autoplay slideshow","default":true},
     {"type":"range","id":"autoplay_speed","label":"Time per slide","min":4,"max":10,"step":1,"unit":"s","default":6},
