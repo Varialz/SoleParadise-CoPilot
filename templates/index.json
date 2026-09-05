@@ -357,6 +357,85 @@
     },
     "feed": {
       "type": "sp-from-feed",
+      "blocks": {
+        "post_chrome_fit": {
+          "type": "shoppable_post",
+          "settings": {
+            "image_asset": "instagram-dcebrfhld8m.jpg",
+            "image_alt": "Chrome Hearts black zip hoodie, sweatpants and black white skate sneakers outfit",
+            "instagram_url": "https://www.instagram.com/soleparadise.chicago/p/DceBrFhld8m/",
+            "post_date": "August 25, 2026",
+            "title": "Chrome Hearts / Black Skate Fit",
+            "product_1": "",
+            "item_1_name": "Chrome Scroll Logo Thermal Black Zipup Hoodie",
+            "item_1_detail": "Medium · Tried on · $1,500",
+            "product_2": "",
+            "item_2_name": "Chrome Scroll Logo Black Sweatpants",
+            "item_2_detail": "XS · Brand new · $950",
+            "product_3": "",
+            "item_3_name": "Black White Skate Sneakers",
+            "item_3_detail": "US 8.5–9 · Brand new · $1,100"
+          }
+        },
+        "post_abc_fit": {
+          "type": "shoppable_post",
+          "settings": {
+            "image_asset": "instagram-dc1wp7elc_n.jpg",
+            "image_alt": "ABC Desires tee, white baggy denim and pearlized brown Vans outfit",
+            "instagram_url": "https://www.instagram.com/soleparadise.chicago/p/Dc1Wp7Elc_n/",
+            "post_date": "September 3, 2026",
+            "title": "ABC Desires / Holy Grail Fit",
+            "product_1": "",
+            "item_1_name": "ABC Desires Tee",
+            "item_1_detail": "S–XL · Brand new · $200",
+            "product_2": "",
+            "item_2_name": "Holy Grail Dirty Wash White Denim",
+            "item_2_detail": "32, 36 · Brand new · $340",
+            "product_3": "",
+            "item_3_name": "Pearlized Brown Vans",
+            "item_3_detail": "US 7.5, 10.5, 12 · Brand new · $360"
+          }
+        },
+        "post_st_vanity_fit": {
+          "type": "shoppable_post",
+          "settings": {
+            "image_asset": "instagram-dcmqw9jdwcu.jpg",
+            "image_alt": "ST Vanity black crewneck, patch baggy denim and black white hiking shoes outfit",
+            "instagram_url": "https://www.instagram.com/soleparadise.chicago/p/DcmQW9jDwcU/",
+            "post_date": "August 28, 2026",
+            "title": "ST. Vanity / HMDD Fit",
+            "product_1": "",
+            "item_1_name": "ST.Vanity Black Ash Crewneck",
+            "item_1_detail": "L, 2XL · Brand new · $280",
+            "product_2": "",
+            "item_2_name": "HMDD Black Patch Baggy Denim",
+            "item_2_detail": "S, L · Brand new · $340",
+            "product_3": "",
+            "item_3_name": "Sicko Black White Hiking Shoes",
+            "item_3_detail": "US 9 · Pre-owned · $360"
+          }
+        },
+        "post_pearlized_vans": {
+          "type": "shoppable_post",
+          "settings": {
+            "image_asset": "instagram-dcltvixuchv.jpg",
+            "image_alt": "Pearlized Vans color selection at Sole Paradise",
+            "instagram_url": "https://www.instagram.com/soleparadise.chicago/p/DcltViXuCHV/",
+            "post_date": "August 28, 2026",
+            "title": "Pearlized Vans",
+            "product_1": "",
+            "item_1_name": "Pearlized Pink Vans",
+            "item_1_detail": "US 8.5 · Lightly worn · $240",
+            "product_2": "",
+            "item_2_name": "Pearlized Brown Vans",
+            "item_2_detail": "US 7.5, 8.5 · Brand new · $360",
+            "product_3": "",
+            "item_3_name": "Pearlized Blue Vans",
+            "item_3_detail": "US 9.5, 10, 11.5 · Brand new · $440"
+          }
+        }
+      },
+      "block_order": ["post_chrome_fit", "post_abc_fit", "post_st_vanity_fit", "post_pearlized_vans"],
       "settings": {
         "eyebrow": "An ig post caught your eye?",
         "heading": "Shop the post",

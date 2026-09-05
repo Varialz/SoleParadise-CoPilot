@@ -22,7 +22,50 @@
       </div>
     </header>
 
-    {%- if feed_collection != blank and feed_collection.products_count > 0 -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="sp-shop-posts" data-sp-feed-grid>
+        {%- for block in section.blocks -%}
+          <article class="sp-shop-post" {{ block.shopify_attributes }}>
+            <a class="sp-shop-post__media" href="{{ block.settings.instagram_url | escape }}" target="_blank" rel="noopener" aria-label="View {{ block.settings.title | escape }} on Instagram">
+              <img
+                class="sp-shop-post__image"
+                src="{{ block.settings.image_asset | asset_url }}"
+                alt="{{ block.settings.image_alt | default: block.settings.title | escape }}"
+                loading="lazy"
+                width="900"
+                height="1080"
+              >
+              <span class="sp-shop-post__source">View post</span>
+            </a>
+            <div class="sp-shop-post__body">
+              <p class="sp-shop-post__date">{{ block.settings.post_date | escape }}</p>
+              <h3>{{ block.settings.title | escape }}</h3>
+              <div class="sp-shop-post__products">
+                {%- for index in (1..3) -%}
+                  {%- liquid
+                    assign product_key = 'product_' | append: index
+                    assign name_key = 'item_' | append: index | append: '_name'
+                    assign detail_key = 'item_' | append: index | append: '_detail'
+                    assign featured_product = block.settings[product_key]
+                    assign fallback_name = block.settings[name_key]
+                    assign item_detail = block.settings[detail_key]
+                  -%}
+                  {%- if featured_product != blank or fallback_name != blank -%}
+                    <a class="sp-shop-post__product" href="{% if featured_product != blank %}{{ featured_product.url }}{% else %}{{ routes.search_url }}?q={{ fallback_name | url_encode }}&type=product{% endif %}">
+                      <span>
+                        <strong>{% if featured_product != blank %}{{ featured_product.title | escape }}{% else %}{{ fallback_name | escape }}{% endif %}</strong>
+                        {%- if item_detail != blank -%}<small>{{ item_detail | escape }}</small>{%- endif -%}
+                      </span>
+                      <span class="sp-shop-post__product-action">{% if featured_product != blank %}Shop{% else %}Find{% endif %} →</span>
+                    </a>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- elsif feed_collection != blank and feed_collection.products_count > 0 -%}
       {%- if request.design_mode and using_fallback_collection -%}
         <p class="sp-editor-note">Theme setup: showing All products until a dedicated From the Feed collection is selected.</p>
       {%- endif -%}
@@ -133,6 +176,21 @@
   [data-sp-feed][data-react-feed-mounted='true'] [data-sp-feed-fallback] {
     display: none;
   }
+  .sp-shop-posts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--sp-line);border:1px solid var(--sp-line)}
+  .sp-shop-post{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(15rem,.85fr);min-width:0;background:var(--sp-paper,#fff)}
+  .sp-shop-post__media{position:relative;display:block;min-height:100%;overflow:hidden;background:var(--sp-ice);color:#fff}
+  .sp-shop-post__image{display:block;width:100%;height:100%;aspect-ratio:4/5;object-fit:cover;transition:transform .6s cubic-bezier(.2,.65,.3,1)}
+  .sp-shop-post__media:hover .sp-shop-post__image{transform:scale(1.025)}
+  .sp-shop-post__source{position:absolute;right:.75rem;bottom:.75rem;padding:.45rem .6rem;background:rgba(9,17,28,.88);font:700 .58rem/1 monospace;letter-spacing:.1em;text-transform:uppercase}
+  .sp-shop-post__body{display:flex;flex-direction:column;padding:clamp(1rem,2vw,1.6rem)}
+  .sp-shop-post__date{margin:0 0 .65rem;color:var(--sp-cobalt);font:700 .58rem/1 monospace;letter-spacing:.11em;text-transform:uppercase}
+  .sp-shop-post__body h3{margin:0 0 1.35rem;font-size:clamp(1.25rem,2vw,2rem);line-height:.98;letter-spacing:-.04em}
+  .sp-shop-post__products{margin-top:auto;border-top:1px solid var(--sp-line)}
+  .sp-shop-post__product{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.85rem 0;border-bottom:1px solid var(--sp-line);color:inherit;text-decoration:none}
+  .sp-shop-post__product strong,.sp-shop-post__product small{display:block}.sp-shop-post__product strong{font-size:.74rem;line-height:1.25}.sp-shop-post__product small{margin-top:.28rem;color:var(--sp-muted);font-size:.62rem;line-height:1.35}
+  .sp-shop-post__product-action{flex:0 0 auto;color:var(--sp-cobalt);font:700 .58rem/1 monospace;letter-spacing:.08em;text-transform:uppercase}
+  @media(max-width:1100px){.sp-shop-posts{grid-template-columns:1fr}.sp-shop-post{grid-template-columns:minmax(0,1.1fr) minmax(16rem,.9fr)}}
+  @media(max-width:640px){.sp-shop-post{grid-template-columns:1fr}.sp-shop-post__body{min-height:19rem}.sp-shop-post__image{aspect-ratio:4/5}}
 {% endstyle %}
 
 {% schema %}
@@ -149,6 +207,29 @@
     {"type":"text","id":"instagram_label","label":"Instagram link label","default":"@soleparadise.chicago"},
     {"type":"checkbox","id":"show_collection_link","label":"Show collection link","default":true}
   ],
+  "blocks": [
+    {
+      "type": "shoppable_post",
+      "name": "Shoppable post",
+      "settings": [
+        {"type":"text","id":"image_asset","label":"Imported theme asset filename"},
+        {"type":"text","id":"image_alt","label":"Image alt text"},
+        {"type":"url","id":"instagram_url","label":"Original Instagram post"},
+        {"type":"text","id":"post_date","label":"Post date"},
+        {"type":"text","id":"title","label":"Post title"},
+        {"type":"product","id":"product_1","label":"Product 1"},
+        {"type":"text","id":"item_1_name","label":"Product 1 fallback name"},
+        {"type":"text","id":"item_1_detail","label":"Product 1 size / condition / price"},
+        {"type":"product","id":"product_2","label":"Product 2"},
+        {"type":"text","id":"item_2_name","label":"Product 2 fallback name"},
+        {"type":"text","id":"item_2_detail","label":"Product 2 size / condition / price"},
+        {"type":"product","id":"product_3","label":"Product 3"},
+        {"type":"text","id":"item_3_name","label":"Product 3 fallback name"},
+        {"type":"text","id":"item_3_detail","label":"Product 3 size / condition / price"}
+      ]
+    }
+  ],
+  "max_blocks": 24,
   "presets": [{"name":"From the Feed"}]
 }
 {% endschema %}
