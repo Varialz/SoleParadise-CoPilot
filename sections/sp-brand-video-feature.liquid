@@ -39,22 +39,23 @@
 
 {% stylesheet %}
   .sp-brand-video{background:#fff;color:var(--sp-ink,#101820)}
-  .sp-brand-video__inner{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr);align-items:stretch;gap:clamp(2rem,5vw,6rem);padding-block:clamp(4.5rem,8vw,8rem)}
+  .sp-brand-video__inner{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);align-items:stretch;gap:clamp(2.5rem,5vw,6rem);padding-block:clamp(4.5rem,8vw,8rem)}
   .sp-brand-video__media{position:relative;min-width:0;aspect-ratio:16/9;overflow:hidden;background:#06111f}
   .sp-brand-video__video{display:block;width:100%;height:100%;object-fit:cover;opacity:.56;filter:saturate(.78) contrast(1.05);transition:opacity .45s ease,filter .45s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
   .sp-brand-video__media:hover .sp-brand-video__video,.sp-brand-video__media:focus-within .sp-brand-video__video{opacity:.72;filter:saturate(.92) contrast(1.03);transform:scale(1.012)}
   .sp-brand-video__media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,10,21,.18),transparent 55%,rgba(3,10,21,.12));pointer-events:none}
   .sp-brand-video__index{position:absolute;z-index:2;left:1rem;bottom:1rem;padding:.45rem .55rem;background:rgba(3,10,21,.74);color:#fff;font:700 .54rem/1 monospace;letter-spacing:.12em;text-transform:uppercase}
   .sp-brand-video__placeholder{display:grid;width:100%;height:100%;place-items:center;color:rgba(255,255,255,.65);font:700 .62rem/1.4 monospace;letter-spacing:.1em;text-transform:uppercase}
-  .sp-brand-video__content{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-block:clamp(1rem,3vw,3rem);border-top:1px solid var(--sp-line,#dfe4ea);border-bottom:1px solid var(--sp-line,#dfe4ea)}
+  .sp-brand-video__content{display:flex;min-width:0;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(1rem,3vw,3rem) 0 clamp(1rem,3vw,3rem) clamp(1.5rem,3vw,3.5rem);border-top:1px solid var(--sp-line,#dfe4ea);border-bottom:1px solid var(--sp-line,#dfe4ea)}
   .sp-brand-video__eyebrow{margin:0 0 1rem;color:var(--sp-cobalt,#1769d2);font:700 .62rem/1 monospace;letter-spacing:.15em;text-transform:uppercase}
-  .sp-brand-video__heading{max-width:10ch;margin:0;font-size:clamp(2.7rem,5.4vw,6rem);line-height:.88;letter-spacing:-.06em;text-transform:uppercase}
+  .sp-brand-video__heading{width:100%;max-width:9.5ch;margin:0;font-size:clamp(2.7rem,4.4vw,4.8rem);line-height:.9;letter-spacing:-.055em;overflow-wrap:normal;word-break:normal;text-transform:uppercase}
   .sp-brand-video__copy{max-width:29rem;margin:1.4rem 0 0;color:var(--sp-muted,#68717c);font-size:clamp(.9rem,1.2vw,1.05rem);line-height:1.6}
   .sp-brand-video__button{display:inline-flex;align-items:center;justify-content:space-between;gap:2.5rem;min-width:min(100%,18rem);min-height:50px;margin-top:2rem;padding:.85rem 1rem;background:var(--sp-deep-sea,#061f4a);color:#fff;font-size:.66rem;font-weight:700;letter-spacing:.11em;text-decoration:none;text-transform:uppercase;transition:background-color .22s ease,color .22s ease}
   .sp-brand-video__button span{color:var(--sp-paradise,#7eccf3);font-size:1rem;transition:transform .22s ease}
   .sp-brand-video__button:hover,.sp-brand-video__button:focus-visible{background:var(--sp-cobalt,#1769d2)}
   .sp-brand-video__button:hover span,.sp-brand-video__button:focus-visible span{transform:translateX(3px)}
-  @media(max-width:749px){.sp-brand-video__inner{grid-template-columns:1fr;gap:1.5rem;padding-block:4rem}.sp-brand-video__media{aspect-ratio:16/10}.sp-brand-video__content{padding-block:2rem}.sp-brand-video__heading{font-size:clamp(2.7rem,14vw,4.4rem)}.sp-brand-video__button{width:100%}}
+  @media(min-width:750px) and (max-width:1100px){.sp-brand-video__inner{grid-template-columns:minmax(0,1fr) minmax(300px,1fr);gap:2rem}.sp-brand-video__content{padding-left:1.5rem}.sp-brand-video__heading{font-size:clamp(2.35rem,5.1vw,3.55rem)}}
+  @media(max-width:749px){.sp-brand-video__inner{grid-template-columns:1fr;gap:1.5rem;padding-block:4rem}.sp-brand-video__media{aspect-ratio:16/10}.sp-brand-video__content{padding:2rem 0}.sp-brand-video__heading{font-size:clamp(2.7rem,14vw,4.4rem)}.sp-brand-video__button{width:100%}}
   @media(prefers-reduced-motion:reduce){.sp-brand-video__video,.sp-brand-video__button,.sp-brand-video__button span{transition:none}.sp-brand-video__media:hover .sp-brand-video__video,.sp-brand-video__media:focus-within .sp-brand-video__video{transform:none}}
 {% endstylesheet %}
 
