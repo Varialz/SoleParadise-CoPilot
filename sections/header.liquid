@@ -105,6 +105,35 @@
         <button type="button" class="site-header__trigger header-drawer__close no-js-hidden" aria-label="{{ 'header.close_menu' | t }}" data-header-drawer-close>{%- render 'icon', name: 'close' -%}</button>
       </div>
 
+      <div class="header-drawer__shop" aria-labelledby="HeaderDrawerShop-{{ section.id }}">
+        <div class="header-drawer__shop-head">
+          <p id="HeaderDrawerShop-{{ section.id }}">Shop by category</p>
+          <a href="{{ routes.all_products_collection_url }}">View all</a>
+        </div>
+        <div class="header-drawer__categories">
+          <a class="header-drawer__category" href="{{ routes.search_url }}?q=tee&amp;type=product">
+            <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'tees' -%}</span>
+            <span>Tees</span>
+          </a>
+          <a class="header-drawer__category" href="{{ routes.search_url }}?q=hoodie&amp;type=product">
+            <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'hoodies' -%}</span>
+            <span>Hoodies</span>
+          </a>
+          <a class="header-drawer__category" href="{{ routes.search_url }}?q=shoes&amp;type=product">
+            <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'footwear' -%}</span>
+            <span>Footwear</span>
+          </a>
+          <a class="header-drawer__category" href="{{ routes.search_url }}?q=pants&amp;type=product">
+            <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'bottoms' -%}</span>
+            <span>Bottoms</span>
+          </a>
+          <a class="header-drawer__category" href="{{ routes.search_url }}?q=accessories&amp;type=product">
+            <span class="header-drawer__category-icon">{%- render 'category-icon', name: 'accessories' -%}</span>
+            <span>Accessories</span>
+          </a>
+        </div>
+      </div>
+
       <nav class="header-drawer__nav" aria-label="Primary navigation">
         {%- if menu != blank -%}
           {%- render 'header-menu-mobile', menu: menu, section_id: section.id -%}
