@@ -1,3 +1,7 @@
+{%- assign sp_heading_handle = section.settings.heading | handleize -%}
+{%- if sp_heading_handle == 'more-designers' and section.settings.vendor == blank -%}
+  {%- render 'dynamic-designers-showcase', section: section -%}
+{%- else -%}
 <section class="brand-showcase" data-brand-showcase data-section-id="{{ section.id }}">
   <div class="brand-showcase__inner page-width">
     <header class="brand-showcase__header">
@@ -190,6 +194,7 @@
     {%- endif -%}
   </div>
 </section>
+{%- endif -%}
 
 {% schema %}
 {
