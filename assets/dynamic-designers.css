@@ -1,0 +1,18 @@
+/* Dynamic in-stock designer directory */
+.sp-dynamic-designers .brand-showcase__tabs{flex-wrap:wrap;row-gap:.35rem;margin-bottom:1.4rem}
+.sp-dynamic-designers__inventory{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.55rem 1rem;min-height:34px;margin:0 auto 1.45rem;color:var(--sp-brand-muted,#667382);font:700 .54rem/1.25 monospace;letter-spacing:.08em;text-transform:uppercase}
+.sp-dynamic-designers__count{color:var(--sp-brand-navy,#0a2854)}
+.sp-dynamic-designers__categories{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.4rem}
+.sp-dynamic-designers__category{display:inline-flex;align-items:center;gap:.4rem;min-height:28px;padding:.4rem .52rem;border:1px solid var(--sp-brand-line,#dce3e8);background:#fff;color:var(--sp-brand-muted,#667382);white-space:nowrap}
+.sp-dynamic-designers__category b{color:var(--sp-brand-blue-strong,#4b9bb9);font:800 inherit}
+.sp-dynamic-designers .brand-showcase__cta{background:var(--sp-brand-black,#08090b);color:#fff;border:1px solid var(--sp-brand-black,#08090b)}
+.sp-dynamic-designers .brand-showcase__cta:hover,.sp-dynamic-designers .brand-showcase__cta:focus-visible{background:var(--sp-brand-blue,#7eccf3);border-color:var(--sp-brand-blue,#7eccf3);color:var(--sp-brand-navy-deep,#061a38);outline:none}
+.sp-dynamic-designers__empty{max-width:32rem;margin:0 auto;padding:3rem 1rem;border-block:1px solid var(--sp-brand-line,#dce3e8);color:var(--sp-brand-muted,#667382);text-align:center}
+.sp-dynamic-designers__empty strong{display:block;margin-bottom:.45rem;color:var(--sp-brand-ink,#0b1119);font-size:.9rem}
+@media(max-width:749px){
+  .sp-dynamic-designers .brand-showcase__tabs{flex-wrap:nowrap;justify-content:flex-start;margin-bottom:1rem}
+  .sp-dynamic-designers__inventory{display:block;margin-bottom:1rem;text-align:left}
+  .sp-dynamic-designers__count{display:block;margin-bottom:.6rem}
+  .sp-dynamic-designers__categories{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding-bottom:.2rem;scrollbar-width:none}
+  .sp-dynamic-designers__categories::-webkit-scrollbar{display:none}
+}
