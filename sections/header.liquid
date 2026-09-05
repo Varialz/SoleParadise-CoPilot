@@ -134,6 +134,8 @@
         </div>
       </div>
 
+      {%- render 'header-designer-directory', section: section -%}
+
       <nav class="header-drawer__nav" aria-label="Primary navigation">
         {%- if menu != blank -%}
           {%- render 'header-menu-mobile', menu: menu, section_id: section.id -%}
@@ -171,7 +173,10 @@
     {"type":"checkbox","id":"enable_sticky_header","label":"Enable sticky header","default":true},
     {"type":"checkbox","id":"show_utility_bar","label":"Show utility bar","default":true},
     {"type":"text","id":"utility_text","label":"Utility text","default":"Chicago / IL · Authenticated designer resale · Worldwide shipping"},
-    {"type":"range","id":"utility_speed","label":"Announcement speed","min":12,"max":40,"step":2,"unit":"s","default":24}
+    {"type":"range","id":"utility_speed","label":"Announcement speed","min":12,"max":40,"step":2,"unit":"s","default":24},
+    {"type":"checkbox","id":"show_designer_directory","label":"Show designer directory","default":true},
+    {"type":"text","id":"designer_directory_label","label":"Designer directory heading","default":"Shop by designer"},
+    {"type":"text","id":"designer_exclusions","label":"Designer vendors to hide","default":"Other","info":"Comma-separated Product Vendor values that should not appear in the menu."}
   ],
   "enabled_on":{"groups":["header"]}
 }
