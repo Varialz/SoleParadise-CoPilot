@@ -14,6 +14,10 @@
     const currentLabel = hero.querySelector('[data-hero-current]');
     const totalLabel = hero.querySelector('[data-hero-total]');
     const toggle = hero.querySelector('[data-hero-toggle]');
+    const eyebrow = hero.querySelector('[data-hero-eyebrow]');
+    const heading = hero.querySelector('[data-hero-heading]');
+    const description = hero.querySelector('[data-hero-description]');
+    const button = hero.querySelector('[data-hero-button]');
 
     let index = slides.findIndex((slide) => slide.classList.contains('is-active'));
     if (index < 0) index = 0;
@@ -43,6 +47,7 @@
 
     function update(nextIndex) {
       index = (nextIndex + slides.length) % slides.length;
+      const activeSlide = slides[index];
 
       slides.forEach((slide, slideIndex) => {
         const active = slideIndex === index;
@@ -53,6 +58,25 @@
       hero.setAttribute('data-hero-index', String(index));
       if (currentLabel) currentLabel.textContent = pad(index + 1);
       if (totalLabel) totalLabel.textContent = pad(slides.length);
+
+      if (activeSlide.hasAttribute('data-hero-heading')) {
+        const updateText = (element, value) => {
+          if (!element) return;
+          element.textContent = value || '';
+          element.hidden = !value;
+        };
+
+        updateText(eyebrow, activeSlide.dataset.heroEyebrow);
+        updateText(heading, activeSlide.dataset.heroHeading);
+        updateText(description, activeSlide.dataset.heroCopy);
+
+        if (button) {
+          const label = activeSlide.dataset.heroButtonLabel || '';
+          button.textContent = label;
+          button.hidden = !label;
+          button.href = activeSlide.dataset.heroButtonUrl || '#';
+        }
+      }
     }
 
     function schedule() {
@@ -81,6 +105,7 @@
     const controller = {
       next() { go(index + 1); },
       prev() { go(index - 1); },
+      goTo(nextIndex) { go(nextIndex); },
       toggle() { setPaused(!manuallyPaused); },
       refresh() {
         update(index);
@@ -164,4 +189,11 @@
   }
 
   document.addEventListener('shopify:section:load', (event) => init(event.target));
+  document.addEventListener('shopify:block:select', (event) => {
+    const slide = event.target.closest && event.target.closest('[data-hero-slide]');
+    if (!slide) return;
+    const hero = slide.closest('[data-hero-slideshow]');
+    const controller = initHero(hero);
+    if (controller) controller.goTo(Number(slide.dataset.slideIndex) || 0);
+  });
 })();

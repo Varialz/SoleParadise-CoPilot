@@ -16,6 +16,10 @@
     assign default_file_image = images[default_file_name]
   endif
   assign default_image_url = section.settings.default_image_url | strip
+  assign default_hero_url = routes.all_products_collection_url
+  if section.settings.button_link != blank
+    assign default_hero_url = section.settings.button_link
+  endif
 -%}
 <section
   class="sp-hero sp-hero--editorial sp-hero--slideshow"
@@ -41,6 +45,11 @@
         assign focus_y = block_settings.focus_y | default: 55
         assign mobile_focus_x = block_settings.mobile_focus_x | default: 50
         assign mobile_focus_y = block_settings.mobile_focus_y | default: 60
+        assign slide_eyebrow = block_settings.eyebrow | default: section.settings.eyebrow
+        assign slide_heading = block_settings.heading | default: section.settings.heading
+        assign slide_copy = block_settings.copy | default: section.settings.copy
+        assign slide_button_label = block_settings.button_label | default: section.settings.button_label
+        assign slide_button_url = block_settings.button_link | default: default_hero_url
 
         if file_name == 'IMG_1341.heic'
           if focus_y == 55
@@ -76,6 +85,11 @@
           class="sp-hero__slide{% if rendered_slides == 1 %} is-active{% endif %}"
           data-hero-slide
           data-slide-index="{{ rendered_slides | minus: 1 }}"
+          data-hero-eyebrow="{{ slide_eyebrow | escape }}"
+          data-hero-heading="{{ slide_heading | escape }}"
+          data-hero-copy="{{ slide_copy | escape }}"
+          data-hero-button-label="{{ slide_button_label | escape }}"
+          data-hero-button-url="{{ slide_button_url }}"
           aria-hidden="{% if rendered_slides == 1 %}false{% else %}true{% endif %}"
           style="--hero-focus-x:{{ focus_x }}%;--hero-focus-y:{{ focus_y }}%;--hero-mobile-focus-x:{{ mobile_focus_x }}%;--hero-mobile-focus-y:{{ mobile_focus_y }}%"
           {{ block.shopify_attributes }}
@@ -156,19 +170,11 @@
   <div class="sp-hero__veil" aria-hidden="true"></div>
 
   <div class="sp-hero__inner page-width">
-    <div class="sp-hero__copy">
-      {%- if section.settings.eyebrow != blank -%}<p class="sp-kicker" data-sp-hero-line>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
-      <h1 class="sp-display" data-sp-hero-line>{{ section.settings.heading | escape | newline_to_br }}</h1>
-      {%- if section.settings.copy != blank -%}<p class="sp-hero__description" data-sp-hero-line>{{ section.settings.copy | escape }}</p>{%- endif -%}
-      {%- if section.settings.button_label != blank -%}
-        {%- liquid
-          assign hero_url = routes.all_products_collection_url
-          if section.settings.button_link != blank
-            assign hero_url = section.settings.button_link
-          endif
-        -%}
-        <a class="sp-hero__button" href="{{ hero_url | escape }}" data-sp-hero-line>{{ section.settings.button_label | escape }}</a>
-      {%- endif -%}
+    <div class="sp-hero__copy" data-hero-copy-region>
+      <p class="sp-kicker" data-sp-hero-line data-hero-eyebrow>{{ section.settings.eyebrow | escape }}</p>
+      <h1 class="sp-display" data-sp-hero-line data-hero-heading>{{ section.settings.heading | escape | newline_to_br }}</h1>
+      <p class="sp-hero__description" data-sp-hero-line data-hero-description>{{ section.settings.copy | escape }}</p>
+      <a class="sp-hero__button" href="{{ default_hero_url }}" data-sp-hero-line data-hero-button>{{ section.settings.button_label | escape }}</a>
     </div>
   </div>
 
@@ -218,6 +224,13 @@
         {"type":"image_picker","id":"mobile_image","label":"Mobile image","info":"Optional phone-specific crop."},
         {"type":"text","id":"file_name","label":"Shopify Files filename","info":"Use the exact filename from Content → Files."},
         {"type":"text","id":"image_url","label":"Fallback CDN URL","info":"Optional fallback when the Files filename cannot resolve."},
+        {"type":"header","content":"Slide message"},
+        {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Newest restock"},
+        {"type":"textarea","id":"heading","label":"Heading","info":"Example: WE ARE RIGHTEOUS"},
+        {"type":"textarea","id":"copy","label":"Supporting text","info":"Example: Shop the latest We Are Righteous arrivals."},
+        {"type":"text","id":"button_label","label":"Button label","default":"Shop the restock"},
+        {"type":"url","id":"button_link","label":"Button link","info":"Link to the matching brand collection or search."},
+        {"type":"header","content":"Image position"},
         {"type":"range","id":"focus_x","label":"Desktop focal point — horizontal","min":0,"max":100,"step":5,"unit":"%","default":50},
         {"type":"range","id":"focus_y","label":"Desktop focal point — vertical","min":0,"max":100,"step":5,"unit":"%","default":55},
         {"type":"range","id":"mobile_focus_x","label":"Mobile focal point — horizontal","min":0,"max":100,"step":5,"unit":"%","default":50},
