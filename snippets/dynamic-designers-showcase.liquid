@@ -1,0 +1,158 @@
+{{ 'dynamic-designers.css' | asset_url | stylesheet_tag }}
+
+<section class="brand-showcase sp-dynamic-designers" data-brand-showcase data-section-id="{{ section.id }}">
+  <div class="brand-showcase__inner page-width">
+    <header class="brand-showcase__header">
+      {%- if section.settings.eyebrow != blank -%}<p class="brand-showcase__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="brand-showcase__title">{{ section.settings.heading | escape }}</h2>
+    </header>
+
+    {%- paginate collections.all.products by 250 -%}
+      {%- liquid
+        assign exclude_vendor_handle = 'Chrome Hearts' | handleize
+        assign vendor_seen = '|'
+        assign vendor_handles_serialized = ''
+        assign vendor_names_serialized = ''
+
+        for product in collections.all.products
+          if product.available and product.vendor != blank
+            assign vendor_handle = product.vendor | handleize
+            assign vendor_token = '|' | append: vendor_handle | append: '|'
+            if vendor_handle != exclude_vendor_handle
+              unless vendor_seen contains vendor_token
+                assign vendor_seen = vendor_seen | append: vendor_handle | append: '|'
+                assign vendor_handles_serialized = vendor_handles_serialized | append: vendor_handle | append: '|||'
+                assign vendor_names_serialized = vendor_names_serialized | append: product.vendor | append: '|||'
+              endunless
+            endif
+          endif
+        endfor
+
+        assign vendor_handles = vendor_handles_serialized | split: '|||'
+        assign vendor_names = vendor_names_serialized | split: '|||'
+      -%}
+
+      {%- if vendor_handles_serialized != blank -%}
+        <div class="brand-showcase__tabs" role="tablist" aria-label="Shop current designers">
+          {%- assign vendor_tab_index = 0 -%}
+          {%- for vendor_handle in vendor_handles -%}
+            {%- unless vendor_handle == blank -%}
+              {%- assign vendor_name = vendor_names[forloop.index0] -%}
+              {%- assign tab_id = 'DynamicDesignerTab-' | append: section.id | append: '-' | append: vendor_handle -%}
+              {%- assign panel_id = 'DynamicDesignerPanel-' | append: section.id | append: '-' | append: vendor_handle -%}
+              <button id="{{ tab_id }}" class="brand-showcase__tab{% if vendor_tab_index == 0 %} is-active{% endif %}" type="button" role="tab" aria-selected="{% if vendor_tab_index == 0 %}true{% else %}false{% endif %}" aria-controls="{{ panel_id }}" tabindex="{% if vendor_tab_index == 0 %}0{% else %}-1{% endif %}" data-brand-showcase-tab>{{ vendor_name | escape }}</button>
+              {%- assign vendor_tab_index = vendor_tab_index | plus: 1 -%}
+            {%- endunless -%}
+          {%- endfor -%}
+        </div>
+
+        {%- assign vendor_panel_index = 0 -%}
+        {%- for vendor_handle in vendor_handles -%}
+          {%- unless vendor_handle == blank -%}
+            {%- liquid
+              assign vendor_name = vendor_names[forloop.index0]
+              assign tab_id = 'DynamicDesignerTab-' | append: section.id | append: '-' | append: vendor_handle
+              assign panel_id = 'DynamicDesignerPanel-' | append: section.id | append: '-' | append: vendor_handle
+              assign available_count = 0
+              assign rendered_count = 0
+              assign footwear_count = 0
+              assign tops_count = 0
+              assign hoodies_count = 0
+              assign bottoms_count = 0
+              assign outerwear_count = 0
+              assign headwear_count = 0
+              assign accessories_count = 0
+              assign other_count = 0
+            -%}
+
+            <div id="{{ panel_id }}" class="brand-showcase__panel" role="tabpanel" aria-labelledby="{{ tab_id }}" data-brand-showcase-panel {% unless vendor_panel_index == 0 %}hidden{% endunless %}>
+              <div class="brand-showcase__carousel">
+                <button type="button" class="brand-showcase__arrow brand-showcase__arrow--previous" aria-label="Previous {{ vendor_name | escape }} products" data-brand-showcase-previous>←</button>
+                <div class="brand-showcase__track" data-brand-showcase-track>
+                  {%- for product in collections.all.products -%}
+                    {%- assign product_vendor_handle = product.vendor | handleize -%}
+                    {%- if product.available and product_vendor_handle == vendor_handle -%}
+                      {%- liquid
+                        assign available_count = available_count | plus: 1
+                        assign product_type_signal = product.type | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
+                        assign product_title_signal = product.title | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
+                        assign product_tags_signal = product.tags | join: ' ' | downcase | replace: '-', ' ' | replace: '_', ' ' | replace: '/', ' '
+                        assign taxonomy_signal = ''
+                        if product.category != blank
+                          assign taxonomy_signal = product.category.name | downcase
+                        endif
+                        assign catalog_signal = ' ' | append: product_title_signal | append: ' ' | append: product_type_signal | append: ' ' | append: product_tags_signal | append: ' ' | append: taxonomy_signal | append: ' '
+                        assign inventory_category = 'other'
+
+                        if catalog_signal contains ' shoe ' or catalog_signal contains ' shoes ' or catalog_signal contains ' sneaker ' or catalog_signal contains ' sneakers ' or catalog_signal contains ' footwear ' or catalog_signal contains ' boot ' or catalog_signal contains ' boots ' or catalog_signal contains ' slide ' or catalog_signal contains ' slides ' or catalog_signal contains ' sandal ' or catalog_signal contains ' sandals ' or catalog_signal contains ' loafer ' or catalog_signal contains ' loafers ' or catalog_signal contains ' ramones ' or catalog_signal contains ' geobasket ' or catalog_signal contains ' geth runner ' or catalog_signal contains ' mega bumper ' or catalog_signal contains ' bogun ' or catalog_signal contains ' cargo basket ' or catalog_signal contains ' abstract low ' or catalog_signal contains ' abstract high '
+                          assign inventory_category = 'footwear'
+                        elsif catalog_signal contains ' hat ' or catalog_signal contains ' hats ' or catalog_signal contains ' cap ' or catalog_signal contains ' caps ' or catalog_signal contains ' beanie ' or catalog_signal contains ' headwear ' or catalog_signal contains ' trucker ' or catalog_signal contains ' snapback '
+                          assign inventory_category = 'headwear'
+                        elsif catalog_signal contains ' bag ' or catalog_signal contains ' bags ' or catalog_signal contains ' wallet ' or catalog_signal contains ' belt ' or catalog_signal contains ' jewelry ' or catalog_signal contains ' jewellery ' or catalog_signal contains ' necklace ' or catalog_signal contains ' bracelet ' or catalog_signal contains ' ring ' or catalog_signal contains ' pendant ' or catalog_signal contains ' chain ' or catalog_signal contains ' eyewear ' or catalog_signal contains ' sunglasses ' or catalog_signal contains ' glasses ' or catalog_signal contains ' accessory ' or catalog_signal contains ' accessories '
+                          assign inventory_category = 'accessories'
+                        elsif catalog_signal contains ' pant ' or catalog_signal contains ' pants ' or catalog_signal contains ' jean ' or catalog_signal contains ' jeans ' or catalog_signal contains ' denim ' or catalog_signal contains ' short ' or catalog_signal contains ' shorts ' or catalog_signal contains ' trouser ' or catalog_signal contains ' trousers ' or catalog_signal contains ' sweatpants '
+                          assign inventory_category = 'bottoms'
+                        elsif catalog_signal contains ' jacket ' or catalog_signal contains ' jackets ' or catalog_signal contains ' coat ' or catalog_signal contains ' coats ' or catalog_signal contains ' outerwear ' or catalog_signal contains ' puffer ' or catalog_signal contains ' vest '
+                          assign inventory_category = 'outerwear'
+                        elsif catalog_signal contains ' hoodie ' or catalog_signal contains ' hoodies ' or catalog_signal contains ' sweatshirt ' or catalog_signal contains ' sweatshirts ' or catalog_signal contains ' crewneck ' or catalog_signal contains ' crewnecks ' or catalog_signal contains ' zip up '
+                          assign inventory_category = 'hoodies'
+                        elsif catalog_signal contains ' tee ' or catalog_signal contains ' tees ' or catalog_signal contains ' t shirt ' or catalog_signal contains ' tshirt ' or catalog_signal contains ' shirt ' or catalog_signal contains ' shirts ' or catalog_signal contains ' top ' or catalog_signal contains ' tops ' or catalog_signal contains ' sweater ' or catalog_signal contains ' sweaters ' or catalog_signal contains ' jersey '
+                          assign inventory_category = 'tops'
+                        endif
+
+                        case inventory_category
+                          when 'footwear'
+                            assign footwear_count = footwear_count | plus: 1
+                          when 'headwear'
+                            assign headwear_count = headwear_count | plus: 1
+                          when 'accessories'
+                            assign accessories_count = accessories_count | plus: 1
+                          when 'bottoms'
+                            assign bottoms_count = bottoms_count | plus: 1
+                          when 'outerwear'
+                            assign outerwear_count = outerwear_count | plus: 1
+                          when 'hoodies'
+                            assign hoodies_count = hoodies_count | plus: 1
+                          when 'tops'
+                            assign tops_count = tops_count | plus: 1
+                          else
+                            assign other_count = other_count | plus: 1
+                        endcase
+                      -%}
+
+                      {%- if rendered_count < section.settings.product_limit -%}
+                        {%- render 'brand-showcase-card', product: product, brand_label: vendor_name -%}
+                        {%- assign rendered_count = rendered_count | plus: 1 -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+                <button type="button" class="brand-showcase__arrow brand-showcase__arrow--next" aria-label="Next {{ vendor_name | escape }} products" data-brand-showcase-next>→</button>
+              </div>
+
+              <div class="sp-dynamic-designers__inventory" aria-label="Current {{ vendor_name | escape }} inventory categories">
+                <span class="sp-dynamic-designers__count">{{ available_count }} {% if available_count == 1 %}piece{% else %}pieces{% endif %} in stock</span>
+                <div class="sp-dynamic-designers__categories">
+                  {%- if footwear_count > 0 -%}<span class="sp-dynamic-designers__category">Footwear <b>{{ footwear_count }}</b></span>{%- endif -%}
+                  {%- if tops_count > 0 -%}<span class="sp-dynamic-designers__category">Tops <b>{{ tops_count }}</b></span>{%- endif -%}
+                  {%- if hoodies_count > 0 -%}<span class="sp-dynamic-designers__category">Hoodies <b>{{ hoodies_count }}</b></span>{%- endif -%}
+                  {%- if bottoms_count > 0 -%}<span class="sp-dynamic-designers__category">Bottoms <b>{{ bottoms_count }}</b></span>{%- endif -%}
+                  {%- if outerwear_count > 0 -%}<span class="sp-dynamic-designers__category">Outerwear <b>{{ outerwear_count }}</b></span>{%- endif -%}
+                  {%- if headwear_count > 0 -%}<span class="sp-dynamic-designers__category">Headwear <b>{{ headwear_count }}</b></span>{%- endif -%}
+                  {%- if accessories_count > 0 -%}<span class="sp-dynamic-designers__category">Accessories <b>{{ accessories_count }}</b></span>{%- endif -%}
+                  {%- if other_count > 0 -%}<span class="sp-dynamic-designers__category">Other <b>{{ other_count }}</b></span>{%- endif -%}
+                </div>
+              </div>
+
+              {%- assign encoded_vendor = vendor_name | url_encode -%}
+              <div class="brand-showcase__cta-wrap"><a class="brand-showcase__cta" href="{{ routes.search_url }}?type=product&q={{ encoded_vendor }}">Shop {{ vendor_name | escape }}</a></div>
+            </div>
+            {%- assign vendor_panel_index = vendor_panel_index | plus: 1 -%}
+          {%- endunless -%}
+        {%- endfor -%}
+      {%- else -%}
+        <div class="sp-dynamic-designers__empty"><strong>No additional designers are in stock right now.</strong><span>This section will populate automatically as new vendors are added to available inventory.</span></div>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
