@@ -1,33 +1,113 @@
 {%- liquid
-  assign hero_image = section.settings.image
+  assign fallback_image = section.settings.image
   assign using_inventory_image = false
   assign fallback_collection = collections['all']
-  if hero_image == blank and fallback_collection != blank and fallback_collection.products_count > 0
+  if fallback_image == blank and section.blocks.size == 0 and fallback_collection != blank and fallback_collection.products_count > 0
     assign fallback_product = fallback_collection.products.first
     if fallback_product.featured_image != blank
-      assign hero_image = fallback_product.featured_image
+      assign fallback_image = fallback_product.featured_image
       assign using_inventory_image = true
     endif
   endif
 -%}
-<section class="sp-hero sp-hero--editorial" data-sp-section data-sp-hero>
+<section
+  class="sp-hero sp-hero--editorial sp-hero--slideshow"
+  data-sp-section
+  data-sp-hero
+  data-hero-slideshow
+  data-hero-autoplay="{{ section.settings.autoplay }}"
+  data-hero-interval="{{ section.settings.autoplay_speed | times: 1000 }}"
+  style="--hero-transition: {{ section.settings.transition_speed }}ms"
+>
   <div class="sp-hero__media" data-sp-hero-media>
-    {%- if hero_image != blank -%}
-      <picture>
-        {%- if section.settings.mobile_image != blank -%}
-          <source
-            media="(max-width: 749px)"
-            srcset="{{ section.settings.mobile_image | image_url: width: 750 }} 750w, {{ section.settings.mobile_image | image_url: width: 1000 }} 1000w"
-            sizes="100vw"
-          >
-        {%- endif -%}
-        {{ hero_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: hero_image.alt }}
-      </picture>
+    {%- assign rendered_slides = 0 -%}
+
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign slide_image = block.settings.image
+        assign file_image = blank
+        assign slide_url = block.settings.image_url | strip
+        assign slide_alt = block.settings.alt | strip
+
+        if slide_image == blank and block.settings.file_name != blank
+          assign file_image = images[block.settings.file_name]
+        endif
+
+        assign has_slide = false
+        if slide_image != blank or file_image != blank or slide_url != blank
+          assign has_slide = true
+        endif
+
+        if has_slide
+          assign slide_loading = 'lazy'
+          assign slide_priority = 'low'
+          if rendered_slides == 0
+            assign slide_loading = 'eager'
+            assign slide_priority = 'high'
+          endif
+          assign rendered_slides = rendered_slides | plus: 1
+        endif
+      -%}
+
+      {%- if has_slide -%}
+        <div
+          class="sp-hero__slide{% if rendered_slides == 1 %} is-active{% endif %}"
+          data-hero-slide
+          data-slide-index="{{ rendered_slides | minus: 1 }}"
+          aria-hidden="{% if rendered_slides == 1 %}false{% else %}true{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          <picture>
+            {%- if block.settings.mobile_image != blank -%}
+              <source
+                media="(max-width: 749px)"
+                srcset="{{ block.settings.mobile_image | image_url: width: 750 }} 750w, {{ block.settings.mobile_image | image_url: width: 1000 }} 1000w"
+                sizes="100vw"
+              >
+            {%- endif -%}
+
+            {%- if slide_image != blank -%}
+              {%- assign resolved_alt = slide_alt | default: slide_image.alt -%}
+              {{ slide_image | image_url: width: 2400 | image_tag: loading: slide_loading, fetchpriority: slide_priority, sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: resolved_alt }}
+            {%- elsif file_image != blank -%}
+              {%- assign resolved_alt = slide_alt | default: file_image.alt -%}
+              {{ file_image | image_url: width: 2400 | image_tag: loading: slide_loading, fetchpriority: slide_priority, sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: resolved_alt }}
+            {%- else -%}
+              <img
+                class="sp-hero__image"
+                src="{{ slide_url | escape }}"
+                alt="{{ slide_alt | default: 'Sole Paradise campaign image' | escape }}"
+                loading="{{ slide_loading }}"
+                fetchpriority="{{ slide_priority }}"
+                width="2400"
+                height="1600"
+              >
+            {%- endif -%}
+          </picture>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if rendered_slides == 0 and fallback_image != blank -%}
+      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false">
+        <picture>
+          {%- if section.settings.mobile_image != blank -%}
+            <source
+              media="(max-width: 749px)"
+              srcset="{{ section.settings.mobile_image | image_url: width: 750 }} 750w, {{ section.settings.mobile_image | image_url: width: 1000 }} 1000w"
+              sizes="100vw"
+            >
+          {%- endif -%}
+          {{ fallback_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: fallback_image.alt }}
+        </picture>
+      </div>
+      {%- assign rendered_slides = 1 -%}
       {%- if request.design_mode and using_inventory_image -%}<span class="sp-hero__setup">Using the first product image until campaign art is assigned</span>{%- endif -%}
-    {%- else -%}
+    {%- elsif rendered_slides == 0 -%}
       <div class="sp-hero__fallback" aria-hidden="true"><span>SOLE PARADISE</span><strong>CHICAGO / RARE GOODS</strong></div>
     {%- endif -%}
   </div>
+
   <div class="sp-hero__veil" aria-hidden="true"></div>
 
   <div class="sp-hero__inner page-width">
@@ -50,6 +130,16 @@
   <div class="sp-horizon" data-sp-horizon aria-hidden="true"></div>
   <div class="sp-hero__footer page-width" data-sp-hero-line>
     <span>{{ section.settings.index_label | escape }}</span>
+
+    {%- if rendered_slides > 1 and section.settings.show_controls -%}
+      <div class="sp-hero__slideshow-controls" data-hero-controls aria-label="Hero slideshow controls">
+        <button class="sp-hero__slide-control" type="button" data-hero-prev aria-label="Previous slide">←</button>
+        <span class="sp-hero__slide-counter" aria-live="polite"><span data-hero-current>01</span> / <span data-hero-total>{{ rendered_slides | prepend: '0' | slice: -2, 2 }}</span></span>
+        <button class="sp-hero__slide-control" type="button" data-hero-next aria-label="Next slide">→</button>
+        {%- if section.settings.autoplay -%}<button class="sp-hero__slide-toggle" type="button" data-hero-toggle aria-pressed="false">Pause</button>{%- endif -%}
+      </div>
+    {%- endif -%}
+
     <span>{{ section.settings.footer_label | escape }}</span>
   </div>
 </section>
@@ -58,8 +148,12 @@
 {
   "name":"SP — Hero",
   "settings":[
-    {"type":"image_picker","id":"image","label":"Campaign image","info":"If blank, the theme borrows the first product image until campaign art is assigned."},
-    {"type":"image_picker","id":"mobile_image","label":"Mobile campaign image","info":"Optional portrait crop for phones. Desktop/fallback image is used when blank."},
+    {"type":"image_picker","id":"image","label":"Fallback campaign image","info":"Used only when no slideshow blocks have usable images."},
+    {"type":"image_picker","id":"mobile_image","label":"Fallback mobile image","info":"Optional portrait crop for the fallback image."},
+    {"type":"checkbox","id":"autoplay","label":"Autoplay slideshow","default":true},
+    {"type":"range","id":"autoplay_speed","label":"Time per slide","min":4,"max":10,"step":1,"unit":"s","default":6},
+    {"type":"range","id":"transition_speed","label":"Fade speed","min":400,"max":1200,"step":100,"unit":"ms","default":700},
+    {"type":"checkbox","id":"show_controls","label":"Show slideshow controls","default":true},
     {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Curated designer pieces · Updated regularly"},
     {"type":"textarea","id":"heading","label":"Heading","default":"CHICAGO\nTO THE WORLD."},
     {"type":"textarea","id":"copy","label":"Copy","default":"Rare designer, archive and pre-owned pieces selected in Chicago."},
@@ -68,6 +162,20 @@
     {"type":"text","id":"index_label","label":"Left footer label","default":"SOLE PARADISE / CHICAGO"},
     {"type":"text","id":"footer_label","label":"Right footer label","default":"WORLDWIDE SHIPPING"}
   ],
-  "presets":[{"name":"SP — Hero"}]
+  "blocks":[
+    {
+      "type":"slide",
+      "name":"Campaign slide",
+      "settings":[
+        {"type":"image_picker","id":"image","label":"Image"},
+        {"type":"image_picker","id":"mobile_image","label":"Mobile image","info":"Optional phone-specific crop."},
+        {"type":"text","id":"file_name","label":"Shopify Files filename","info":"Use the exact filename from Content → Files, for example IMG_1341.heic."},
+        {"type":"text","id":"image_url","label":"Fallback CDN URL","info":"Optional fallback when the Files filename cannot resolve."},
+        {"type":"text","id":"alt","label":"Alt text","default":"Sole Paradise campaign image"}
+      ]
+    }
+  ],
+  "max_blocks":8,
+  "presets":[{"name":"SP — Hero","blocks":[{"type":"slide"}]}]
 }
 {% endschema %}
