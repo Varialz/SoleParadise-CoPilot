@@ -71,7 +71,8 @@
   .template-index .sp-section-head{margin-bottom:2.2rem}
   .template-index .sp-section-title,.template-index .brand-showcase__title{font-size:clamp(2rem,9.5vw,2.9rem)!important}
   .template-index .sp-product-grid{gap:2.4rem .65rem}
-  .brand-showcase-card{flex-basis:82%}
+  .brand-showcase-card{flex:0 0 100%;text-align:center}
+  .brand-showcase-card__title{margin-inline:auto}
   .brand-showcase-card__media{background:transparent}
 }
 
