@@ -64,6 +64,15 @@
           assign file_image = images[file_name]
         endif
 
+        assign slide_background_url = blank
+        if slide_image != blank
+          assign slide_background_url = slide_image | image_url: width: 2400
+        elsif slide_url != blank
+          assign slide_background_url = slide_url
+        elsif file_image != blank
+          assign slide_background_url = file_image | image_url: width: 2400
+        endif
+
         assign has_slide = false
         if slide_image != blank or file_image != blank or slide_url != blank
           assign has_slide = true
@@ -91,7 +100,7 @@
           data-hero-button-label="{{ slide_button_label | escape }}"
           data-hero-button-url="{{ slide_button_url }}"
           aria-hidden="{% if rendered_slides == 1 %}false{% else %}true{% endif %}"
-          style="--hero-focus-x:{{ focus_x }}%;--hero-focus-y:{{ focus_y }}%;--hero-mobile-focus-x:{{ mobile_focus_x }}%;--hero-mobile-focus-y:{{ mobile_focus_y }}%"
+          style="--hero-focus-x:{{ focus_x }}%;--hero-focus-y:{{ focus_y }}%;--hero-mobile-focus-x:{{ mobile_focus_x }}%;--hero-mobile-focus-y:{{ mobile_focus_y }}%;{% if slide_background_url != blank %}--hero-image:url({{ slide_background_url | json }});{% endif %}"
           {{ block.shopify_attributes }}
         >
           <picture>

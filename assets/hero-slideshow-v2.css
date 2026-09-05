@@ -1,6 +1,6 @@
 /* Sole Paradise homepage hero slideshow v2 */
 .sp-hero--slideshow .sp-hero__media{position:absolute;inset:0!important;overflow:hidden;background:var(--sp-brand-black,#08090b)}
-.sp-hero--slideshow .sp-hero__slide{position:absolute;inset:0;z-index:0;opacity:0;visibility:hidden;transition:opacity var(--hero-transition,700ms) ease,visibility 0s linear var(--hero-transition,700ms);pointer-events:none}
+.sp-hero--slideshow .sp-hero__slide{position:absolute;inset:0;z-index:0;opacity:0;visibility:hidden;background-image:var(--hero-image,none);background-position:var(--hero-focus-x,50%) var(--hero-focus-y,55%);background-size:cover;background-repeat:no-repeat;transition:opacity var(--hero-transition,700ms) ease,visibility 0s linear var(--hero-transition,700ms);pointer-events:none}
 .sp-hero--slideshow .sp-hero__slide.is-active{z-index:1;opacity:1;visibility:visible;transition-delay:0s}
 .sp-hero--slideshow .sp-hero__slide picture{display:block;width:100%;height:100%}
 .sp-hero--slideshow .sp-hero__slide .sp-hero__image{display:block;width:100%;height:100%;max-width:none;object-fit:cover;object-position:var(--hero-focus-x,50%) var(--hero-focus-y,55%)}
@@ -20,6 +20,7 @@
 .sp-hero__slide-counter{min-width:54px;text-align:center;color:var(--sp-brand-blue,#7eccf3);font:800 .56rem/1 monospace;letter-spacing:.09em;pointer-events:none}
 
 @media(max-width:749px){
+  .sp-hero--slideshow .sp-hero__slide{background-position:var(--hero-mobile-focus-x,50%) var(--hero-mobile-focus-y,60%)}
   .sp-hero--slideshow .sp-hero__slide .sp-hero__image{object-position:var(--hero-mobile-focus-x,50%) var(--hero-mobile-focus-y,60%)}
   .sp-hero--slideshow .sp-hero__footer{grid-template-columns:minmax(0,1fr) auto;gap:.65rem}
   .sp-hero--slideshow .sp-hero__footer>span:last-child{display:none}
