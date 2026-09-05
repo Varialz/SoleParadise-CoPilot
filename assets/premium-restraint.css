@@ -1,0 +1,73 @@
+/* Sole Paradise — premium restraint pass.
+   Keep commerce quiet; reserve stronger rules and stamps for documented archive pieces. */
+:root{--section-spacing:clamp(5rem,8vw,8.5rem)}
+
+/* Paradise blue is an accent, never a default surface. */
+.site-header__utility-bar{background:#071321!important;color:rgba(255,255,255,.82)!important;border-bottom:1px solid rgba(255,255,255,.1)!important}
+.site-header__ticker-item>span{color:var(--sp-brand-blue)!important}
+.sp-kicker,.brand-showcase__eyebrow{color:var(--sp-brand-blue-strong)!important}
+.brand-showcase__tab.is-active{background:transparent!important;color:var(--sp-brand-ink)!important;border-color:transparent!important}
+.brand-showcase__tab.is-active::after{background:var(--sp-brand-blue-strong)!important}
+
+/* More breathing room; fewer repeated display moments. */
+.sp-section{border-bottom:0!important}
+.template-index .sp-section-head{margin-bottom:clamp(2.5rem,4vw,4.5rem)}
+.template-index .sp-section-title,.template-index .brand-showcase__title{max-width:15ch;font-size:clamp(2.15rem,3.7vw,4.1rem)!important;line-height:.95!important;letter-spacing:-.045em!important}
+.template-index .brand-showcase__inner{padding-block:clamp(5rem,8vw,8.5rem)}
+.template-index .sp-product-grid{gap:clamp(2.8rem,5vw,5.25rem) clamp(.8rem,1.5vw,1.5rem)}
+.template-index .sp-trust{margin-block:clamp(1rem,2vw,2rem)}
+
+/* Ordinary inventory floats on a clean photographic surface. */
+.product-card{gap:.8rem!important}
+.product-card__media{background:#f5f5f3!important;border-color:transparent!important;box-shadow:none!important}
+.product-card__image{width:100%!important;height:100%!important;margin:0!important;padding:3.5%!important;object-fit:contain!important}
+.product-card__information{padding-top:.15rem}
+.product-card__quick-view{right:.7rem!important;bottom:.7rem!important;background:rgba(8,9,11,.94)!important;border:0!important}
+.product-card__trust{opacity:.76}
+.product-card__fulfillment{border-top:0!important;padding-top:.25rem!important}
+
+/* Brand shelves become composed grids on larger screens, not repeated carousels. */
+@media(min-width:990px){
+  .brand-showcase__carousel{position:static}
+  .brand-showcase__track{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(1.2rem,2.25vw,2.6rem)!important;overflow:visible!important;scroll-snap-type:none!important}
+  .brand-showcase-card{min-width:0!important;flex:none!important;text-align:left!important}
+  .brand-showcase-card__media{aspect-ratio:4/5!important;background:#f5f5f3!important}
+  .brand-showcase-card__media img,.brand-showcase-card__placeholder{inset:0!important;width:100%!important;height:100%!important;margin:0!important;padding:3.5%!important}
+  .brand-showcase-card__title{margin-inline:0!important}
+  .brand-showcase__arrow{display:none!important}
+}
+
+/* Product pages keep functional separators but lose boxed-in retail chrome. */
+.product-gallery__item,.product__pickup,.product-gallery__thumb{border-color:transparent!important;background:#f7f7f5!important}
+.product__pickup{padding:1.1rem 0!important;border-top:1px solid var(--sp-line)!important;border-bottom:1px solid var(--sp-line)!important}
+.product__status-chips span{background:transparent!important}
+.product__status-chips span:first-child{background:var(--sp-brand-black)!important}
+
+/* Archival material is deliberately allowed to use documentary rules. */
+.product--archive .product__archive-kicker,.product--archive .product__archive-panel,
+.sp-sold__media,.sp-sold__meta,.sp-drop-card__facts{border-color:var(--sp-line)!important}
+.sp-sold{border-block:1px solid var(--sp-line)!important}
+
+/* Quiet, tactile transitions rather than constant spectacle. */
+.product-card__image--primary,.brand-showcase-card__media img,.sp-feed-tile__image{transition:transform .28s cubic-bezier(.2,.7,.2,1)!important}
+@media(hover:hover) and (pointer:fine){
+  .product-card:hover .product-card__image--primary,.brand-showcase-card:hover .brand-showcase-card__media img{transform:scale(1.012)!important}
+}
+
+@media(max-width:989px) and (min-width:750px){
+  .brand-showcase__track{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:3rem 1rem!important;overflow:visible!important;scroll-snap-type:none!important}
+  .brand-showcase-card{min-width:0!important;flex:none!important;text-align:left!important}
+  .brand-showcase__arrow{display:none!important}
+}
+
+@media(max-width:749px){
+  :root{--section-spacing:4.25rem}
+  .template-index .brand-showcase__inner{padding-block:4.25rem}
+  .template-index .sp-section-head{margin-bottom:2.2rem}
+  .template-index .sp-section-title,.template-index .brand-showcase__title{font-size:clamp(2rem,9.5vw,2.9rem)!important}
+  .template-index .sp-product-grid{gap:2.4rem .65rem}
+  .brand-showcase-card{flex-basis:82%}
+  .brand-showcase-card__media{background:#f5f5f3}
+}
+
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.product-card__image,.brand-showcase-card__media img,.sp-feed-tile__image{transition:none!important}}

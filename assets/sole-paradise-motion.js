@@ -5,7 +5,6 @@
   const initialized = new WeakSet();
   const canAnimate = () => !!window.gsap;
   const hasScrollTrigger = () => !!window.ScrollTrigger;
-  const isDesktop = () => window.matchMedia('(min-width: 750px)').matches;
 
   const mark = (element) => {
     if (!element || initialized.has(element)) return false;
@@ -25,32 +24,18 @@
 
       if (media) {
         tl.fromTo(media,
-          { clipPath: 'inset(0 0 100% 0)' },
-          { clipPath: 'inset(0 0 0% 0)', duration: 1.15, ease: 'power4.inOut' }
+          { clipPath: 'inset(0 0 18% 0)' },
+          { clipPath: 'inset(0 0 0% 0)', duration: 0.7, ease: 'power3.out' }
         );
       }
       if (image) {
-        tl.fromTo(image, { scale: 1.075 }, { scale: 1, duration: 1.35, ease: 'power3.out' }, 0);
+        tl.fromTo(image, { scale: 1.025 }, { scale: 1, duration: 0.85, ease: 'power2.out' }, 0);
       }
       if (lines.length) {
-        tl.from(lines, { opacity: 0, y: 28, duration: 0.72, stagger: 0.075 }, 0.22);
+        tl.from(lines, { opacity: 0, y: 12, duration: 0.5, stagger: 0.045 }, 0.16);
       }
       if (horizon) {
-        tl.fromTo(horizon, { scaleX: 0 }, { scaleX: 1, duration: 1, ease: 'power3.inOut' }, 0.38);
-      }
-
-      if (image && hasScrollTrigger() && isDesktop()) {
-        gsap.to(image, {
-          scale: 1.045,
-          yPercent: 2.5,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: hero,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 0.8
-          }
-        });
+        tl.fromTo(horizon, { scaleX: 0 }, { scaleX: 1, duration: 0.65, ease: 'power2.out' }, 0.28);
       }
     });
   };
@@ -64,10 +49,10 @@
 
       const vars = {
         opacity: 0,
-        y: 22,
-        duration: 0.72,
-        stagger: 0.055,
-        ease: 'power3.out'
+        y: 10,
+        duration: 0.46,
+        stagger: 0.025,
+        ease: 'power2.out'
       };
 
       if (hasScrollTrigger()) {
@@ -86,34 +71,14 @@
 
       const vars = {
         opacity: 0,
-        y: 30,
-        duration: 0.82,
-        stagger: 0.065,
-        ease: 'power3.out'
+        y: 12,
+        duration: 0.5,
+        stagger: 0.03,
+        ease: 'power2.out'
       };
       if (hasScrollTrigger()) vars.scrollTrigger = { trigger: grid, start: 'top 88%', once: true };
       gsap.from(tiles, vars);
 
-      if (hasScrollTrigger() && isDesktop()) {
-        tiles.forEach((tile, index) => {
-          const image = tile.querySelector('.sp-feed-tile__image');
-          if (!image) return;
-          gsap.fromTo(image,
-            { yPercent: index % 2 === 0 ? -2.5 : 1.5, scale: 1.035 },
-            {
-              yPercent: index % 2 === 0 ? 2.5 : -1.5,
-              scale: 1.035,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: tile,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: 0.9
-              }
-            }
-          );
-        });
-      }
     });
   };
 
@@ -122,30 +87,18 @@
       if (!mark(media)) return;
       const image = media.querySelector('img');
       const vars = {
-        clipPath: 'inset(0 0 100% 0)',
-        duration: 1.05,
-        ease: 'power4.inOut'
+        clipPath: 'inset(0 0 14% 0)',
+        duration: 0.62,
+        ease: 'power3.out'
       };
       if (hasScrollTrigger()) vars.scrollTrigger = { trigger: media, start: 'top 86%', once: true };
       gsap.from(media, vars);
 
       if (image) {
-        const imageVars = { scale: 1.07, duration: 1.3, ease: 'power3.out' };
+        const imageVars = { scale: 1.02, duration: 0.72, ease: 'power2.out' };
         if (hasScrollTrigger()) imageVars.scrollTrigger = { trigger: media, start: 'top 86%', once: true };
         gsap.from(image, imageVars);
 
-        if (hasScrollTrigger() && isDesktop()) {
-          gsap.to(image, {
-            yPercent: -4,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: media,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 0.85
-            }
-          });
-        }
       }
     });
   };
@@ -157,11 +110,11 @@
       const info = section.querySelector('[data-sp-product-info]');
       const revealItems = section.querySelectorAll('[data-sp-product-reveal]');
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      if (gallery) tl.from(gallery, { opacity: 0, y: 16, duration: 0.78 });
-      if (info) tl.from(info, { opacity: 0, x: 18, duration: 0.72 }, '-=.5');
+      if (gallery) tl.from(gallery, { opacity: 0, y: 8, duration: 0.5 });
+      if (info) tl.from(info, { opacity: 0, y: 8, duration: 0.48 }, '-=.3');
       if (revealItems.length) {
         revealItems.forEach((item) => initialized.add(item));
-        tl.from(revealItems, { opacity: 0, y: 12, duration: 0.48, stagger: 0.045 }, '-=.38');
+        tl.from(revealItems, { opacity: 0, y: 7, duration: 0.38, stagger: 0.025 }, '-=.25');
       }
     });
   };
@@ -169,26 +122,9 @@
   const animateGenericReveals = (scope, gsap) => {
     scope.querySelectorAll?.('[data-sp-reveal]').forEach((element) => {
       if (!mark(element)) return;
-      const vars = { y: 20, opacity: 0, duration: 0.72, ease: 'power3.out' };
+      const vars = { y: 9, opacity: 0, duration: 0.44, ease: 'power2.out' };
       if (hasScrollTrigger()) vars.scrollTrigger = { trigger: element, start: 'top 90%', once: true };
       gsap.from(element, vars);
-    });
-  };
-
-  const animateLegacyParallax = (scope, gsap) => {
-    if (!hasScrollTrigger() || !isDesktop()) return;
-    scope.querySelectorAll?.('[data-sp-parallax]').forEach((element) => {
-      if (!mark(element)) return;
-      gsap.to(element, {
-        yPercent: -4,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: element,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 0.85
-        }
-      });
     });
   };
 
@@ -198,9 +134,9 @@
       if (!mark(element)) return;
       gsap.from(element, {
         opacity: 0,
-        y: 30 + index * 6,
-        duration: 0.8,
-        ease: 'power3.out',
+        y: 10 + index * 2,
+        duration: 0.48,
+        ease: 'power2.out',
         scrollTrigger: { trigger: element, start: 'top 90%', once: true }
       });
     });
@@ -218,7 +154,6 @@
     animateEditorialMedia(scope, gsap);
     animateSelects(scope, gsap);
     animateGenericReveals(scope, gsap);
-    animateLegacyParallax(scope, gsap);
 
     if (hasScrollTrigger()) window.ScrollTrigger.refresh();
   };
