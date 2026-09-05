@@ -17,6 +17,10 @@
           "settings": {
             "file_name": "IMG_1341.heic",
             "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050",
+            "focus_x": 50,
+            "focus_y": 55,
+            "mobile_focus_x": 50,
+            "mobile_focus_y": 60,
             "alt": "Sole Paradise campaign image 1"
           }
         },
@@ -25,6 +29,10 @@
           "settings": {
             "file_name": "IMG_6311.png",
             "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_6311.png?v=1788410399",
+            "focus_x": 50,
+            "focus_y": 55,
+            "mobile_focus_x": 50,
+            "mobile_focus_y": 60,
             "alt": "Sole Paradise campaign image 2"
           }
         },
@@ -33,6 +41,10 @@
           "settings": {
             "file_name": "IMG_0035.png",
             "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_0035.png?v=1788410392",
+            "focus_x": 50,
+            "focus_y": 55,
+            "mobile_focus_x": 50,
+            "mobile_focus_y": 60,
             "alt": "Sole Paradise campaign image 3"
           }
         },
@@ -41,6 +53,10 @@
           "settings": {
             "file_name": "IMG_5083.png",
             "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_5083.png?v=1788410393",
+            "focus_x": 50,
+            "focus_y": 55,
+            "mobile_focus_x": 50,
+            "mobile_focus_y": 60,
             "alt": "Sole Paradise campaign image 4"
           }
         },
@@ -49,6 +65,10 @@
           "settings": {
             "file_name": "IMG_5230.png",
             "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_5230.png?v=1788410389",
+            "focus_x": 50,
+            "focus_y": 55,
+            "mobile_focus_x": 50,
+            "mobile_focus_y": 60,
             "alt": "Sole Paradise campaign image 5"
           }
         },
@@ -57,6 +77,10 @@
           "settings": {
             "file_name": "IMG_7271.png",
             "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_7271.png?v=1788410383",
+            "focus_x": 50,
+            "focus_y": 55,
+            "mobile_focus_x": 50,
+            "mobile_focus_y": 60,
             "alt": "Sole Paradise campaign image 6"
           }
         },
@@ -65,6 +89,10 @@
           "settings": {
             "file_name": "IMG_6935.png",
             "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_6935.png?v=1788410381",
+            "focus_x": 50,
+            "focus_y": 55,
+            "mobile_focus_x": 50,
+            "mobile_focus_y": 60,
             "alt": "Sole Paradise campaign image 7"
           }
         }
@@ -90,8 +118,8 @@
         "copy": "Rare designer, archive and pre-owned pieces selected in Chicago.",
         "button_label": "Shop new arrivals",
         "button_link": "",
-        "index_label": "SOLE PARADISE / CHICAGO",
-        "footer_label": "WORLDWIDE SHIPPING"
+        "index_label": "",
+        "footer_label": ""
       }
     },
     "arrivals": {
