@@ -1,12 +1,14 @@
 {%- comment -%}
-  Dynamic designer directory for the main navigation drawer.
-  Shopify Product Vendor is the source of truth; no duplicate brand tags are required.
+  Dynamic designer preview for the main navigation drawer.
+  Shopify Product Vendor remains the source of truth; the full roster lives in
+  the secondary Designer Explorer panel.
 {%- endcomment -%}
 {%- if section.settings.show_designer_directory and shop.vendors.size > 0 -%}
   {%- liquid
     assign designer_exclusions_raw = section.settings.designer_exclusions | default: 'Other'
     assign designer_exclusions = designer_exclusions_raw | split: ','
     assign visible_designer_count = 0
+    assign designer_preview_limit = section.settings.designer_preview_limit | default: 6
 
     for vendor in shop.vendors
       assign vendor_is_excluded = false
@@ -28,10 +30,16 @@
     <div class="header-drawer__designers" aria-labelledby="HeaderDrawerDesigners-{{ section.id }}">
       <div class="header-drawer__shop-head header-drawer__designers-head">
         <p id="HeaderDrawerDesigners-{{ section.id }}">{{ section.settings.designer_directory_label | default: 'Shop by designer' | escape }}</p>
-        <span>{{ visible_designer_count }} {% if visible_designer_count == 1 %}label{% else %}labels{% endif %}</span>
+        <button
+          type="button"
+          class="header-drawer__view-all"
+          data-header-explorer-open="designers"
+          aria-controls="HeaderDesignerExplorer-{{ section.id }}"
+        >View all {{ visible_designer_count }}</button>
       </div>
 
-      <div class="header-drawer__designer-list" role="list">
+      <div class="header-drawer__designer-preview" role="list">
+        {%- assign preview_rendered = 0 -%}
         {%- for vendor in shop.vendors -%}
           {%- liquid
             assign vendor_is_excluded = false
@@ -48,10 +56,13 @@
           -%}
 
           {%- unless vendor_is_excluded or vendor == blank -%}
-            <a class="header-drawer__designer" href="{{ vendor_url | escape }}" role="listitem">
-              <span>{{ vendor | escape }}</span>
-              <span class="header-drawer__designer-arrow" aria-hidden="true">→</span>
-            </a>
+            {%- if preview_rendered < designer_preview_limit -%}
+              <a class="header-drawer__designer" href="{{ vendor_url | escape }}" role="listitem">
+                <span>{{ vendor | escape }}</span>
+                <span class="header-drawer__designer-arrow" aria-hidden="true">→</span>
+              </a>
+              {%- assign preview_rendered = preview_rendered | plus: 1 -%}
+            {%- endif -%}
           {%- endunless -%}
         {%- endfor -%}
       </div>
