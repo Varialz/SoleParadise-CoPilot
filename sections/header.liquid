@@ -100,10 +100,7 @@
       <div class="header-drawer__head">
         <div class="header-drawer__brand-lockup">
           <img class="header-drawer__mark" src="{{ 'sole-paradise-sp-mark.webp' | asset_url }}" alt="" width="92" height="92" loading="eager">
-          <div>
-            <span class="header-drawer__eyebrow">Sole Paradise / Chicago</span>
-            <span class="header-drawer__brand">{{ shop.name | escape }}</span>
-          </div>
+          <span class="header-drawer__brand">{{ shop.name | escape }}</span>
         </div>
         <button type="button" class="site-header__trigger header-drawer__close no-js-hidden" aria-label="{{ 'header.close_menu' | t }}" data-header-drawer-close>{%- render 'icon', name: 'close' -%}</button>
       </div>
