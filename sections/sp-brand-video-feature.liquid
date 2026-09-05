@@ -1,0 +1,75 @@
+{%- liquid
+  assign feature_url = routes.all_products_collection_url
+  if section.settings.button_link != blank
+    assign feature_url = section.settings.button_link
+  endif
+-%}
+
+<section class="sp-brand-video" data-sp-section>
+  <div class="sp-brand-video__inner page-width">
+    <div class="sp-brand-video__media" data-sp-reveal>
+      {%- if section.settings.video_url != blank -%}
+        <video
+          class="sp-brand-video__video"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          aria-label="{{ section.settings.video_label | escape }}"
+        >
+          <source src="{{ section.settings.video_url | escape }}" type="video/mp4">
+        </video>
+      {%- else -%}
+        <div class="sp-brand-video__placeholder">Add the Shopify video URL</div>
+      {%- endif -%}
+      <span class="sp-brand-video__index" aria-hidden="true">SP / FEATURE</span>
+    </div>
+
+    <div class="sp-brand-video__content" data-sp-reveal>
+      {%- if section.settings.eyebrow != blank -%}<p class="sp-brand-video__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="sp-brand-video__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
+      {%- if section.settings.copy != blank -%}<p class="sp-brand-video__copy">{{ section.settings.copy | escape }}</p>{%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <a class="sp-brand-video__button" href="{{ feature_url }}">{{ section.settings.button_label | escape }} <span aria-hidden="true">→</span></a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .sp-brand-video{background:#fff;color:var(--sp-ink,#101820)}
+  .sp-brand-video__inner{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(300px,.82fr);align-items:stretch;gap:clamp(2rem,5vw,6rem);padding-block:clamp(4.5rem,8vw,8rem)}
+  .sp-brand-video__media{position:relative;min-width:0;aspect-ratio:16/9;overflow:hidden;background:#06111f}
+  .sp-brand-video__video{display:block;width:100%;height:100%;object-fit:cover;opacity:.56;filter:saturate(.78) contrast(1.05);transition:opacity .45s ease,filter .45s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+  .sp-brand-video__media:hover .sp-brand-video__video,.sp-brand-video__media:focus-within .sp-brand-video__video{opacity:.72;filter:saturate(.92) contrast(1.03);transform:scale(1.012)}
+  .sp-brand-video__media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,10,21,.18),transparent 55%,rgba(3,10,21,.12));pointer-events:none}
+  .sp-brand-video__index{position:absolute;z-index:2;left:1rem;bottom:1rem;padding:.45rem .55rem;background:rgba(3,10,21,.74);color:#fff;font:700 .54rem/1 monospace;letter-spacing:.12em;text-transform:uppercase}
+  .sp-brand-video__placeholder{display:grid;width:100%;height:100%;place-items:center;color:rgba(255,255,255,.65);font:700 .62rem/1.4 monospace;letter-spacing:.1em;text-transform:uppercase}
+  .sp-brand-video__content{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-block:clamp(1rem,3vw,3rem);border-top:1px solid var(--sp-line,#dfe4ea);border-bottom:1px solid var(--sp-line,#dfe4ea)}
+  .sp-brand-video__eyebrow{margin:0 0 1rem;color:var(--sp-cobalt,#1769d2);font:700 .62rem/1 monospace;letter-spacing:.15em;text-transform:uppercase}
+  .sp-brand-video__heading{max-width:10ch;margin:0;font-size:clamp(2.7rem,5.4vw,6rem);line-height:.88;letter-spacing:-.06em;text-transform:uppercase}
+  .sp-brand-video__copy{max-width:29rem;margin:1.4rem 0 0;color:var(--sp-muted,#68717c);font-size:clamp(.9rem,1.2vw,1.05rem);line-height:1.6}
+  .sp-brand-video__button{display:inline-flex;align-items:center;justify-content:space-between;gap:2.5rem;min-width:min(100%,18rem);min-height:50px;margin-top:2rem;padding:.85rem 1rem;background:var(--sp-deep-sea,#061f4a);color:#fff;font-size:.66rem;font-weight:700;letter-spacing:.11em;text-decoration:none;text-transform:uppercase;transition:background-color .22s ease,color .22s ease}
+  .sp-brand-video__button span{color:var(--sp-paradise,#7eccf3);font-size:1rem;transition:transform .22s ease}
+  .sp-brand-video__button:hover,.sp-brand-video__button:focus-visible{background:var(--sp-cobalt,#1769d2)}
+  .sp-brand-video__button:hover span,.sp-brand-video__button:focus-visible span{transform:translateX(3px)}
+  @media(max-width:749px){.sp-brand-video__inner{grid-template-columns:1fr;gap:1.5rem;padding-block:4rem}.sp-brand-video__media{aspect-ratio:16/10}.sp-brand-video__content{padding-block:2rem}.sp-brand-video__heading{font-size:clamp(2.7rem,14vw,4.4rem)}.sp-brand-video__button{width:100%}}
+  @media(prefers-reduced-motion:reduce){.sp-brand-video__video,.sp-brand-video__button,.sp-brand-video__button span{transition:none}.sp-brand-video__media:hover .sp-brand-video__video,.sp-brand-video__media:focus-within .sp-brand-video__video{transform:none}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name":"SP — Brand video",
+  "settings":[
+    {"type":"text","id":"video_url","label":"Shopify MP4 URL","default":"https://cdn.shopify.com/videos/c/o/v/b85b333e726d48409123592fc340dc9a.mp4"},
+    {"type":"text","id":"video_label","label":"Accessible video label","default":"We Are Righteous collection campaign video"},
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Brand feature / In hand"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"WE ARE RIGHTEOUS\nCOLLECTION"},
+    {"type":"textarea","id":"copy","label":"Copy","default":"The latest We Are Righteous collection is available now at Sole Paradise."},
+    {"type":"text","id":"button_label","label":"Button label","default":"Shop We Are Righteous"},
+    {"type":"url","id":"button_link","label":"Button link"}
+  ],
+  "presets":[{"name":"SP — Brand video"}]
+}
+{% endschema %}

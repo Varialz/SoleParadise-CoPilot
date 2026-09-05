@@ -326,6 +326,18 @@
         "product_limit": 4
       }
     },
+    "righteous_video": {
+      "type": "sp-brand-video-feature",
+      "settings": {
+        "video_url": "https://cdn.shopify.com/videos/c/o/v/b85b333e726d48409123592fc340dc9a.mp4",
+        "video_label": "We Are Righteous collection campaign video",
+        "eyebrow": "Brand feature / In hand",
+        "heading": "WE ARE RIGHTEOUS\nCOLLECTION",
+        "copy": "The latest We Are Righteous collection is available now at Sole Paradise.",
+        "button_label": "Shop We Are Righteous",
+        "button_link": "/search?q=we+are+righteous&type=product"
+      }
+    },
     "feed": {
       "type": "sp-from-feed",
       "blocks": {
@@ -541,6 +553,7 @@
     "hero",
     "arrivals",
     "trust",
+    "righteous_video",
     "chrome_showcase",
     "feed",
     "other_showcase",
