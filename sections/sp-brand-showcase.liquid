@@ -78,6 +78,7 @@
             {% unless forloop.first %}hidden{% endunless %}
           >
             <div class="brand-showcase__carousel">
+              <p class="brand-showcase__browse-hint" data-brand-showcase-hint aria-hidden="true">Swipe or tap arrows to browse</p>
               <button type="button" class="brand-showcase__arrow brand-showcase__arrow--previous" aria-label="Previous products" data-brand-showcase-previous>←</button>
               <div class="brand-showcase__track" data-brand-showcase-track>
                 {%- if tab_collection != blank -%}

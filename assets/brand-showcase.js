@@ -1,6 +1,43 @@
 (function () {
   'use strict';
 
+  var tutorialClaimed = false;
+  var tutorialStorageKey = 'spBrowseTutorialSeenV1';
+
+  function tutorialSeen() {
+    try { return window.sessionStorage.getItem(tutorialStorageKey) === 'true'; }
+    catch (error) { return tutorialClaimed; }
+  }
+
+  function markTutorialSeen() {
+    tutorialClaimed = true;
+    try { window.sessionStorage.setItem(tutorialStorageKey, 'true'); }
+    catch (error) { /* Storage may be unavailable in privacy mode. */ }
+  }
+
+  function setupBrowseTutorial(section) {
+    var mobile = window.matchMedia('(max-width: 749px)').matches;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!mobile || reduceMotion || tutorialClaimed || tutorialSeen()) return;
+
+    var observer = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (entry) { return entry.isIntersecting; })) return;
+      observer.disconnect();
+      if (tutorialClaimed || tutorialSeen()) return;
+      markTutorialSeen();
+      section.classList.add('is-browse-tutorial');
+
+      var stop = function () {
+        section.classList.remove('is-browse-tutorial');
+      };
+      section.addEventListener('pointerdown', stop, { once: true, passive: true });
+      section.addEventListener('keydown', stop, { once: true });
+      window.setTimeout(stop, 3400);
+    }, { threshold: 0.08, rootMargin: '0px 0px -12% 0px' });
+
+    observer.observe(section);
+  }
+
   function updateArrows(panel) {
     if (!panel) return;
     var track = panel.querySelector('[data-brand-showcase-track]');
@@ -95,6 +132,7 @@
     window.requestAnimationFrame(function () {
       section.querySelectorAll('[data-brand-showcase-panel]').forEach(updateArrows);
     });
+    setupBrowseTutorial(section);
   }
 
   window.theme = window.theme || {};
