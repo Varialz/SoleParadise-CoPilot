@@ -1,0 +1,59 @@
+{%- comment -%}
+  Dynamic designer directory for the main navigation drawer.
+  Shopify Product Vendor is the source of truth; no duplicate brand tags are required.
+{%- endcomment -%}
+{%- if section.settings.show_designer_directory and shop.vendors.size > 0 -%}
+  {%- liquid
+    assign designer_exclusions_raw = section.settings.designer_exclusions | default: 'Other'
+    assign designer_exclusions = designer_exclusions_raw | split: ','
+    assign visible_designer_count = 0
+
+    for vendor in shop.vendors
+      assign vendor_is_excluded = false
+      assign vendor_handle = vendor | handleize
+      for excluded_vendor in designer_exclusions
+        assign excluded_vendor_handle = excluded_vendor | strip | handleize
+        if excluded_vendor_handle != blank and excluded_vendor_handle == vendor_handle
+          assign vendor_is_excluded = true
+          break
+        endif
+      endfor
+      unless vendor_is_excluded or vendor == blank
+        assign visible_designer_count = visible_designer_count | plus: 1
+      endunless
+    endfor
+  -%}
+
+  {%- if visible_designer_count > 0 -%}
+    <div class="header-drawer__designers" aria-labelledby="HeaderDrawerDesigners-{{ section.id }}">
+      <div class="header-drawer__shop-head header-drawer__designers-head">
+        <p id="HeaderDrawerDesigners-{{ section.id }}">{{ section.settings.designer_directory_label | default: 'Shop by designer' | escape }}</p>
+        <span>{{ visible_designer_count }} {% if visible_designer_count == 1 %}label{% else %}labels{% endif %}</span>
+      </div>
+
+      <div class="header-drawer__designer-list" role="list">
+        {%- for vendor in shop.vendors -%}
+          {%- liquid
+            assign vendor_is_excluded = false
+            assign vendor_handle = vendor | handleize
+            for excluded_vendor in designer_exclusions
+              assign excluded_vendor_handle = excluded_vendor | strip | handleize
+              if excluded_vendor_handle != blank and excluded_vendor_handle == vendor_handle
+                assign vendor_is_excluded = true
+                break
+              endif
+            endfor
+            assign vendor_url = '/collections/vendors?q=' | append: vendor | url_encode | append: '&sort_by=created-descending'
+          -%}
+
+          {%- unless vendor_is_excluded or vendor == blank -%}
+            <a class="header-drawer__designer" href="{{ vendor_url | escape }}" role="listitem">
+              <span>{{ vendor | escape }}</span>
+              <span class="header-drawer__designer-arrow" aria-hidden="true">→</span>
+            </a>
+          {%- endunless -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+{%- endif -%}
