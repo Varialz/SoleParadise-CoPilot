@@ -19,7 +19,7 @@
             "mobile_image": "shopify://shop_images/IMG_1341.heic",
             "file_name": "IMG_1341.heic",
             "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050",
-            "eyebrow": "New at Sole Paradise",
+            "eyebrow": "",
             "heading": "Welcome to Sole Paradise",
             "copy": "Curated designer and streetwear arrivals, available now in Chicago.",
             "button_label": "Shop new arrivals",
@@ -152,7 +152,7 @@
         "autoplay_speed": 6,
         "transition_speed": 700,
         "show_controls": true,
-        "eyebrow": "Curated designer pieces · Updated regularly",
+        "eyebrow": "",
         "heading": "Welcome to Sole Paradise",
         "copy": "",
         "button_label": "Shop new arrivals",
@@ -506,6 +506,7 @@
     },
     "passport_demo": {
       "type": "sp-paradise-passport",
+      "disabled": true,
       "settings": {
         "eyebrow": "MEMBERSHIP / REWARDS CONCEPT",
         "heading": "PARADISE PASSPORT",
@@ -514,6 +515,7 @@
     },
     "paradise_drop_demo": {
       "type": "sp-paradise-drop",
+      "disabled": true,
       "settings": {
         "drop_number": "003",
         "eyebrow": "LIMITED RELEASE / IN-HAND",
@@ -536,6 +538,7 @@
     },
     "archive": {
       "type": "sp-sold-archive",
+      "disabled": true,
       "settings": {
         "eyebrow": "Paradise Archive",
         "heading": "GONE, NOT\nFORGOTTEN.",
