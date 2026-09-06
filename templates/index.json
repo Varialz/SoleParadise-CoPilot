@@ -215,7 +215,7 @@
         "eyebrow": "",
         "heading": "New arrivals",
         "vendor": "",
-        "product_limit": 4
+        "product_limit": 7
       }
     },
     "trust": {
@@ -257,6 +257,18 @@
         "inventory"
       ],
       "settings": {}
+    },
+    "righteous_video": {
+      "type": "sp-brand-video-feature",
+      "settings": {
+        "video_url": "https://cdn.shopify.com/videos/c/o/v/b85b333e726d48409123592fc340dc9a.mp4",
+        "video_label": "We Are Righteous collection campaign video",
+        "eyebrow": "Brand feature / In hand",
+        "heading": "WE ARE RIGHTEOUS\nCOLLECTION",
+        "copy": "The latest We Are Righteous collection is available now at Sole Paradise.",
+        "button_label": "Shop We Are Righteous",
+        "button_link": "/search?q=we+are+righteous&type=product"
+      }
     },
     "chrome_showcase": {
       "type": "sp-brand-showcase",
@@ -323,19 +335,7 @@
         "eyebrow": "",
         "heading": "Chrome Hearts",
         "vendor": "Chrome Hearts",
-        "product_limit": 4
-      }
-    },
-    "righteous_video": {
-      "type": "sp-brand-video-feature",
-      "settings": {
-        "video_url": "https://cdn.shopify.com/videos/c/o/v/b85b333e726d48409123592fc340dc9a.mp4",
-        "video_label": "We Are Righteous collection campaign video",
-        "eyebrow": "Brand feature / In hand",
-        "heading": "WE ARE RIGHTEOUS\nCOLLECTION",
-        "copy": "The latest We Are Righteous collection is available now at Sole Paradise.",
-        "button_label": "Shop We Are Righteous",
-        "button_link": "/search?q=we+are+righteous&type=product"
+        "product_limit": 7
       }
     },
     "feed": {
@@ -506,7 +506,6 @@
     },
     "passport_demo": {
       "type": "sp-paradise-passport",
-      "disabled": true,
       "settings": {
         "eyebrow": "MEMBERSHIP / REWARDS CONCEPT",
         "heading": "PARADISE PASSPORT",
@@ -515,7 +514,6 @@
     },
     "paradise_drop_demo": {
       "type": "sp-paradise-drop",
-      "disabled": true,
       "settings": {
         "drop_number": "003",
         "eyebrow": "LIMITED RELEASE / IN-HAND",
@@ -538,7 +536,6 @@
     },
     "archive": {
       "type": "sp-sold-archive",
-      "disabled": true,
       "settings": {
         "eyebrow": "Paradise Archive",
         "heading": "GONE, NOT\nFORGOTTEN.",
