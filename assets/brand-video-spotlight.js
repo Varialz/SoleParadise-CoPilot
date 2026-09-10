@@ -6,8 +6,11 @@
 
   function setSpotlightPosition(section, progress) {
     var clampedProgress = Math.max(0, Math.min(1, progress));
-    var position = 24 + (clampedProgress * 52);
-    section.style.setProperty('--sp-spotlight-x', position.toFixed(2) + '%');
+    var isMobile = window.matchMedia('(max-width: 749px)').matches;
+    var positionX = isMobile ? 50 : 38 + (clampedProgress * 30);
+    var positionY = isMobile ? 34 + (clampedProgress * 18) : 36 + (clampedProgress * 22);
+    section.style.setProperty('--sp-spotlight-x', positionX.toFixed(2) + '%');
+    section.style.setProperty('--sp-spotlight-y', positionY.toFixed(2) + '%');
   }
 
   function setActive(section, active) {
@@ -45,7 +48,7 @@
   function initSpotlight(section) {
     if (!section || section.dataset.brandSpotlightInitialized === 'true') return;
     section.dataset.brandSpotlightInitialized = 'true';
-    setSpotlightPosition(section, 0);
+    setSpotlightPosition(section, 0.5);
 
     if (reduceMotion) return;
     if (window.gsap && window.ScrollTrigger) {

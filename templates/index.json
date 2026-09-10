@@ -260,34 +260,6 @@
     },
     "righteous_video": {
       "type": "sp-brand-video-feature",
-      "blocks": {
-        "focus": {
-          "type": "detail",
-          "settings": {
-            "label": "Focus",
-            "value": "Graphic tees"
-          }
-        },
-        "status": {
-          "type": "detail",
-          "settings": {
-            "label": "Status",
-            "value": "Available now"
-          }
-        },
-        "access": {
-          "type": "detail",
-          "settings": {
-            "label": "Access",
-            "value": "Online + Chicago"
-          }
-        }
-      },
-      "block_order": [
-        "focus",
-        "status",
-        "access"
-      ],
       "settings": {
         "video_url": "https://cdn.shopify.com/videos/c/o/v/b85b333e726d48409123592fc340dc9a.mp4",
         "video_label": "We Are Righteous collection campaign video",
