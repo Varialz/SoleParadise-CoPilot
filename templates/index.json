@@ -12,25 +12,6 @@
     "hero": {
       "type": "sp-hero",
       "blocks": {
-        "slide_1341": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/IMG_1341.heic",
-            "mobile_image": "shopify://shop_images/IMG_1341.heic",
-            "file_name": "IMG_1341.heic",
-            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050",
-            "eyebrow": "",
-            "heading": "Welcome to Sole Paradise",
-            "copy": "Curated designer and streetwear arrivals, available now in Chicago.",
-            "button_label": "Shop new arrivals",
-            "button_link": "/collections/all?sort_by=created-descending",
-            "focus_x": 50,
-            "focus_y": 55,
-            "mobile_focus_x": 50,
-            "mobile_focus_y": 60,
-            "alt": "Sole Paradise campaign image 1"
-          }
-        },
         "slide_6311": {
           "type": "slide",
           "settings": {
@@ -135,7 +116,6 @@
         }
       },
       "block_order": [
-        "slide_1341",
         "slide_6311",
         "slide_5083",
         "slide_0035",
@@ -144,10 +124,10 @@
         "slide_7271"
       ],
       "settings": {
-        "default_file_name": "IMG_1341.heic",
-        "default_image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050",
-        "image": "shopify://shop_images/IMG_1341.heic",
-        "mobile_image": "shopify://shop_images/IMG_1341.heic",
+        "default_file_name": "IMG_6311.png",
+        "default_image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_6311.png?v=1788410399",
+        "image": "shopify://shop_images/IMG_6311.png",
+        "mobile_image": "shopify://shop_images/IMG_6311.png",
         "autoplay": true,
         "autoplay_speed": 6,
         "transition_speed": 700,
@@ -537,6 +517,27 @@
         "primary_label": "Connect with Paradise"
       }
     },
+    "store_visit": {
+      "type": "sp-store-visit",
+      "settings": {
+        "image": "shopify://shop_images/IMG_1341.heic",
+        "mobile_image": "shopify://shop_images/IMG_1341.heic",
+        "file_name": "IMG_1341.heic",
+        "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050",
+        "image_alt": "Sole Paradise in Chicago",
+        "focus_x": 50,
+        "focus_y": 80,
+        "mobile_focus_x": 50,
+        "mobile_focus_y": 70,
+        "eyebrow": "SOLE PARADISE / CHICAGO",
+        "heading": "VISIT SOLE\nPARADISE.",
+        "copy": "Shop the latest rotation in person. Reserve a time to browse authenticated designer and streetwear at the Chicago store.",
+        "button_label": "Reserve a visit",
+        "button_link": "https://waitwhile.com/locations/soleparadise",
+        "secondary_label": "Shop online",
+        "secondary_link": "/collections/all"
+      }
+    },
     "archive": {
       "type": "sp-sold-archive",
       "disabled": true,
@@ -561,6 +562,7 @@
     "passport_demo",
     "paradise_drop_demo",
     "flyer",
+    "store_visit",
     "archive"
   ]
 }

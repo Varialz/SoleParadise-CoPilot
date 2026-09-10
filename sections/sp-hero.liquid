@@ -51,15 +51,6 @@
         assign slide_button_label = block_settings.button_label | default: section.settings.button_label
         assign slide_button_url = block_settings.button_link | default: default_hero_url
 
-        if file_name == 'IMG_1341.heic'
-          if focus_y == 55
-            assign focus_y = 80
-          endif
-          if mobile_focus_y == 60
-            assign mobile_focus_y = 70
-          endif
-        endif
-
         if slide_image == blank and file_name != blank
           assign file_image = images[file_name]
         endif
@@ -135,14 +126,14 @@
     {%- endfor -%}
 
     {%- if rendered_slides == 0 and default_file_image != blank -%}
-      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false" style="--hero-focus-x:50%;--hero-focus-y:80%;--hero-mobile-focus-x:50%;--hero-mobile-focus-y:70%">
+      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false" style="--hero-focus-x:50%;--hero-focus-y:55%;--hero-mobile-focus-x:50%;--hero-mobile-focus-y:60%">
         <picture>
           {{ default_file_image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750,1000,1400,1800,2200,2400', class: 'sp-hero__image', alt: 'Sole Paradise campaign image' }}
         </picture>
       </div>
       {%- assign rendered_slides = 1 -%}
     {%- elsif rendered_slides == 0 and default_image_url != blank -%}
-      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false" style="--hero-focus-x:50%;--hero-focus-y:80%;--hero-mobile-focus-x:50%;--hero-mobile-focus-y:70%">
+      <div class="sp-hero__slide is-active" data-hero-slide data-slide-index="0" aria-hidden="false" style="--hero-focus-x:50%;--hero-focus-y:55%;--hero-mobile-focus-x:50%;--hero-mobile-focus-y:60%">
         <picture>
           <img
             class="sp-hero__image"
@@ -208,8 +199,8 @@
 {
   "name":"SP — Hero",
   "settings":[
-    {"type":"text","id":"default_file_name","label":"Default Shopify Files image","default":"IMG_1341.heic","info":"Fallback only when no campaign slide blocks have usable images."},
-    {"type":"text","id":"default_image_url","label":"Default image URL fallback","default":"https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_1341.heic?v=1788568050"},
+    {"type":"text","id":"default_file_name","label":"Default Shopify Files image","default":"IMG_6311.png","info":"Fallback only when no campaign slide blocks have usable images."},
+    {"type":"text","id":"default_image_url","label":"Default image URL fallback","default":"https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_6311.png?v=1788410399"},
     {"type":"image_picker","id":"image","label":"Fallback campaign image","info":"Used only when no slideshow/default image can resolve."},
     {"type":"image_picker","id":"mobile_image","label":"Fallback mobile image","info":"Optional portrait crop for the fallback image."},
     {"type":"checkbox","id":"autoplay","label":"Autoplay slideshow","default":true},

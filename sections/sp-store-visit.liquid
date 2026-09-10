@@ -1,0 +1,123 @@
+{%- liquid
+  assign visit_image = section.settings.image
+  assign mobile_image = section.settings.mobile_image
+  assign file_name = section.settings.file_name | strip
+  assign file_image = blank
+  assign image_url = section.settings.image_url | strip
+
+  if visit_image == blank and file_name != blank
+    assign file_image = images[file_name]
+  endif
+
+  assign primary_url = section.settings.button_link
+  if primary_url == blank
+    assign primary_url = routes.all_products_collection_url
+  endif
+
+  assign secondary_url = section.settings.secondary_link
+  if secondary_url == blank
+    assign secondary_url = routes.all_products_collection_url
+  endif
+-%}
+
+<section
+  class="sp-store-visit"
+  id="StoreVisit-{{ section.id }}"
+  data-sp-section
+  aria-labelledby="StoreVisitTitle-{{ section.id }}"
+  style="--sp-visit-focus-x:{{ section.settings.focus_x }}%;--sp-visit-focus-y:{{ section.settings.focus_y }}%;--sp-visit-mobile-focus-x:{{ section.settings.mobile_focus_x }}%;--sp-visit-mobile-focus-y:{{ section.settings.mobile_focus_y }}%"
+>
+  <div class="sp-store-visit__inner page-width">
+    <div class="sp-store-visit__media" data-sp-reveal>
+      {%- if visit_image != blank -%}
+        <picture>
+          {%- if mobile_image != blank -%}
+            <source
+              media="(max-width: 749px)"
+              srcset="{{ mobile_image | image_url: width: 750 }} 750w, {{ mobile_image | image_url: width: 1000 }} 1000w"
+              sizes="100vw"
+            >
+          {%- endif -%}
+          {{ visit_image | image_url: width: 2200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 58vw, 100vw', widths: '750,1000,1400,1800,2200', class: 'sp-store-visit__image', alt: section.settings.image_alt }}
+        </picture>
+      {%- elsif image_url != blank -%}
+        <img
+          class="sp-store-visit__image"
+          src="{{ image_url | escape }}"
+          alt="{{ section.settings.image_alt | escape }}"
+          loading="lazy"
+          width="2200"
+          height="1500"
+        >
+      {%- elsif file_image != blank -%}
+        {{ file_image | image_url: width: 2200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 58vw, 100vw', widths: '750,1000,1400,1800,2200', class: 'sp-store-visit__image', alt: section.settings.image_alt }}
+      {%- else -%}
+        <div class="sp-store-visit__placeholder" aria-hidden="true"><span>SOLE PARADISE</span></div>
+      {%- endif -%}
+    </div>
+
+    <div class="sp-store-visit__content" data-sp-reveal>
+      {%- if section.settings.eyebrow != blank -%}<p class="sp-store-visit__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="sp-store-visit__heading" id="StoreVisitTitle-{{ section.id }}">{{ section.settings.heading | escape | newline_to_br }}</h2>
+      {%- if section.settings.copy != blank -%}<p class="sp-store-visit__copy">{{ section.settings.copy | escape }}</p>{%- endif -%}
+      <div class="sp-store-visit__actions">
+        {%- if section.settings.button_label != blank -%}
+          <a class="sp-store-visit__button" href="{{ primary_url | escape }}">{{ section.settings.button_label | escape }} <span aria-hidden="true">↗</span></a>
+        {%- endif -%}
+        {%- if section.settings.secondary_label != blank -%}
+          <a class="sp-store-visit__secondary" href="{{ secondary_url | escape }}">{{ section.settings.secondary_label | escape }} <span aria-hidden="true">→</span></a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .sp-store-visit{background:#fff;color:var(--sp-ink,#101820)}
+  .sp-store-visit__inner{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);align-items:stretch;gap:clamp(2.5rem,6vw,7rem);padding-block:clamp(4.5rem,8vw,8rem);border-top:1px solid var(--sp-line,#dfe4ea)}
+  .sp-store-visit__media{position:relative;min-width:0;min-height:clamp(28rem,46vw,42rem);overflow:hidden;background:#eef2f5}
+  .sp-store-visit__media picture{display:block;width:100%;height:100%}
+  .sp-store-visit__image{display:block;width:100%;height:100%;object-fit:cover;object-position:var(--sp-visit-focus-x) var(--sp-visit-focus-y);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+  .sp-store-visit__media:hover .sp-store-visit__image{transform:scale(1.012)}
+  .sp-store-visit__placeholder{display:grid;width:100%;height:100%;place-items:center;background:linear-gradient(145deg,#eef4f8,#d9e4ec);color:var(--sp-deep-sea,#061f4a)}
+  .sp-store-visit__placeholder span{font-size:clamp(2rem,6vw,5rem);font-weight:700;letter-spacing:-.05em}
+  .sp-store-visit__content{display:flex;min-width:0;flex-direction:column;justify-content:center;align-items:flex-start;padding-block:clamp(2rem,5vw,5rem)}
+  .sp-store-visit__eyebrow{margin:0 0 1.25rem;color:var(--sp-cobalt,#1769d2);font:700 .62rem/1 monospace;letter-spacing:.15em;text-transform:uppercase}
+  .sp-store-visit__heading{max-width:9ch;margin:0;font-size:clamp(3.2rem,5.7vw,6.4rem);line-height:.88;letter-spacing:-.065em;text-transform:uppercase}
+  .sp-store-visit__copy{max-width:31rem;margin:1.6rem 0 0;color:var(--sp-muted,#68717c);font-size:clamp(.92rem,1.2vw,1.06rem);line-height:1.65}
+  .sp-store-visit__actions{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 1.5rem;margin-top:2.2rem}
+  .sp-store-visit__button{display:inline-flex;align-items:center;justify-content:space-between;gap:2.75rem;min-width:min(100%,18rem);min-height:52px;padding:.9rem 1rem;background:var(--sp-deep-sea,#061f4a);color:#fff;font-size:.66rem;font-weight:700;letter-spacing:.11em;text-decoration:none;text-transform:uppercase;transition:background-color .22s ease}
+  .sp-store-visit__button:hover,.sp-store-visit__button:focus-visible{background:var(--sp-cobalt,#1769d2)}
+  .sp-store-visit__secondary{display:inline-flex;align-items:center;gap:.7rem;padding:.55rem 0;border-bottom:1px solid var(--sp-line,#dfe4ea);color:inherit;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-decoration:none;text-transform:uppercase;transition:border-color .22s ease,color .22s ease}
+  .sp-store-visit__secondary:hover,.sp-store-visit__secondary:focus-visible{border-color:var(--sp-cobalt,#1769d2);color:var(--sp-cobalt,#1769d2)}
+  @media(max-width:749px){.sp-store-visit__inner{grid-template-columns:1fr;gap:2rem;padding-block:4rem}.sp-store-visit__media{min-height:0;aspect-ratio:4/5}.sp-store-visit__image{object-position:var(--sp-visit-mobile-focus-x) var(--sp-visit-mobile-focus-y)}.sp-store-visit__content{padding-block:0}.sp-store-visit__heading{font-size:clamp(3rem,15vw,4.8rem)}.sp-store-visit__actions,.sp-store-visit__button{width:100%}.sp-store-visit__secondary{width:auto}}
+  @media(prefers-reduced-motion:reduce){.sp-store-visit__image,.sp-store-visit__button,.sp-store-visit__secondary{transition:none}.sp-store-visit__media:hover .sp-store-visit__image{transform:none}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name":"SP — Store visit",
+  "settings":[
+    {"type":"header","content":"Store image"},
+    {"type":"image_picker","id":"image","label":"Image"},
+    {"type":"image_picker","id":"mobile_image","label":"Mobile image","info":"Optional phone-specific crop."},
+    {"type":"text","id":"file_name","label":"Shopify Files filename","info":"Use the exact filename from Content → Files when no image is selected."},
+    {"type":"text","id":"image_url","label":"Fallback CDN URL"},
+    {"type":"text","id":"image_alt","label":"Alt text","default":"Sole Paradise in Chicago"},
+    {"type":"range","id":"focus_x","label":"Desktop focal point — horizontal","min":0,"max":100,"step":5,"unit":"%","default":50},
+    {"type":"range","id":"focus_y","label":"Desktop focal point — vertical","min":0,"max":100,"step":5,"unit":"%","default":60},
+    {"type":"range","id":"mobile_focus_x","label":"Mobile focal point — horizontal","min":0,"max":100,"step":5,"unit":"%","default":50},
+    {"type":"range","id":"mobile_focus_y","label":"Mobile focal point — vertical","min":0,"max":100,"step":5,"unit":"%","default":60},
+    {"type":"header","content":"Visit message"},
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"SOLE PARADISE / CHICAGO"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"VISIT SOLE\nPARADISE."},
+    {"type":"textarea","id":"copy","label":"Supporting text","default":"Shop the latest rotation in person. Reserve a time to browse authenticated designer and streetwear at the Chicago store."},
+    {"type":"text","id":"button_label","label":"Primary button label","default":"Reserve a visit"},
+    {"type":"url","id":"button_link","label":"Primary button link"},
+    {"type":"text","id":"secondary_label","label":"Secondary link label","default":"Shop online"},
+    {"type":"url","id":"secondary_link","label":"Secondary link"}
+  ],
+  "presets":[{"name":"SP — Store visit"}],
+  "enabled_on":{"templates":["index"]}
+}
+{% endschema %}
