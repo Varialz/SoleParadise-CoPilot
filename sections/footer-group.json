@@ -14,16 +14,45 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "menu": {"type":"menu","settings":{"heading":"Explore","menu":"footer"}},
-        "visit": {"type":"visit","settings":{"heading":"Chicago","text":"<p>Planning an in-store visit? Reserve a time with Sole Paradise through Waitwhile.</p>","cta_label":"Reserve a visit","cta_url":"https://waitwhile.com/locations/soleparadise"}},
-        "newsletter": {"type":"newsletter","settings":{"heading":"Paradise dispatch"}},
-        "social": {"type":"social","settings":{"heading":"Follow us"}}
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "heading": "Explore",
+            "menu": "footer"
+          }
+        },
+        "visit": {
+          "type": "visit",
+          "settings": {
+            "heading": "Chicago",
+            "text": "<p>Planning an in-store visit? Reserve a time with Sole Paradise through Waitwhile.</p>",
+            "cta_label": "Reserve a visit",
+            "cta_url": "https://waitwhile.com/locations/soleparadise"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Paradise dispatch"
+          }
+        },
+        "social": {
+          "type": "social",
+          "settings": {
+            "heading": "Follow us"
+          }
+        }
       },
-      "block_order": ["menu","visit","newsletter","social"],
-      "settings": {
-        "reseller_disclaimer": "Sole Paradise is an independent third-party reseller and is not affiliated with, endorsed by, or sponsored by Louis Vuitton or any other brand featured on this site. All trademarks and brand names are the property of their respective owners."
-      }
+      "block_order": [
+        "menu",
+        "visit",
+        "newsletter",
+        "social"
+      ],
+      "settings": {}
     }
   },
-  "order": ["footer"]
+  "order": [
+    "footer"
+  ]
 }
