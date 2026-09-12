@@ -242,11 +242,23 @@
       "type": "sp-brand-video-feature",
       "settings": {
         "video_url": "https://cdn.shopify.com/videos/c/o/v/b85b333e726d48409123592fc340dc9a.mp4",
+        "video_autoplay": true,
         "video_label": "We Are Righteous collection campaign video",
+        "file_name": "",
+        "image_url": "",
+        "image_alt": "Featured brand campaign",
+        "media_label": "SP / FEATURE",
+        "media_position": "left",
+        "media_fit": "cover",
+        "focus_x": 50,
+        "focus_y": 50,
+        "mobile_focus_x": 50,
+        "mobile_focus_y": 50,
         "eyebrow": "Currently spotlighting / In hand",
         "heading": "WE ARE RIGHTEOUS\nCOLLECTION",
         "copy": "Graphic-led streetwear built around bold type, expressive color and statement pieces. Explore the newest We Are Righteous arrivals selected for the Sole Paradise rotation.",
         "enable_spotlight": true,
+        "collection": "",
         "button_label": "Shop We Are Righteous",
         "button_link": "/search?q=we+are+righteous&type=product"
       }
@@ -485,6 +497,32 @@
         "product_limit": 8
       }
     },
+    "sp_brand_video_feature_edRBTm": {
+      "type": "sp-brand-video-feature",
+      "name": "SP — Louis Vuitton",
+      "settings": {
+        "video_url": "https://cdn.shopify.com/videos/c/o/v/b85b333e726d48409123592fc340dc9a.mp4",
+        "video_autoplay": true,
+        "video_label": "We Are Righteous collection campaign video",
+        "file_name": "",
+        "image_url": "",
+        "image_alt": "Featured brand campaign",
+        "media_label": "SP / FEATURE",
+        "media_position": "left",
+        "media_fit": "cover",
+        "focus_x": 50,
+        "focus_y": 50,
+        "mobile_focus_x": 50,
+        "mobile_focus_y": 50,
+        "eyebrow": "Currently spotlighting / In hand",
+        "heading": "WE ARE RIGHTEOUS\nCOLLECTION",
+        "copy": "Graphic-led streetwear built around bold type, expressive color and statement pieces. Explore the newest We Are Righteous arrivals selected for the Sole Paradise rotation.",
+        "enable_spotlight": true,
+        "collection": "",
+        "button_label": "Shop We Are Righteous",
+        "button_link": "/search?q=we+are+righteous&type=product"
+      }
+    },
     "passport_demo": {
       "type": "sp-paradise-passport",
       "disabled": true,
@@ -559,6 +597,7 @@
     "chrome_showcase",
     "feed",
     "other_showcase",
+    "sp_brand_video_feature_edRBTm",
     "passport_demo",
     "paradise_drop_demo",
     "flyer",
