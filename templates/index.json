@@ -514,6 +514,8 @@
         "focus_y": 50,
         "mobile_focus_x": 50,
         "mobile_focus_y": 50,
+        "show_product_stage": true,
+        "product_limit": 5,
         "eyebrow": "",
         "heading": "LOUIS\nVUITTON",
         "copy": "Explore authenticated, pre-owned Louis Vuitton pieces selected for the current Sole Paradise rotation.",

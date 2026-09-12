@@ -12,6 +12,13 @@
   assign file_name = section.settings.file_name | strip
   assign file_image = blank
   assign image_url = section.settings.image_url | strip
+  assign showcase_collection = section.settings.collection
+  assign use_product_stage = false
+  assign product_stage_count = 0
+  if section.settings.show_product_stage and showcase_collection != blank and showcase_collection.products_count > 0
+    assign use_product_stage = true
+    assign product_stage_count = showcase_collection.products_count | at_most: section.settings.product_limit
+  endif
   if campaign_image == blank and file_name != blank
     assign file_image = images[file_name]
   endif
@@ -32,8 +39,54 @@
   {%- endif -%}
 
   <div class="sp-brand-video__inner page-width">
-    <div class="sp-brand-video__media" data-sp-reveal>
-      {%- if section.settings.video_url != blank -%}
+    <div class="sp-brand-video__media{% if use_product_stage %} sp-brand-video__media--product-stage{% endif %}" data-sp-reveal>
+      {%- if use_product_stage -%}
+        <div class="sp-brand-stage" data-brand-product-stage>
+          <span class="sp-brand-stage__watermark" aria-hidden="true">{{ showcase_collection.title | escape }}</span>
+          <div
+            class="sp-brand-stage__viewport"
+            data-brand-stage-viewport
+            role="region"
+            aria-label="Browse {{ showcase_collection.title | escape }} products"
+            tabindex="0"
+          >
+            <div class="sp-brand-stage__track">
+              {%- for product in showcase_collection.products limit: section.settings.product_limit -%}
+                {%- assign product_image_alt = product.featured_image.alt | default: product.title -%}
+                <a
+                  class="sp-brand-stage__card{% if forloop.first %} is-active{% endif %}"
+                  href="{{ product.url | escape }}"
+                  data-brand-stage-card
+                  data-brand-stage-index="{{ forloop.index0 }}"
+                  draggable="false"
+                >
+                  <span class="sp-brand-stage__asset">
+                    {%- if product.featured_image -%}
+                      {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360,560,760,960,1200', sizes: '(max-width: 749px) 72vw, 448px', alt: product_image_alt, draggable: 'false' }}
+                    {%- else -%}
+                      <span class="sp-brand-stage__asset-fallback">{{ showcase_collection.title | escape }}</span>
+                    {%- endif -%}
+                  </span>
+                  <span class="sp-brand-stage__card-copy">
+                    <span class="sp-brand-stage__card-status">{% if product.available %}In hand{% else %}Sold{% endif %}</span>
+                    <strong>{{ product.title | escape }}</strong>
+                    <span class="sp-brand-stage__price">{% if product.price_varies %}From {% endif %}{{ product.price | money }}</span>
+                  </span>
+                </a>
+              {%- endfor -%}
+            </div>
+          </div>
+
+          <div class="sp-brand-stage__controls">
+            <span class="sp-brand-stage__hint">Drag / swipe</span>
+            <div class="sp-brand-stage__navigation">
+              <button type="button" data-brand-stage-previous aria-label="Previous product" disabled>←</button>
+              <span data-brand-stage-counter aria-live="polite">01 / {{ product_stage_count | prepend: '0' | slice: -2, 2 }}</span>
+              <button type="button" data-brand-stage-next aria-label="Next product">→</button>
+            </div>
+          </div>
+        </div>
+      {%- elsif section.settings.video_url != blank -%}
         <video
           class="sp-brand-video__video"
           {% if section.settings.video_autoplay %}autoplay muted loop{% else %}controls{% endif %}
@@ -90,6 +143,35 @@
   .sp-brand-video__video,.sp-brand-video__image{display:block;width:100%;height:100%;object-fit:var(--sp-brand-media-fit,cover);object-position:var(--sp-brand-focus-x) var(--sp-brand-focus-y);opacity:.56;filter:saturate(.78) contrast(1.05);transition:opacity .55s ease,filter .55s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
   .sp-brand-video__media:hover .sp-brand-video__video,.sp-brand-video__media:focus-within .sp-brand-video__video,.sp-brand-video__media:hover .sp-brand-video__image,.sp-brand-video__media:focus-within .sp-brand-video__image{opacity:.72;filter:saturate(.92) contrast(1.03);transform:scale(1.012)}
   .sp-brand-video__media::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 58% 48%,rgba(224,244,255,.08),transparent 42%),linear-gradient(90deg,rgba(3,10,21,.18),transparent 55%,rgba(3,10,21,.12));pointer-events:none}
+  .sp-brand-video__media--product-stage::after{z-index:0;background:linear-gradient(180deg,rgba(3,10,21,.03),rgba(3,10,21,.24))}
+  .sp-brand-stage{position:absolute;z-index:1;inset:0;overflow:hidden;background:radial-gradient(circle at 50% 43%,rgba(126,204,243,.18),rgba(18,58,101,.08) 31%,transparent 62%),#041226;isolation:isolate}
+  .sp-brand-stage::before{content:"";position:absolute;z-index:0;inset:-18%;background:radial-gradient(circle at 50% 47%,rgba(235,248,255,.2),rgba(126,204,243,.08) 28%,transparent 62%);filter:blur(18px);opacity:.48;transform:scale(.86);transition:opacity .7s ease,transform .9s cubic-bezier(.22,1,.36,1)}
+  .sp-brand-stage__watermark{position:absolute;z-index:0;top:1.2rem;left:0;width:100%;overflow:hidden;color:rgba(255,255,255,.045);font-size:clamp(3.2rem,7vw,7rem);font-weight:700;line-height:.78;letter-spacing:-.065em;text-align:center;text-transform:uppercase;white-space:nowrap;pointer-events:none}
+  .sp-brand-stage__viewport{position:relative;z-index:2;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;perspective:1100px;touch-action:pan-x pan-y}
+  .sp-brand-stage__viewport::-webkit-scrollbar{display:none}
+  .sp-brand-stage__viewport:focus-visible{outline:1px solid var(--sp-paradise,#7eccf3);outline-offset:-2px}
+  .sp-brand-stage.is-dragging .sp-brand-stage__viewport{cursor:grabbing;scroll-snap-type:none}
+  .sp-brand-stage__track{display:flex;align-items:stretch;gap:clamp(.8rem,1.5vw,1.25rem);width:max-content;min-width:100%;height:100%;padding:2.75rem 18% 4.35rem;box-sizing:border-box;transform-style:preserve-3d}
+  .sp-brand-stage__card{--sp-stage-y:0px;--sp-stage-z:-42px;--sp-stage-rotate:0deg;--sp-stage-scale:.9;--sp-stage-opacity:.52;position:relative;display:flex;flex:0 0 min(72vw,28rem);height:100%;min-width:0;overflow:hidden;flex-direction:column;background:rgba(6,17,31,.88);border:1px solid rgba(255,255,255,.1);color:#fff;text-decoration:none;opacity:var(--sp-stage-opacity);transform:translate3d(0,var(--sp-stage-y),var(--sp-stage-z)) rotateY(var(--sp-stage-rotate)) scale(var(--sp-stage-scale));transform-origin:center;transform-style:preserve-3d;backface-visibility:hidden;box-shadow:0 18px 46px rgba(0,0,0,.24);transition:transform .22s cubic-bezier(.2,.7,.2,1),opacity .22s ease,border-color .22s ease,box-shadow .3s ease;will-change:transform,opacity;scroll-snap-align:center;scroll-snap-stop:always;user-select:none}
+  .sp-brand-stage__card.is-active{border-color:rgba(190,231,253,.5);box-shadow:0 24px 58px rgba(0,0,0,.42),0 0 42px rgba(126,204,243,.13)}
+  .sp-brand-stage__card:focus-visible{outline:2px solid var(--sp-paradise,#7eccf3);outline-offset:-3px}
+  .sp-brand-stage__asset{position:relative;display:block;flex:1;min-height:0;overflow:hidden;background:radial-gradient(circle at 50% 48%,rgba(126,204,243,.12),transparent 62%),#081a2d}
+  .sp-brand-stage__asset::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 64%,rgba(3,10,21,.2));pointer-events:none}
+  .sp-brand-stage__asset img{display:block;width:100%;height:100%;object-fit:contain;filter:saturate(.72) brightness(.73) contrast(1.04);transition:filter .32s ease,transform .55s cubic-bezier(.2,.7,.2,1)}
+  .sp-brand-stage__card.is-active .sp-brand-stage__asset img,.sp-brand-stage__card:hover .sp-brand-stage__asset img,.sp-brand-stage__card:focus-visible .sp-brand-stage__asset img{filter:saturate(.94) brightness(.93) contrast(1.02);transform:scale(1.025)}
+  .sp-brand-stage__asset-fallback{position:absolute;inset:0;display:grid;place-items:center;padding:1rem;color:rgba(255,255,255,.16);font-size:clamp(2rem,5vw,4.5rem);font-weight:700;line-height:.82;letter-spacing:-.055em;text-align:center;text-transform:uppercase}
+  .sp-brand-stage__card-copy{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.32rem .8rem;min-height:4.8rem;padding:.72rem .8rem .78rem;background:rgba(3,12,24,.96);border-top:1px solid rgba(255,255,255,.1)}
+  .sp-brand-stage__card-status{grid-column:1/-1;color:var(--sp-paradise,#7eccf3);font:700 .47rem/1 monospace;letter-spacing:.11em;text-transform:uppercase}
+  .sp-brand-stage__card-copy strong{display:-webkit-box;min-width:0;overflow:hidden;color:#fff;font-size:.68rem;line-height:1.25;letter-spacing:.025em;text-transform:uppercase;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+  .sp-brand-stage__price{align-self:start;color:rgba(255,255,255,.62);font:700 .56rem/1.2 monospace;white-space:nowrap}
+  .sp-brand-stage__controls{position:absolute;z-index:5;right:0;bottom:0;left:0;display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:3.45rem;padding:.55rem 1rem;background:linear-gradient(180deg,rgba(3,10,21,0),rgba(3,10,21,.96) 38%);pointer-events:none}
+  .sp-brand-stage__hint{color:rgba(255,255,255,.42);font:700 .48rem/1 monospace;letter-spacing:.1em;text-transform:uppercase}
+  .sp-brand-stage__navigation{display:flex;align-items:center;gap:.65rem;pointer-events:auto}
+  .sp-brand-stage__navigation button{display:grid;width:36px;height:36px;padding:0;place-items:center;background:rgba(6,17,31,.8);border:1px solid rgba(255,255,255,.26);border-radius:50%;color:#fff;font-size:.85rem;cursor:pointer;transition:background-color .18s ease,border-color .18s ease,color .18s ease,transform .18s ease}
+  .sp-brand-stage__navigation button:hover,.sp-brand-stage__navigation button:focus-visible{background:var(--sp-paradise,#7eccf3);border-color:var(--sp-paradise,#7eccf3);color:#06101e;transform:scale(1.04)}
+  .sp-brand-stage__navigation button:disabled{opacity:.28;cursor:default;transform:none}
+  .sp-brand-stage__navigation span{min-width:3.7rem;color:rgba(255,255,255,.68);font:700 .5rem/1 monospace;letter-spacing:.09em;text-align:center}
+  .sp-brand-video__media--product-stage .sp-brand-video__index{top:1rem;bottom:auto;z-index:6}
   .sp-brand-video__index{position:absolute;z-index:2;left:1rem;bottom:1rem;padding:.45rem .55rem;background:rgba(3,10,21,.74);color:#fff;font:700 .54rem/1 monospace;letter-spacing:.12em;text-transform:uppercase}
   .sp-brand-video__placeholder{position:relative;display:grid;width:100%;height:100%;place-items:center;overflow:hidden;padding:2rem;background:radial-gradient(circle at 50% 46%,rgba(126,204,243,.24) 0%,rgba(33,92,154,.14) 25%,rgba(6,17,31,0) 58%),#06111f;color:#fff;text-align:center}
   .sp-brand-video__placeholder::before{content:"";position:absolute;inset:8% 10%;background:radial-gradient(circle at center,rgba(235,248,255,.28),rgba(126,204,243,.1) 32%,transparent 68%);filter:blur(18px)}
@@ -110,6 +192,8 @@
   .sp-brand-video--spotlight.is-spotlit .sp-brand-video__ambient::after{opacity:.86;transform:translate(-50%,-50%) scale(1)}
   .sp-brand-video--spotlight.is-spotlit .sp-brand-video__beam{opacity:.92;transform:translateX(-50%) scale(1)}
   .sp-brand-video--spotlight.is-spotlit .sp-brand-video__media{box-shadow:0 30px 76px rgba(0,0,0,.42),0 0 76px rgba(126,204,243,.2),0 0 20px rgba(224,244,255,.1)}
+  .sp-brand-video--spotlight.is-spotlit .sp-brand-stage::before{opacity:.9;transform:scale(1)}
+  .sp-brand-video--spotlight.is-spotlit .sp-brand-stage__card.is-active{box-shadow:0 26px 68px rgba(0,0,0,.5),0 0 52px rgba(126,204,243,.22)}
   .sp-brand-video--spotlight.is-spotlit .sp-brand-video__video,.sp-brand-video--spotlight.is-spotlit .sp-brand-video__image{opacity:.86;filter:saturate(.96) contrast(1.04)}
   .sp-brand-video--spotlight.is-spotlit .sp-brand-video__content{background:rgba(6,16,30,.34);border-color:rgba(213,239,255,.24);box-shadow:inset 0 0 84px rgba(126,204,243,.065)}
   .sp-brand-video--spotlight.is-spotlit .sp-brand-video__eyebrow{color:var(--sp-paradise,#7eccf3)}
@@ -119,8 +203,8 @@
   .sp-brand-video--spotlight.is-spotlit .sp-brand-video__button span{color:var(--sp-cobalt,#1769d2)}
   .sp-brand-video--spotlight.is-spotlit .sp-brand-video__button:hover,.sp-brand-video--spotlight.is-spotlit .sp-brand-video__button:focus-visible{background:var(--sp-paradise,#7eccf3);color:#06101e}
   @media(min-width:750px) and (max-width:1100px){.sp-brand-video__inner{grid-template-columns:minmax(0,1fr) minmax(300px,1fr);gap:2rem}.sp-brand-video--media-left .sp-brand-video__content{padding-left:1.5rem}.sp-brand-video--media-right .sp-brand-video__content{padding-right:1.5rem}.sp-brand-video__heading{font-size:clamp(2.35rem,5.1vw,3.55rem)}}
-  @media(max-width:749px){.sp-brand-video__inner{grid-template-columns:1fr;gap:1.5rem;padding-block:4rem}.sp-brand-video__ambient::before{inset:-4% -38%;background:radial-gradient(circle at var(--sp-spotlight-x) var(--sp-spotlight-y),rgba(231,247,255,.25),rgba(126,204,243,.11) 24%,rgba(23,105,210,.035) 45%,transparent 68%)}.sp-brand-video__ambient::after{top:44%;width:120vw;height:13rem}.sp-brand-video__beam{top:4%;width:132vw;height:68%;filter:blur(22px)}.sp-brand-video__media,.sp-brand-video--media-right .sp-brand-video__media{order:1;aspect-ratio:16/10}.sp-brand-video__video,.sp-brand-video__image{object-position:var(--sp-brand-mobile-focus-x) var(--sp-brand-mobile-focus-y)}.sp-brand-video__content,.sp-brand-video--media-right .sp-brand-video__content{order:2;padding:2rem 0}.sp-brand-video__heading{font-size:clamp(2.7rem,14vw,4.4rem)}.sp-brand-video__button{width:100%}}
-  @media(prefers-reduced-motion:reduce){.sp-brand-video,.sp-brand-video__ambient,.sp-brand-video__ambient::before,.sp-brand-video__ambient::after,.sp-brand-video__beam,.sp-brand-video__media,.sp-brand-video__video,.sp-brand-video__image,.sp-brand-video__content,.sp-brand-video__eyebrow,.sp-brand-video__heading,.sp-brand-video__copy,.sp-brand-video__button,.sp-brand-video__button span{transition:none}.sp-brand-video__ambient{display:none}.sp-brand-video__media:hover .sp-brand-video__video,.sp-brand-video__media:focus-within .sp-brand-video__video,.sp-brand-video__media:hover .sp-brand-video__image,.sp-brand-video__media:focus-within .sp-brand-video__image{transform:none}}
+  @media(max-width:749px){.sp-brand-video__inner{grid-template-columns:1fr;gap:1.5rem;padding-block:4rem}.sp-brand-video__ambient::before{inset:-4% -38%;background:radial-gradient(circle at var(--sp-spotlight-x) var(--sp-spotlight-y),rgba(231,247,255,.25),rgba(126,204,243,.11) 24%,rgba(23,105,210,.035) 45%,transparent 68%)}.sp-brand-video__ambient::after{top:44%;width:120vw;height:13rem}.sp-brand-video__beam{top:4%;width:132vw;height:68%;filter:blur(22px)}.sp-brand-video__media,.sp-brand-video--media-right .sp-brand-video__media{order:1;aspect-ratio:16/10}.sp-brand-video__media--product-stage,.sp-brand-video--media-right .sp-brand-video__media--product-stage{aspect-ratio:4/5}.sp-brand-stage__watermark{top:1.15rem;font-size:15vw}.sp-brand-stage__track{gap:.72rem;padding:3rem 13% 4.2rem}.sp-brand-stage__card{flex-basis:74vw}.sp-brand-stage__card-copy{min-height:5.2rem}.sp-brand-stage__hint{font-size:.44rem}.sp-brand-stage__controls{padding-inline:.75rem}.sp-brand-video__video,.sp-brand-video__image{object-position:var(--sp-brand-mobile-focus-x) var(--sp-brand-mobile-focus-y)}.sp-brand-video__content,.sp-brand-video--media-right .sp-brand-video__content{order:2;padding:2rem 0}.sp-brand-video__heading{font-size:clamp(2.7rem,14vw,4.4rem)}.sp-brand-video__button{width:100%}}
+  @media(prefers-reduced-motion:reduce){.sp-brand-video,.sp-brand-video__ambient,.sp-brand-video__ambient::before,.sp-brand-video__ambient::after,.sp-brand-video__beam,.sp-brand-video__media,.sp-brand-video__video,.sp-brand-video__image,.sp-brand-video__content,.sp-brand-video__eyebrow,.sp-brand-video__heading,.sp-brand-video__copy,.sp-brand-video__button,.sp-brand-video__button span,.sp-brand-stage::before,.sp-brand-stage__card,.sp-brand-stage__asset img,.sp-brand-stage__navigation button{transition:none}.sp-brand-video__ambient{display:none}.sp-brand-stage__viewport{scroll-behavior:auto}.sp-brand-video__media:hover .sp-brand-video__video,.sp-brand-video__media:focus-within .sp-brand-video__video,.sp-brand-video__media:hover .sp-brand-video__image,.sp-brand-video__media:focus-within .sp-brand-video__image{transform:none}}
 {% endstylesheet %}
 
 {% schema %}
@@ -144,12 +228,15 @@
     {"type":"range","id":"focus_y","label":"Desktop focal point — vertical","min":0,"max":100,"step":5,"unit":"%","default":50},
     {"type":"range","id":"mobile_focus_x","label":"Mobile focal point — horizontal","min":0,"max":100,"step":5,"unit":"%","default":50},
     {"type":"range","id":"mobile_focus_y","label":"Mobile focal point — vertical","min":0,"max":100,"step":5,"unit":"%","default":50},
+    {"type":"header","content":"Collection product stage"},
+    {"type":"checkbox","id":"show_product_stage","label":"Show scrollable 3D product stage","default":false,"info":"Uses live product images from the selected brand collection instead of the campaign media."},
+    {"type":"collection","id":"collection","label":"Brand collection","info":"Supplies the product stage and the main button when no custom link is provided."},
+    {"type":"range","id":"product_limit","label":"Products in stage","min":3,"max":8,"step":1,"default":5},
     {"type":"header","content":"Brand story"},
     {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Currently spotlighting / In hand"},
     {"type":"textarea","id":"heading","label":"Heading","default":"FEATURED\nLABEL"},
     {"type":"textarea","id":"copy","label":"Copy","info":"Keep this to one or two short sentences about the label and current inventory."},
     {"type":"checkbox","id":"enable_spotlight","label":"Enable scroll spotlight","default":true,"info":"Darkens this feature and moves a soft showroom beam while the section is in view."},
-    {"type":"collection","id":"collection","label":"Brand collection","info":"Used when a custom button link is not provided."},
     {"type":"text","id":"button_label","label":"Button label","default":"Shop the brand"},
     {"type":"url","id":"button_link","label":"Custom button link","info":"Overrides the selected brand collection."}
   ],
