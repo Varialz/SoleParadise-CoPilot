@@ -60,7 +60,9 @@
       {%- elsif file_image != blank -%}
         {{ file_image | image_url: width: 2200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 58vw, 100vw', widths: '750,1000,1400,1800,2200', class: 'sp-brand-video__image', alt: section.settings.image_alt }}
       {%- else -%}
-        <div class="sp-brand-video__placeholder">Add a campaign video or image</div>
+        <div class="sp-brand-video__placeholder" aria-hidden="true">
+          <span>{{ section.settings.heading | escape | newline_to_br }}</span>
+        </div>
       {%- endif -%}
       {%- if section.settings.media_label != blank -%}<span class="sp-brand-video__index" aria-hidden="true">{{ section.settings.media_label | escape }}</span>{%- endif -%}
     </div>
@@ -89,7 +91,9 @@
   .sp-brand-video__media:hover .sp-brand-video__video,.sp-brand-video__media:focus-within .sp-brand-video__video,.sp-brand-video__media:hover .sp-brand-video__image,.sp-brand-video__media:focus-within .sp-brand-video__image{opacity:.72;filter:saturate(.92) contrast(1.03);transform:scale(1.012)}
   .sp-brand-video__media::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 58% 48%,rgba(224,244,255,.08),transparent 42%),linear-gradient(90deg,rgba(3,10,21,.18),transparent 55%,rgba(3,10,21,.12));pointer-events:none}
   .sp-brand-video__index{position:absolute;z-index:2;left:1rem;bottom:1rem;padding:.45rem .55rem;background:rgba(3,10,21,.74);color:#fff;font:700 .54rem/1 monospace;letter-spacing:.12em;text-transform:uppercase}
-  .sp-brand-video__placeholder{display:grid;width:100%;height:100%;place-items:center;color:rgba(255,255,255,.65);font:700 .62rem/1.4 monospace;letter-spacing:.1em;text-transform:uppercase}
+  .sp-brand-video__placeholder{position:relative;display:grid;width:100%;height:100%;place-items:center;overflow:hidden;padding:2rem;background:radial-gradient(circle at 50% 46%,rgba(126,204,243,.24) 0%,rgba(33,92,154,.14) 25%,rgba(6,17,31,0) 58%),#06111f;color:#fff;text-align:center}
+  .sp-brand-video__placeholder::before{content:"";position:absolute;inset:8% 10%;background:radial-gradient(circle at center,rgba(235,248,255,.28),rgba(126,204,243,.1) 32%,transparent 68%);filter:blur(18px)}
+  .sp-brand-video__placeholder span{position:relative;z-index:1;max-width:9ch;font-size:clamp(2.4rem,5.2vw,5.8rem);font-weight:500;line-height:.86;letter-spacing:-.06em;text-transform:uppercase;text-shadow:0 0 18px rgba(235,248,255,.3),0 0 58px rgba(126,204,243,.24)}
   .sp-brand-video__content{position:relative;z-index:2;display:flex;align-self:stretch;min-width:0;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(1rem,3vw,3rem) 0 clamp(1rem,3vw,3rem) clamp(1.5rem,3vw,3.5rem);background:#fff;border-top:1px solid var(--sp-line,#dfe4ea);border-bottom:1px solid var(--sp-line,#dfe4ea);box-shadow:inset 0 0 0 rgba(126,204,243,0);transition:background-color .72s cubic-bezier(.22,1,.36,1),border-color .55s ease,box-shadow .72s ease}
   .sp-brand-video__eyebrow{margin:0 0 1rem;color:var(--sp-cobalt,#1769d2);font:700 .62rem/1 monospace;letter-spacing:.15em;text-transform:uppercase;transition:color .55s ease}
   .sp-brand-video__heading{width:100%;max-width:9.5ch;margin:0;font-size:clamp(2.7rem,4.4vw,4.8rem);line-height:.9;letter-spacing:-.055em;overflow-wrap:normal;word-break:normal;text-transform:uppercase;text-shadow:0 0 0 rgba(126,204,243,0);transition:text-shadow .72s ease}

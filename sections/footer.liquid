@@ -104,6 +104,12 @@
     {%- endif -%}
   </div>
 
+  {%- if section.settings.reseller_disclaimer != blank -%}
+    <div class="site-footer__disclaimer page-width">
+      <p>{{ section.settings.reseller_disclaimer | escape }}</p>
+    </div>
+  {%- endif -%}
+
   <div class="site-footer__utility page-width">
     {%- capture policy_links -%}{%- for policy in shop.policies -%}{%- if policy != blank and policy.url != blank -%}<li><a href="{{ policy.url | escape }}" class="site-footer__policy-link">{{ policy.title | escape }}</a></li>{%- endif -%}{%- endfor -%}{%- endcapture -%}
     {%- if policy_links != blank -%}<nav class="site-footer__policies" aria-label="{{ 'footer.policies' | t }}"><ul class="site-footer__policies-list list-unstyled">{{ policy_links }}</ul></nav>{%- endif -%}
@@ -114,7 +120,10 @@
 {% schema %}
 {
   "name":"Footer",
-  "settings":[{"type":"checkbox","id":"show_logo","label":"Show logo","default":true}],
+  "settings":[
+    {"type":"checkbox","id":"show_logo","label":"Show logo","default":true},
+    {"type":"textarea","id":"reseller_disclaimer","label":"Reseller disclaimer","default":"Sole Paradise is an independent third-party reseller and is not affiliated with, endorsed by, or sponsored by Louis Vuitton or any other brand featured on this site. All trademarks and brand names are the property of their respective owners."}
+  ],
   "blocks":[
     {"type":"menu","name":"Menu","settings":[{"type":"text","id":"heading","label":"Heading"},{"type":"link_list","id":"menu","label":"Menu"}]},
     {"type":"newsletter","name":"Newsletter","limit":1,"settings":[{"type":"text","id":"heading","label":"Heading"},{"type":"textarea","id":"text","label":"Supporting text"}]},

@@ -160,6 +160,8 @@
 .footer-block__link:hover,.site-footer__policy-link:hover{color:#fff!important}
 .footer-newsletter-form__input{background:transparent!important;color:#fff!important;border-color:rgba(255,255,255,.3)!important}
 .footer-newsletter-form__submit{background:var(--sp-brand-blue)!important;color:var(--sp-brand-navy-deep)!important;border-color:var(--sp-brand-blue)!important}
+.site-footer__disclaimer{padding-block:1.2rem;border-top:1px solid rgba(126,204,243,.18)}
+.site-footer__disclaimer p{max-width:78rem;margin:0;color:rgba(255,255,255,.48);font:600 .58rem/1.65 monospace;letter-spacing:.055em;text-transform:uppercase}
 .site-footer__utility{border-color:rgba(126,204,243,.18)!important}
 
 @media(min-width:750px){

@@ -20,7 +20,9 @@
         "social": {"type":"social","settings":{"heading":"Follow us"}}
       },
       "block_order": ["menu","visit","newsletter","social"],
-      "settings": {}
+      "settings": {
+        "reseller_disclaimer": "Sole Paradise is an independent third-party reseller and is not affiliated with, endorsed by, or sponsored by Louis Vuitton or any other brand featured on this site. All trademarks and brand names are the property of their respective owners."
+      }
     }
   },
   "order": ["footer"]
