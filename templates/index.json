@@ -505,11 +505,11 @@
         "video_autoplay": true,
         "video_label": "Louis Vuitton collection campaign video",
         "file_name": "",
-        "image_url": "",
-        "image_alt": "Louis Vuitton pieces at Sole Paradise",
+        "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/ca1125cd-b5f9-4e66-8ded-53cbdf0dbc6f.png?v=1788591650",
+        "image_alt": "Louis Vuitton Black Monogram Trainers at Sole Paradise",
         "media_label": "LOUIS VUITTON / SPOTLIGHT",
         "media_position": "left",
-        "media_fit": "cover",
+        "media_fit": "contain",
         "focus_x": 50,
         "focus_y": 50,
         "mobile_focus_x": 50,
@@ -518,9 +518,9 @@
         "heading": "LOUIS\nVUITTON",
         "copy": "Explore authenticated, pre-owned Louis Vuitton pieces selected for the current Sole Paradise rotation.",
         "enable_spotlight": true,
-        "collection": "",
+        "collection": "louis-vuitton",
         "button_label": "Shop Louis Vuitton",
-        "button_link": "/search?q=louis+vuitton&type=product"
+        "button_link": ""
       }
     },
     "passport_demo": {
