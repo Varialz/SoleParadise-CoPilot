@@ -499,7 +499,7 @@
     },
     "sp_brand_video_feature_edRBTm": {
       "type": "sp-brand-video-feature",
-      "name": "SP — Louis Vuitton",
+      "name": "SP — Designer rotation",
       "blocks": {
         "lv_trainers": {
           "type": "product",
@@ -507,45 +507,80 @@
             "product": "louis-vuitton-black-monogram-trainers"
           }
         },
-        "lv_messenger": {
+        "chrome_hearts_bag": {
           "type": "product",
           "settings": {
-            "product": "louis-vuitton-damier-graphite-black-messenger-bag"
+            "product": "chrome-hearts-baby-fat-cross-patch-black-crossbody-bag"
           }
         },
-        "lv_nba_shirt": {
+        "amiri_tiger_shirt": {
           "type": "product",
           "settings": {
-            "product": "louis-vuitton-nba-embroidered-short-sleeve-shirt"
+            "product": "amiri-green-tiger-shirt-1"
           }
         },
-        "lv_belt": {
+        "balenciaga_baggy_pants": {
           "type": "product",
           "settings": {
-            "product": "louis-vuitton-matte-black-eclipse-monogram-logo-belt"
+            "product": "balenciaga-outline-baggy-black-pants"
           }
         },
-        "lv_sunglasses": {
+        "gallery_dept_vans": {
           "type": "product",
           "settings": {
-            "product": "louis-vuitton-square-clash-sunglasses"
+            "product": "gallery-dept-art-that-kills-black-vans-reissue-44"
+          }
+        },
+        "bottega_desires_shorts": {
+          "type": "product",
+          "settings": {
+            "product": "bottega-desires-blue-jean-shorts"
+          }
+        },
+        "sp5der_skully": {
+          "type": "product",
+          "settings": {
+            "product": "sp5der-black-green-fuzzy-logo-skully"
+          }
+        },
+        "hellstar_crewneck": {
+          "type": "product",
+          "settings": {
+            "product": "hellstar-sports-yellow-crewneck"
+          }
+        },
+        "who_decides_war_denim": {
+          "type": "product",
+          "settings": {
+            "product": "who-decides-war-bleached-scripture-denim"
+          }
+        },
+        "better_with_age_tee": {
+          "type": "product",
+          "settings": {
+            "product": "better-with-age-1000-t-shirt"
           }
         }
       },
       "block_order": [
         "lv_trainers",
-        "lv_messenger",
-        "lv_nba_shirt",
-        "lv_belt",
-        "lv_sunglasses"
+        "chrome_hearts_bag",
+        "amiri_tiger_shirt",
+        "balenciaga_baggy_pants",
+        "gallery_dept_vans",
+        "bottega_desires_shorts",
+        "sp5der_skully",
+        "hellstar_crewneck",
+        "who_decides_war_denim",
+        "better_with_age_tee"
       ],
       "settings": {
         "video_url": "",
         "video_autoplay": true,
-        "video_label": "Louis Vuitton collection campaign video",
+        "video_label": "Designer rotation feature",
         "file_name": "",
-        "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/ca1125cd-b5f9-4e66-8ded-53cbdf0dbc6f.png?v=1788591650",
-        "image_alt": "Louis Vuitton Black Monogram Trainers at Sole Paradise",
+        "image_url": "",
+        "image_alt": "Designer pieces at Sole Paradise",
         "media_label": "Gallery",
         "media_position": "left",
         "media_fit": "cover",
@@ -554,14 +589,14 @@
         "mobile_focus_x": 50,
         "mobile_focus_y": 50,
         "show_product_stage": true,
-        "product_limit": 5,
+        "product_limit": 10,
         "eyebrow": "",
-        "heading": "LOUIS\nVUITTON",
-        "copy": "Explore authenticated, pre-owned Louis Vuitton pieces selected for the current Sole Paradise rotation.",
+        "heading": "DESIGNER\nROTATION",
+        "copy": "Scroll through authenticated, pre-owned pieces from Louis Vuitton, Chrome Hearts and the labels currently in the Sole Paradise rotation.",
         "enable_spotlight": true,
-        "collection": "louis-vuitton",
-        "button_label": "Shop Louis Vuitton",
-        "button_link": ""
+        "collection": "",
+        "button_label": "Shop all designers",
+        "button_link": "/collections/all"
       }
     },
     "passport_demo": {

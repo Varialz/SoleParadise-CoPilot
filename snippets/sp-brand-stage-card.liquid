@@ -19,7 +19,10 @@
     {%- endif -%}
   </span>
   <span class="sp-brand-stage__card-copy">
-    <span class="sp-brand-stage__card-status">{% if product.available %}In hand{% else %}Sold{% endif %}</span>
+    <span class="sp-brand-stage__card-status">
+      <span>{{ product.vendor | escape }}</span>
+      <span>{% if product.available %}In hand{% else %}Sold{% endif %}</span>
+    </span>
     <strong>{{ product.title | escape }}</strong>
     <span class="sp-brand-stage__price">{% if product.price_varies %}From {% endif %}{{ product.price | money }}</span>
   </span>

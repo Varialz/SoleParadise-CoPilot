@@ -173,7 +173,9 @@
   .sp-brand-stage__card.is-active .sp-brand-stage__asset img,.sp-brand-stage__card:hover .sp-brand-stage__asset img,.sp-brand-stage__card:focus-visible .sp-brand-stage__asset img{filter:saturate(.94) brightness(.93) contrast(1.02);transform:scale(1.025)}
   .sp-brand-stage__asset-fallback{position:absolute;inset:0;display:grid;place-items:center;padding:1rem;color:rgba(255,255,255,.16);font-size:clamp(2rem,5vw,4.5rem);font-weight:700;line-height:.82;letter-spacing:-.055em;text-align:center;text-transform:uppercase}
   .sp-brand-stage__card-copy{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.32rem .8rem;min-height:4.8rem;padding:.72rem .8rem .78rem;background:rgba(3,12,24,.96);border-top:1px solid rgba(255,255,255,.1)}
-  .sp-brand-stage__card-status{grid-column:1/-1;color:var(--sp-paradise,#7eccf3);font:700 .47rem/1 monospace;letter-spacing:.11em;text-transform:uppercase}
+  .sp-brand-stage__card-status{display:flex;grid-column:1/-1;align-items:center;justify-content:space-between;gap:.75rem;color:var(--sp-paradise,#7eccf3);font:700 .47rem/1 monospace;letter-spacing:.11em;text-transform:uppercase}
+  .sp-brand-stage__card-status span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sp-brand-stage__card-status span:last-child{flex:none;color:rgba(255,255,255,.52)}
   .sp-brand-stage__card-copy strong{display:-webkit-box;min-width:0;overflow:hidden;color:#fff;font-size:.68rem;line-height:1.25;letter-spacing:.025em;text-transform:uppercase;-webkit-box-orient:vertical;-webkit-line-clamp:2}
   .sp-brand-stage__price{align-self:start;color:rgba(255,255,255,.62);font:700 .56rem/1.2 monospace;white-space:nowrap}
   .sp-brand-stage__controls{position:absolute;z-index:5;right:0;bottom:0;left:0;display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:3.45rem;padding:.55rem 1rem;background:linear-gradient(180deg,rgba(3,10,21,0),rgba(3,10,21,.96) 38%);pointer-events:none}
@@ -243,7 +245,7 @@
     {"type":"header","content":"Collection product stage"},
     {"type":"checkbox","id":"show_product_stage","label":"Show scrollable 3D product stage","default":false,"info":"Uses selected product blocks first, then live products from the brand collection."},
     {"type":"collection","id":"collection","label":"Brand collection","info":"Supplies the product stage and the main button when no custom link is provided."},
-    {"type":"range","id":"product_limit","label":"Collection products in stage","min":3,"max":8,"step":1,"default":5,"info":"Used when no individual product blocks are added."},
+    {"type":"range","id":"product_limit","label":"Collection products in stage","min":3,"max":12,"step":1,"default":5,"info":"Used when no individual product blocks are added."},
     {"type":"header","content":"Brand story"},
     {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Currently spotlighting / In hand"},
     {"type":"textarea","id":"heading","label":"Heading","default":"FEATURED\nLABEL"},
@@ -255,13 +257,13 @@
   "blocks":[
     {
       "type":"product",
-      "name":"Stage product",
+      "name":"Brand product",
       "settings":[
         {"type":"product","id":"product","label":"Product"}
       ]
     }
   ],
-  "max_blocks":8,
+  "max_blocks":12,
   "presets":[
     {
       "name":"SP — Brand spotlight"
