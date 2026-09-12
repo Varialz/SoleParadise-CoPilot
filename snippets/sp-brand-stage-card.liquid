@@ -1,0 +1,26 @@
+{%- liquid
+  assign product_image_alt = product.featured_image.alt | default: product.title
+  assign card_index = card_index | default: 0
+-%}
+
+<a
+  class="sp-brand-stage__card{% if card_index == 0 %} is-active{% endif %}"
+  href="{{ product.url | escape }}"
+  data-brand-stage-card
+  data-brand-stage-index="{{ card_index }}"
+  draggable="false"
+  {% if stage_block != blank %}{{ stage_block.shopify_attributes }}{% endif %}
+>
+  <span class="sp-brand-stage__asset">
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360,560,760,960,1200', sizes: '(max-width: 749px) 72vw, 448px', alt: product_image_alt, draggable: 'false' }}
+    {%- else -%}
+      <span class="sp-brand-stage__asset-fallback">{{ brand_title | escape }}</span>
+    {%- endif -%}
+  </span>
+  <span class="sp-brand-stage__card-copy">
+    <span class="sp-brand-stage__card-status">{% if product.available %}In hand{% else %}Sold{% endif %}</span>
+    <strong>{{ product.title | escape }}</strong>
+    <span class="sp-brand-stage__price">{% if product.price_varies %}From {% endif %}{{ product.price | money }}</span>
+  </span>
+</a>

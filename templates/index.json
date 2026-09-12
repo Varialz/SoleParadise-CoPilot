@@ -500,6 +500,45 @@
     "sp_brand_video_feature_edRBTm": {
       "type": "sp-brand-video-feature",
       "name": "SP — Louis Vuitton",
+      "blocks": {
+        "lv_trainers": {
+          "type": "product",
+          "settings": {
+            "product": "louis-vuitton-black-monogram-trainers"
+          }
+        },
+        "lv_messenger": {
+          "type": "product",
+          "settings": {
+            "product": "louis-vuitton-damier-graphite-black-messenger-bag"
+          }
+        },
+        "lv_nba_shirt": {
+          "type": "product",
+          "settings": {
+            "product": "louis-vuitton-nba-embroidered-short-sleeve-shirt"
+          }
+        },
+        "lv_belt": {
+          "type": "product",
+          "settings": {
+            "product": "louis-vuitton-matte-black-eclipse-monogram-logo-belt"
+          }
+        },
+        "lv_sunglasses": {
+          "type": "product",
+          "settings": {
+            "product": "louis-vuitton-square-clash-sunglasses"
+          }
+        }
+      },
+      "block_order": [
+        "lv_trainers",
+        "lv_messenger",
+        "lv_nba_shirt",
+        "lv_belt",
+        "lv_sunglasses"
+      ],
       "settings": {
         "video_url": "",
         "video_autoplay": true,
@@ -509,7 +548,7 @@
         "image_alt": "Louis Vuitton Black Monogram Trainers at Sole Paradise",
         "media_label": "Gallery",
         "media_position": "left",
-        "media_fit": "contain",
+        "media_fit": "cover",
         "focus_x": 50,
         "focus_y": 50,
         "mobile_focus_x": 50,

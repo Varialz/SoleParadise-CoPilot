@@ -14,10 +14,30 @@
   assign image_url = section.settings.image_url | strip
   assign showcase_collection = section.settings.collection
   assign use_product_stage = false
+  assign use_manual_products = false
   assign product_stage_count = 0
-  if section.settings.show_product_stage and showcase_collection != blank and showcase_collection.products_count > 0
-    assign use_product_stage = true
-    assign product_stage_count = showcase_collection.products_count | at_most: section.settings.product_limit
+  assign stage_title = showcase_collection.title
+  if stage_title == blank
+    assign stage_title = section.settings.heading | newline_to_br | replace: '<br />', ' ' | strip_html | strip
+  endif
+  if stage_title == blank
+    assign stage_title = 'Featured products'
+  endif
+
+  if section.settings.show_product_stage
+    for block in section.blocks
+      if block.settings.product != blank
+        assign product_stage_count = product_stage_count | plus: 1
+      endif
+    endfor
+
+    if product_stage_count > 0
+      assign use_product_stage = true
+      assign use_manual_products = true
+    elsif showcase_collection != blank and showcase_collection.products_count > 0
+      assign use_product_stage = true
+      assign product_stage_count = showcase_collection.products_count | at_most: section.settings.product_limit
+    endif
   endif
   if campaign_image == blank and file_name != blank
     assign file_image = images[file_name]
@@ -42,38 +62,29 @@
     <div class="sp-brand-video__media{% if use_product_stage %} sp-brand-video__media--product-stage{% endif %}" data-sp-reveal>
       {%- if use_product_stage -%}
         <div class="sp-brand-stage" data-brand-product-stage>
-          <span class="sp-brand-stage__watermark" aria-hidden="true">{{ showcase_collection.title | escape }}</span>
+          <span class="sp-brand-stage__watermark" aria-hidden="true">{{ stage_title | escape }}</span>
           <div
             class="sp-brand-stage__viewport"
             data-brand-stage-viewport
             role="region"
-            aria-label="Browse {{ showcase_collection.title | escape }} products"
+            aria-label="Browse {{ stage_title | escape }} products"
             tabindex="0"
           >
             <div class="sp-brand-stage__track">
-              {%- for product in showcase_collection.products limit: section.settings.product_limit -%}
-                {%- assign product_image_alt = product.featured_image.alt | default: product.title -%}
-                <a
-                  class="sp-brand-stage__card{% if forloop.first %} is-active{% endif %}"
-                  href="{{ product.url | escape }}"
-                  data-brand-stage-card
-                  data-brand-stage-index="{{ forloop.index0 }}"
-                  draggable="false"
-                >
-                  <span class="sp-brand-stage__asset">
-                    {%- if product.featured_image -%}
-                      {{ product.featured_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360,560,760,960,1200', sizes: '(max-width: 749px) 72vw, 448px', alt: product_image_alt, draggable: 'false' }}
-                    {%- else -%}
-                      <span class="sp-brand-stage__asset-fallback">{{ showcase_collection.title | escape }}</span>
-                    {%- endif -%}
-                  </span>
-                  <span class="sp-brand-stage__card-copy">
-                    <span class="sp-brand-stage__card-status">{% if product.available %}In hand{% else %}Sold{% endif %}</span>
-                    <strong>{{ product.title | escape }}</strong>
-                    <span class="sp-brand-stage__price">{% if product.price_varies %}From {% endif %}{{ product.price | money }}</span>
-                  </span>
-                </a>
-              {%- endfor -%}
+              {%- if use_manual_products -%}
+                {%- assign stage_product_index = 0 -%}
+                {%- for block in section.blocks -%}
+                  {%- assign stage_product = block.settings.product -%}
+                  {%- if stage_product != blank -%}
+                    {%- render 'sp-brand-stage-card', product: stage_product, brand_title: stage_title, card_index: stage_product_index, stage_block: block -%}
+                    {%- assign stage_product_index = stage_product_index | plus: 1 -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- else -%}
+                {%- for product in showcase_collection.products limit: section.settings.product_limit -%}
+                  {%- render 'sp-brand-stage-card', product: product, brand_title: stage_title, card_index: forloop.index0 -%}
+                {%- endfor -%}
+              {%- endif -%}
             </div>
           </div>
 
@@ -139,6 +150,7 @@
   .sp-brand-video__beam{position:absolute;top:-8%;left:var(--sp-spotlight-x);width:clamp(34rem,58vw,72rem);height:116%;background:radial-gradient(ellipse at 50% 48%,rgba(235,248,255,.24) 0%,rgba(167,219,248,.13) 20%,rgba(73,149,207,.055) 40%,transparent 68%);filter:blur(26px);opacity:0;transform:translateX(-50%) scale(.84);transform-origin:50% 48%;transition:opacity .72s ease,transform 1s cubic-bezier(.22,1,.36,1),left .12s linear}
   .sp-brand-video__inner{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);align-items:center;gap:clamp(2.5rem,5vw,6rem);padding-block:clamp(4.5rem,8vw,8rem)}
   .sp-brand-video__media{position:relative;align-self:center;width:100%;max-width:100%;min-width:0;aspect-ratio:16/9;overflow:hidden;background:#06111f;box-shadow:0 0 0 rgba(0,0,0,0);transition:box-shadow .72s cubic-bezier(.22,1,.36,1)}
+  .sp-brand-video__media--product-stage{aspect-ratio:4/3}
   .sp-brand-video__media picture{display:block;width:100%;height:100%}
   .sp-brand-video__video,.sp-brand-video__image{display:block;width:100%;height:100%;object-fit:var(--sp-brand-media-fit,cover);object-position:var(--sp-brand-focus-x) var(--sp-brand-focus-y);opacity:.56;filter:saturate(.78) contrast(1.05);transition:opacity .55s ease,filter .55s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
   .sp-brand-video__media:hover .sp-brand-video__video,.sp-brand-video__media:focus-within .sp-brand-video__video,.sp-brand-video__media:hover .sp-brand-video__image,.sp-brand-video__media:focus-within .sp-brand-video__image{opacity:.72;filter:saturate(.92) contrast(1.03);transform:scale(1.012)}
@@ -157,7 +169,7 @@
   .sp-brand-stage__card:focus-visible{outline:2px solid var(--sp-paradise,#7eccf3);outline-offset:-3px}
   .sp-brand-stage__asset{position:relative;display:block;flex:1;min-height:0;overflow:hidden;background:radial-gradient(circle at 50% 48%,rgba(126,204,243,.12),transparent 62%),#081a2d}
   .sp-brand-stage__asset::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 64%,rgba(3,10,21,.2));pointer-events:none}
-  .sp-brand-stage__asset img{display:block;width:100%;height:100%;object-fit:contain;filter:saturate(.72) brightness(.73) contrast(1.04);transition:filter .32s ease,transform .55s cubic-bezier(.2,.7,.2,1)}
+  .sp-brand-stage__asset img{display:block;width:100%;height:100%;object-fit:var(--sp-brand-media-fit,cover);object-position:var(--sp-brand-focus-x) var(--sp-brand-focus-y);filter:saturate(.72) brightness(.73) contrast(1.04);transition:filter .32s ease,transform .55s cubic-bezier(.2,.7,.2,1)}
   .sp-brand-stage__card.is-active .sp-brand-stage__asset img,.sp-brand-stage__card:hover .sp-brand-stage__asset img,.sp-brand-stage__card:focus-visible .sp-brand-stage__asset img{filter:saturate(.94) brightness(.93) contrast(1.02);transform:scale(1.025)}
   .sp-brand-stage__asset-fallback{position:absolute;inset:0;display:grid;place-items:center;padding:1rem;color:rgba(255,255,255,.16);font-size:clamp(2rem,5vw,4.5rem);font-weight:700;line-height:.82;letter-spacing:-.055em;text-align:center;text-transform:uppercase}
   .sp-brand-stage__card-copy{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.32rem .8rem;min-height:4.8rem;padding:.72rem .8rem .78rem;background:rgba(3,12,24,.96);border-top:1px solid rgba(255,255,255,.1)}
@@ -203,7 +215,7 @@
   .sp-brand-video--spotlight.is-spotlit .sp-brand-video__button span{color:var(--sp-cobalt,#1769d2)}
   .sp-brand-video--spotlight.is-spotlit .sp-brand-video__button:hover,.sp-brand-video--spotlight.is-spotlit .sp-brand-video__button:focus-visible{background:var(--sp-paradise,#7eccf3);color:#06101e}
   @media(min-width:750px) and (max-width:1100px){.sp-brand-video__inner{grid-template-columns:minmax(0,1fr) minmax(300px,1fr);gap:2rem}.sp-brand-video--media-left .sp-brand-video__content{padding-left:1.5rem}.sp-brand-video--media-right .sp-brand-video__content{padding-right:1.5rem}.sp-brand-video__heading{font-size:clamp(2.35rem,5.1vw,3.55rem)}}
-  @media(max-width:749px){.sp-brand-video__inner{grid-template-columns:1fr;gap:1.5rem;padding-block:4rem}.sp-brand-video__ambient::before{inset:-4% -38%;background:radial-gradient(circle at var(--sp-spotlight-x) var(--sp-spotlight-y),rgba(231,247,255,.25),rgba(126,204,243,.11) 24%,rgba(23,105,210,.035) 45%,transparent 68%)}.sp-brand-video__ambient::after{top:44%;width:120vw;height:13rem}.sp-brand-video__beam{top:4%;width:132vw;height:68%;filter:blur(22px)}.sp-brand-video__media,.sp-brand-video--media-right .sp-brand-video__media{order:1;aspect-ratio:16/10}.sp-brand-video__media--product-stage,.sp-brand-video--media-right .sp-brand-video__media--product-stage{aspect-ratio:4/5}.sp-brand-stage__watermark{top:1.15rem;font-size:15vw}.sp-brand-stage__track{gap:.72rem;padding:3rem 13% 4.2rem}.sp-brand-stage__card{flex-basis:74vw}.sp-brand-stage__card-copy{min-height:5.2rem}.sp-brand-stage__hint{font-size:.44rem}.sp-brand-stage__controls{padding-inline:.75rem}.sp-brand-video__video,.sp-brand-video__image{object-position:var(--sp-brand-mobile-focus-x) var(--sp-brand-mobile-focus-y)}.sp-brand-video__content,.sp-brand-video--media-right .sp-brand-video__content{order:2;padding:2rem 0}.sp-brand-video__heading{font-size:clamp(2.7rem,14vw,4.4rem)}.sp-brand-video__button{width:100%}}
+  @media(max-width:749px){.sp-brand-video__inner{grid-template-columns:1fr;gap:1.5rem;padding-block:4rem}.sp-brand-video__ambient::before{inset:-4% -38%;background:radial-gradient(circle at var(--sp-spotlight-x) var(--sp-spotlight-y),rgba(231,247,255,.25),rgba(126,204,243,.11) 24%,rgba(23,105,210,.035) 45%,transparent 68%)}.sp-brand-video__ambient::after{top:44%;width:120vw;height:13rem}.sp-brand-video__beam{top:4%;width:132vw;height:68%;filter:blur(22px)}.sp-brand-video__media,.sp-brand-video--media-right .sp-brand-video__media{order:1;aspect-ratio:16/10}.sp-brand-video__media--product-stage,.sp-brand-video--media-right .sp-brand-video__media--product-stage{aspect-ratio:4/5}.sp-brand-stage__watermark{top:1.15rem;font-size:15vw}.sp-brand-stage__track{gap:.72rem;padding:3rem 13% 4.2rem}.sp-brand-stage__card{flex-basis:74vw}.sp-brand-stage__card-copy{min-height:5.2rem}.sp-brand-stage__asset img{object-position:var(--sp-brand-mobile-focus-x) var(--sp-brand-mobile-focus-y)}.sp-brand-stage__hint{font-size:.44rem}.sp-brand-stage__controls{padding-inline:.75rem}.sp-brand-video__video,.sp-brand-video__image{object-position:var(--sp-brand-mobile-focus-x) var(--sp-brand-mobile-focus-y)}.sp-brand-video__content,.sp-brand-video--media-right .sp-brand-video__content{order:2;padding:2rem 0}.sp-brand-video__heading{font-size:clamp(2.7rem,14vw,4.4rem)}.sp-brand-video__button{width:100%}}
   @media(prefers-reduced-motion:reduce){.sp-brand-video,.sp-brand-video__ambient,.sp-brand-video__ambient::before,.sp-brand-video__ambient::after,.sp-brand-video__beam,.sp-brand-video__media,.sp-brand-video__video,.sp-brand-video__image,.sp-brand-video__content,.sp-brand-video__eyebrow,.sp-brand-video__heading,.sp-brand-video__copy,.sp-brand-video__button,.sp-brand-video__button span,.sp-brand-stage::before,.sp-brand-stage__card,.sp-brand-stage__asset img,.sp-brand-stage__navigation button{transition:none}.sp-brand-video__ambient{display:none}.sp-brand-stage__viewport{scroll-behavior:auto}.sp-brand-video__media:hover .sp-brand-video__video,.sp-brand-video__media:focus-within .sp-brand-video__video,.sp-brand-video__media:hover .sp-brand-video__image,.sp-brand-video__media:focus-within .sp-brand-video__image{transform:none}}
 {% endstylesheet %}
 
@@ -229,9 +241,9 @@
     {"type":"range","id":"mobile_focus_x","label":"Mobile focal point — horizontal","min":0,"max":100,"step":5,"unit":"%","default":50},
     {"type":"range","id":"mobile_focus_y","label":"Mobile focal point — vertical","min":0,"max":100,"step":5,"unit":"%","default":50},
     {"type":"header","content":"Collection product stage"},
-    {"type":"checkbox","id":"show_product_stage","label":"Show scrollable 3D product stage","default":false,"info":"Uses live product images from the selected brand collection instead of the campaign media."},
+    {"type":"checkbox","id":"show_product_stage","label":"Show scrollable 3D product stage","default":false,"info":"Uses selected product blocks first, then live products from the brand collection."},
     {"type":"collection","id":"collection","label":"Brand collection","info":"Supplies the product stage and the main button when no custom link is provided."},
-    {"type":"range","id":"product_limit","label":"Products in stage","min":3,"max":8,"step":1,"default":5},
+    {"type":"range","id":"product_limit","label":"Collection products in stage","min":3,"max":8,"step":1,"default":5,"info":"Used when no individual product blocks are added."},
     {"type":"header","content":"Brand story"},
     {"type":"text","id":"eyebrow","label":"Eyebrow","default":"Currently spotlighting / In hand"},
     {"type":"textarea","id":"heading","label":"Heading","default":"FEATURED\nLABEL"},
@@ -240,6 +252,16 @@
     {"type":"text","id":"button_label","label":"Button label","default":"Shop the brand"},
     {"type":"url","id":"button_link","label":"Custom button link","info":"Overrides the selected brand collection."}
   ],
+  "blocks":[
+    {
+      "type":"product",
+      "name":"Stage product",
+      "settings":[
+        {"type":"product","id":"product","label":"Product"}
+      ]
+    }
+  ],
+  "max_blocks":8,
   "presets":[
     {
       "name":"SP — Brand spotlight"
