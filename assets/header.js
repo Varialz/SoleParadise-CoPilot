@@ -17,7 +17,7 @@
   }
 
   function getFocusable(container) {
-    var candidates = container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])');
+    var candidates = container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), summary, [tabindex]:not([tabindex="-1"])');
     return Array.prototype.filter.call(candidates, isRendered);
   }
 
