@@ -1,0 +1,85 @@
+{%- comment -%}Native accordions stay usable without JavaScript. Vendors follow the live catalog.{%- endcomment -%}
+{%- if section.settings.show_designer_directory and shop.vendors.size > 0 -%}
+  <details class="sp-menu-group">
+    <summary>Brands <span class="sp-menu-toggle" aria-hidden="true"></span></summary>
+    <ul class="sp-menu-links" role="list">
+      {%- assign exclusions = section.settings.designer_exclusions | default: 'Other' | split: ',' -%}
+      {%- for vendor in shop.vendors -%}
+        {%- liquid
+          assign excluded = false
+          assign vendor_key = vendor | handleize
+          for exclusion in exclusions
+            assign exclusion_key = exclusion | strip | handleize
+            if exclusion_key == vendor_key
+              assign excluded = true
+              break
+            endif
+          endfor
+        -%}
+        {%- unless excluded or vendor == blank -%}
+          <li><a href="{{ vendor | url_for_vendor | escape }}">{{ vendor | escape }}</a></li>
+        {%- endunless -%}
+      {%- endfor -%}
+    </ul>
+  </details>
+{%- endif -%}
+<details class="sp-menu-group">
+  <summary>Category <span class="sp-menu-toggle" aria-hidden="true"></span></summary>
+  <div class="sp-menu-children">
+    <details class="sp-menu-subgroup">
+      <summary>Tops <span class="sp-menu-toggle" aria-hidden="true"></span></summary>
+      <ul class="sp-menu-links" role="list">
+        <li><a href="{{ routes.search_url }}?q=tee&amp;type=product">T-shirts</a></li>
+        <li><a href="{{ routes.search_url }}?q=hoodie&amp;type=product">Hoodies</a></li>
+        <li><a href="{{ routes.search_url }}?q=sweatshirt&amp;type=product">Sweatshirts</a></li>
+        <li><a href="{{ routes.search_url }}?q=jacket&amp;type=product">Jackets</a></li>
+      </ul>
+    </details>
+    <details class="sp-menu-subgroup">
+      <summary>Bottoms <span class="sp-menu-toggle" aria-hidden="true"></span></summary>
+      <ul class="sp-menu-links" role="list">
+        <li><a href="{{ routes.search_url }}?q=denim&amp;type=product">Denim</a></li>
+        <li><a href="{{ routes.search_url }}?q=pants&amp;type=product">Pants</a></li>
+        <li><a href="{{ routes.search_url }}?q=shorts&amp;type=product">Shorts</a></li>
+      </ul>
+    </details>
+    <a class="sp-menu-child-link" href="{{ routes.search_url }}?q=accessories&amp;type=product">Accessories</a>
+    <a class="sp-menu-child-link" href="{{ routes.search_url }}?q=shoes&amp;type=product">Footwear</a>
+    <a class="sp-menu-child-link" href="{{ routes.all_products_collection_url }}">Shop all</a>
+  </div>
+</details>
+{%- comment -%}Keep the store's configured navigation, including its nested links.{%- endcomment -%}
+{%- if menu != blank -%}
+  {%- for link in menu.links -%}
+    {%- if link.links.size > 0 -%}
+      <details class="sp-menu-group">
+        <summary>{{ link.title | escape }} <span class="sp-menu-toggle" aria-hidden="true"></span></summary>
+        <div class="sp-menu-children">
+          <a class="sp-menu-child-link" href="{{ link.url | escape }}">Shop all {{ link.title | escape }}</a>
+          {%- for child in link.links -%}
+            {%- if child.links.size > 0 -%}
+              <details class="sp-menu-subgroup">
+                <summary>{{ child.title | escape }} <span class="sp-menu-toggle" aria-hidden="true"></span></summary>
+                <ul class="sp-menu-links" role="list">
+                  <li><a href="{{ child.url | escape }}">Shop all {{ child.title | escape }}</a></li>
+                  {%- for grandchild in child.links -%}
+                    <li><a href="{{ grandchild.url | escape }}"{% if grandchild.active %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+            {%- else -%}
+              <a class="sp-menu-child-link" href="{{ child.url | escape }}"{% if child.active %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </details>
+    {%- else -%}
+      <a class="sp-menu-group-link" href="{{ link.url | escape }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+    {%- endif -%}
+  {%- endfor -%}
+{%- else -%}
+  <a class="sp-menu-group-link" href="{{ routes.all_products_collection_url }}?sort_by=created-descending">New arrivals</a>
+  <a class="sp-menu-group-link" href="{{ routes.all_products_collection_url }}">Shop all</a>
+  <a class="sp-menu-group-link" href="/pages/contact">Contact</a>
+{%- endif -%}
+<a class="sp-menu-group-link" href="https://waitwhile.com/locations/soleparadise" target="_blank" rel="noopener">Reservations <span aria-hidden="true">↗</span></a>
