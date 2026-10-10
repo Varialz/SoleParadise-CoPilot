@@ -1,4 +1,20 @@
 {%- comment -%}Native accordions stay usable without JavaScript. Vendors follow the live catalog.{%- endcomment -%}
+{%- liquid
+  assign arrivals_menu_url = routes.all_products_collection_url | append: '?sort_by=created-descending'
+  assign sale_menu_url = section.settings.sale_menu_link
+  if sale_menu_url == blank
+    assign sale_menu_url = routes.collections_url | append: '/sale'
+    for link in menu.links
+      assign link_key = link.title | handleize
+      if link_key == 'sale'
+        assign sale_menu_url = link.url
+        break
+      endif
+    endfor
+  endif
+-%}
+<a class="sp-menu-group-link" href="{{ arrivals_menu_url | escape }}">New Arrivals</a>
+<a class="sp-menu-group-link" href="{{ sale_menu_url | escape }}">Sale</a>
 {%- if section.settings.show_designer_directory and shop.vendors.size > 0 -%}
   <details class="sp-menu-group">
     <summary>Brands <span class="sp-menu-toggle" aria-hidden="true"></span></summary>
@@ -51,6 +67,8 @@
 {%- comment -%}Keep the store's configured navigation, including its nested links.{%- endcomment -%}
 {%- if menu != blank -%}
   {%- for link in menu.links -%}
+    {%- assign link_key = link.title | handleize -%}
+    {%- if link_key == 'new-arrivals' or link_key == 'sale' -%}{%- continue -%}{%- endif -%}
     {%- if link.links.size > 0 -%}
       <details class="sp-menu-group">
         <summary>{{ link.title | escape }} <span class="sp-menu-toggle" aria-hidden="true"></span></summary>
@@ -78,7 +96,6 @@
     {%- endif -%}
   {%- endfor -%}
 {%- else -%}
-  <a class="sp-menu-group-link" href="{{ routes.all_products_collection_url }}?sort_by=created-descending">New arrivals</a>
   <a class="sp-menu-group-link" href="{{ routes.all_products_collection_url }}">Shop all</a>
   <a class="sp-menu-group-link" href="/pages/contact">Contact</a>
 {%- endif -%}
