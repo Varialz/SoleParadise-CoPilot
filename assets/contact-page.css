@@ -45,7 +45,7 @@
   .sp-contact__form-grid{grid-template-columns:minmax(280px,.78fr) minmax(0,1.22fr);align-items:start}
   .sp-contact__form-row{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media(min-width:1000px){.sp-contact__channel-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(min-width:1000px){.sp-contact__channel-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:749px){
   .sp-contact__hero{padding-top:3rem}
   .sp-contact__title{font-size:clamp(3.8rem,18vw,6rem)}

@@ -16,6 +16,8 @@
       assign instagram_url = 'https://www.instagram.com/soleparadise.chicago/'
     endif
 
+    assign grailed_url = section.settings.grailed_url | strip | default: 'https://www.grailed.com/soleparadisechicago'
+
     assign reservation_url = section.settings.reservation_url | strip
     if reservation_url == blank
       assign reservation_url = 'https://waitwhile.com/locations/soleparadise'
@@ -64,8 +66,17 @@
           <span class="sp-contact__channel-arrow" aria-hidden="true">↗</span>
         </a>
 
+        <a class="sp-contact__channel" href="{{ grailed_url | escape }}" target="_blank" rel="noopener">
+          <span class="sp-contact__channel-index">04 / Marketplace</span>
+          <span>
+            <span class="sp-contact__channel-label">Grailed</span>
+            <span class="sp-contact__channel-value">@soleparadisechicago</span>
+          </span>
+          <span class="sp-contact__channel-arrow" aria-hidden="true">↗</span>
+        </a>
+
         <div class="sp-contact__channel sp-contact__channel--static">
-          <span class="sp-contact__channel-index">04 / Local</span>
+          <span class="sp-contact__channel-index">05 / Local</span>
           <span>
             <span class="sp-contact__channel-label">Based in</span>
             <span class="sp-contact__channel-value">Chicago, Illinois</span>
@@ -146,6 +157,7 @@
   "settings":[
     {"type":"text","id":"contact_email","label":"Contact page email","default":"contact@shopsoleparadisechicago.com","info":"Create this mailbox before launch, or replace it with the address the shop wants customers to use."},
     {"type":"text","id":"instagram_url","label":"Contact page Instagram URL","default":"https://www.instagram.com/soleparadise.chicago/"},
+    {"type":"text","id":"grailed_url","label":"Contact page Grailed URL","default":"https://www.grailed.com/soleparadisechicago"},
     {"type":"text","id":"reservation_url","label":"Contact page reservation URL","default":"https://waitwhile.com/locations/soleparadise"}
   ],
   "enabled_on":{"templates":["page"]}
