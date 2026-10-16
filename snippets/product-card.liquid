@@ -210,6 +210,8 @@
       {%- if settings.show_temporary_fulfillment and product.available -%}
         <p class="product-card__fulfillment" aria-label="Fulfillment options">
           <span>{{ settings.same_day_delivery_text | escape }}</span>
+          <span>UPS Next Day Air shipping available</span>
+          <span>UPS Ground shipping available</span>
           <span>{{ settings.pickup_today_text | escape }}</span>
         </p>
       {%- endif -%}
