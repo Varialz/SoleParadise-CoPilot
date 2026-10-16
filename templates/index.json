@@ -96,23 +96,6 @@
             "mobile_focus_y": 60,
             "alt": "Sole Paradise campaign image 5"
           }
-        },
-        "slide_7271": {
-          "type": "slide",
-          "settings": {
-            "file_name": "IMG_7271.png",
-            "image_url": "https://cdn.shopify.com/s/files/1/0859/9561/8554/files/IMG_7271.png?v=1788410383",
-            "eyebrow": "Now in store",
-            "heading": "Chrome Hearts Hoodies",
-            "copy": "Explore the latest Chrome Hearts hoodies available at Sole Paradise.",
-            "button_label": "Shop Chrome Hearts hoodies",
-            "button_link": "/search?q=chrome+hearts+hoodie&type=product",
-            "focus_x": 50,
-            "focus_y": 55,
-            "mobile_focus_x": 50,
-            "mobile_focus_y": 60,
-            "alt": "Sole Paradise campaign image 6"
-          }
         }
       },
       "block_order": [
@@ -120,8 +103,7 @@
         "slide_5083",
         "slide_0035",
         "slide_6935",
-        "slide_5230",
-        "slide_7271"
+        "slide_5230"
       ],
       "settings": {
         "default_file_name": "IMG_6311.png",
