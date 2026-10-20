@@ -33,7 +33,8 @@
         "newsletter": {
           "type": "newsletter",
           "settings": {
-            "heading": "Paradise dispatch"
+            "heading": "Paradise dispatch",
+            "text": ""
           }
         },
         "social": {
@@ -49,7 +50,10 @@
         "newsletter",
         "social"
       ],
-      "settings": {}
+      "settings": {
+        "show_logo": true,
+        "reseller_disclaimer": "Sole Paradise is an independent third-party reseller and is not affiliated with, endorsed by, or sponsored by any brand featured on this site. All trademarks and brand names are the property of their respective owners."
+      }
     }
   },
   "order": [
