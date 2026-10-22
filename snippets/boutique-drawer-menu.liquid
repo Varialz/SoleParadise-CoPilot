@@ -5,9 +5,11 @@
   if faq_menu_url == blank
     assign faq_menu_url = contact_page_url | append: '?view=faq'
   endif
-  assign refund_menu_url = section.settings.refund_menu_link | default: shop.refund_policy.url | default: pages['refund-policy'].url
+  assign refund_menu_url = section.settings.refund_menu_link
   if refund_menu_url == blank
-    assign refund_menu_url = contact_page_url | append: '?view=refund-policy'
+    capture refund_menu_url
+      render 'refund-policy-url'
+    endcapture
   endif
   assign collectibles_menu_url = section.settings.collectibles_menu_link | default: collections['collectibles'].url
   assign jewelry_menu_url = section.settings.jewelry_menu_link | default: collections['jewelry'].url | default: collections['jewellery'].url

@@ -1,0 +1,20 @@
+/* Keep catalog cards focused on product, price and clearly readable sizes. */
+.product-card__size-meta,.brand-showcase-card__size,.brand-showcase--progressive .brand-showcase__panel.is-progressive-panel .brand-showcase-card__size{display:flex;align-items:baseline;flex-wrap:wrap;gap:.3rem;margin:.55rem 0 .35rem;color:var(--sp-ink);font:700 1rem/1.4 var(--font-body-family,Arial,sans-serif);letter-spacing:0;text-transform:none}
+.product-card__size-label{font-size:.8em;font-weight:500;color:var(--sp-muted)}
+.product-card__size-meta strong{font:inherit;color:var(--sp-ink)}
+@media(max-width:749px){.product-card__size-meta,.brand-showcase-card__size,.brand-showcase--progressive .brand-showcase__panel.is-progressive-panel .brand-showcase-card__size{font-size:.94rem;line-height:1.4}}
+
+/* The navigation and utilities flank one visible logo in the center. */
+.site-header .site-header__row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;min-height:82px}
+.site-header__navigation{display:flex;align-items:center;min-width:0;gap:12px;align-self:stretch}
+.site-header__navigation .site-header__trigger--menu{margin:0;flex:0 0 auto}
+.site-header__navigation .header-nav-desktop{display:none}
+.site-header .site-header__logo{justify-self:center;justify-content:center;min-width:0;margin:0;padding:4px 0}
+.site-header .site-header__logo img{display:block;width:auto;max-width:130px;height:60px;max-height:60px;filter:none}
+.site-header .site-header__logo .site-header__brand-mark{width:60px;height:60px;border-radius:50%;object-fit:contain}
+.site-header .site-header__utility{justify-self:end;min-width:0;width:auto;margin:0}
+@media(min-width:1280px){.site-header__navigation .header-nav-desktop{display:flex}.site-header__navigation .header-nav-desktop__list{flex-wrap:wrap;align-content:center;column-gap:14px;row-gap:6px}.site-header__navigation .header-nav-desktop__link{min-height:30px}.site-header__navigation .header-nav-desktop__link::after{bottom:0}}
+@media(max-width:749px){.site-header .site-header__row{min-height:68px;gap:8px}.site-header .site-header__logo img{height:48px;max-height:48px;max-width:110px}.site-header .site-header__logo .site-header__brand-mark{width:48px;height:48px}.site-header__navigation{gap:0}}
+
+.sp-cart__standards .sp-cart__authenticity{display:block}
+.sp-cart__standards .sp-cart__authenticity strong{display:block;font-size:.75rem;line-height:1.6;letter-spacing:.025em}

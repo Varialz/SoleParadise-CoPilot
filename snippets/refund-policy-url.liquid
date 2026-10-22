@@ -1,0 +1,4 @@
+{%- liquid
+  assign policy_page_url = pages['refund-policy'].url | default: pages['contact'].url | default: '/pages/contact'
+  echo policy_page_url | append: '?view=refund-policy'
+-%}

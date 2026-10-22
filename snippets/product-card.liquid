@@ -131,11 +131,6 @@
       assign card_size_prefix = 'Size'
     endunless
 
-    assign has_archive_meta = false
-    if archive_size != blank or condition != blank or item_state != blank or archive_id != blank
-      assign has_archive_meta = true
-    endif
-
     assign quick_view_image = ''
     if featured_image != blank
       assign quick_view_image = featured_image | image_url: width: 1200
@@ -150,12 +145,6 @@
         {%- else -%}
           {%- if on_sale -%}<span class="product-card__badge product-card__badge--sale">{{ 'products.card.sale' | t }}</span>{%- endif -%}
         {%- endunless -%}
-      {%- endif -%}
-
-      {%- if from_feed and archive_id != blank -%}
-        <span class="product-card__provenance" aria-label="Archive reference">
-          {{ archive_id | escape }}
-        </span>
       {%- endif -%}
 
       {%- if featured_image != blank -%}
@@ -191,30 +180,13 @@
       {%- if card_show_vendor and product.vendor != blank -%}<p class="product-card__vendor">{{ product.vendor | escape }}</p>{%- endif -%}
       <{{ card_heading_tag }} class="product-card__title"><a class="product-card__link" href="{{ product_url | escape }}">{{ product.title | escape }}</a></{{ card_heading_tag }}>
 
-      {%- if has_archive_meta -%}
-        <p class="product-card__archive-meta" aria-label="Piece details">
-          {%- if archive_size != blank -%}<span>{{ archive_size | escape }}</span>{%- endif -%}
-          {%- if condition != blank -%}<span>{{ condition | escape }}</span>{%- endif -%}
-          {%- if item_state != blank -%}<span>{{ item_state | escape }}</span>{%- endif -%}
-        </p>
-      {%- endif -%}
-
-      {%- if archive_size == blank and available_card_sizes != blank -%}
-        <p class="product-card__archive-meta product-card__size-meta" aria-label="Available sizes">
-          <span>{{ card_size_prefix }} {{ available_card_sizes | escape }}</span>
-        </p>
+      {%- if archive_size != blank -%}
+        <p class="product-card__size-meta" aria-label="Item size"><span class="product-card__size-label">Size</span> <strong>{{ archive_size | escape }}</strong></p>
+      {%- elsif available_card_sizes != blank -%}
+        <p class="product-card__size-meta" aria-label="Available sizes"><span class="product-card__size-label">{{ card_size_prefix }}</span> <strong>{{ available_card_sizes | escape }}</strong></p>
       {%- endif -%}
 
       {%- render 'product-price', product: product -%}
-      <p class="product-card__trust" aria-label="Store assurances"><span>Authenticated</span><span>Chicago</span></p>
-      {%- if settings.show_temporary_fulfillment and product.available -%}
-        <p class="product-card__fulfillment" aria-label="Fulfillment options">
-          <span>{{ settings.same_day_delivery_text | escape }}</span>
-          <span>UPS Next Day Air shipping available</span>
-          <span>UPS Ground shipping available</span>
-          <span>{{ settings.pickup_today_text | escape }}</span>
-        </p>
-      {%- endif -%}
     </div>
   </article>
 {%- endif -%}

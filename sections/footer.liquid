@@ -115,7 +115,15 @@
   {%- endif -%}
 
   <div class="site-footer__utility page-width">
-    {%- capture policy_links -%}{%- for policy in shop.policies -%}{%- if policy != blank and policy.url != blank -%}<li><a href="{{ policy.url | escape }}" class="site-footer__policy-link">{{ policy.title | escape }}</a></li>{%- endif -%}{%- endfor -%}{%- endcapture -%}
+    {%- capture refund_policy_url -%}{%- render 'refund-policy-url' -%}{%- endcapture -%}
+    {%- capture policy_links -%}
+      <li><a href="{{ refund_policy_url | escape }}" class="site-footer__policy-link">Refund Policy</a></li>
+      {%- for policy in shop.policies -%}
+        {%- if policy != blank and policy.url != blank and policy.url != shop.refund_policy.url -%}
+          <li><a href="{{ policy.url | escape }}" class="site-footer__policy-link">{{ policy.title | escape }}</a></li>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
     {%- if policy_links != blank -%}<nav class="site-footer__policies" aria-label="{{ 'footer.policies' | t }}"><ul class="site-footer__policies-list list-unstyled">{{ policy_links }}</ul></nav>{%- endif -%}
     <p class="site-footer__copyright text-caption">{{ 'footer.copyright' | t: year: current_year, shop: shop_name }}</p>
   </div>

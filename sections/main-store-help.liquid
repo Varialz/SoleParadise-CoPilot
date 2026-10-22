@@ -2,10 +2,9 @@
 {{ 'store-help.css' | asset_url | stylesheet_tag }}
 {%- liquid
   assign contact_url = pages['contact'].url | default: '/pages/contact'
-  assign refund_url = shop.refund_policy.url | default: pages['refund-policy'].url
-  if refund_url == blank
-    assign refund_url = contact_url | append: '?view=refund-policy'
-  endif
+  capture refund_url
+    render 'refund-policy-url'
+  endcapture
 -%}
 <section class="sp-page sp-help page-width section-spacing">
   <header class="sp-page__head">
@@ -16,7 +15,9 @@
   </header>
   <div class="sp-page__body sp-help__body">
     {%- if section.settings.content_kind == 'refund' -%}
-      {%- if shop.refund_policy.body != blank -%}
+      {%- if section.settings.refund_policy_copy != blank -%}
+        <div class="sp-help__policy rte">{{ section.settings.refund_policy_copy }}</div>
+      {%- elsif shop.refund_policy.body != blank -%}
         <div class="rte">{{ shop.refund_policy.body }}</div>
       {%- elsif page.handle == 'refund-policy' and page.content != blank -%}
         <div class="rte">{{ page.content }}</div>
@@ -47,6 +48,7 @@
   "settings":[
     {"type":"text","id":"heading","label":"Heading","default":"FAQ"},
     {"type":"select","id":"content_kind","label":"Content","options":[{"value":"faq","label":"FAQ"},{"value":"refund","label":"Refund policy"}],"default":"faq"},
+    {"type":"richtext","id":"refund_policy_copy","label":"Refund policy text","info":"Store-approved policy shown on this page."},
     {"type":"richtext","id":"refund_support_copy","label":"Refund inquiry text","default":"<p>For return or refund questions about your order, contact Sole Paradise with your order number before sending an item back.</p>","info":"Used when no refund policy is published in Shopify Settings > Policies. Add the store's approved terms there."}
   ],
   "blocks":[

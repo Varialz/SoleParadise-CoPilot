@@ -1,4 +1,6 @@
 {%- liquid
+  assign header_logo_width = settings.logo_width | default: 140
+  assign header_logo_resolution = header_logo_width | times: 2
   assign menu = section.settings.menu
   assign sticky = section.settings.enable_sticky_header
   assign utility_speed = section.settings.utility_speed | default: 24
@@ -41,34 +43,37 @@
 
   <div class="site-header__main">
     <div class="site-header__row page-width">
-      <button type="button" class="site-header__trigger site-header__trigger--menu no-js-hidden" aria-expanded="false" aria-controls="header-drawer-{{ section.id }}" data-header-drawer-open>
-        {%- render 'icon', name: 'menu' -%}
-        <span class="site-header__utility-label">Menu</span>
-        <span class="visually-hidden">{{ 'header.menu' | t }}</span>
-      </button>
+      <div class="site-header__navigation">
+        <button type="button" class="site-header__trigger site-header__trigger--menu no-js-hidden" aria-expanded="false" aria-controls="header-drawer-{{ section.id }}" data-header-drawer-open>
+          {%- render 'icon', name: 'menu' -%}
+          <span class="site-header__utility-label">Menu</span>
+          <span class="visually-hidden">{{ 'header.menu' | t }}</span>
+        </button>
+
+        <nav class="header-nav-desktop" aria-label="Primary navigation">
+          {%- if menu != blank -%}
+            {%- render 'header-menu-desktop', menu: menu, section_id: section.id -%}
+          {%- else -%}
+            <ul class="header-nav-desktop__list header-nav-desktop__list--fallback list-unstyled">
+              <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?sort_by=created-descending">New</a></div></li>
+              <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}">Shop</a></div></li>
+              <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.collections_url }}">Designers</a></div></li>
+              <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Clothing">Clothing</a></div></li>
+              <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Footwear">Footwear</a></div></li>
+              <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="/pages/contact">Contact</a></div></li>
+            </ul>
+          {%- endif -%}
+        </nav>
+
+      </div>
 
       <a class="site-header__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home">
         {%- if settings.logo -%}
-          <img src="{{ settings.logo | image_url: width: settings.logo_width | times: 2 }}" alt="{{ shop.name | escape }}" width="{{ settings.logo_width }}" height="{{ settings.logo_width | divided_by: settings.logo.aspect_ratio }}" loading="eager">
+          <img src="{{ settings.logo | image_url: width: header_logo_resolution }}" alt="{{ shop.name | escape }}" width="{{ header_logo_width }}" height="{{ header_logo_width | divided_by: settings.logo.aspect_ratio }}" loading="eager">
         {%- else -%}
-          <span class="site-header__wordmark">{{ shop.name | escape }}</span>
+          <img class="site-header__brand-mark" src="{{ 'sole-paradise-sp-mark.webp' | asset_url }}" alt="Sole Paradise" width="60" height="60" loading="eager">
         {%- endif -%}
       </a>
-
-      <nav class="header-nav-desktop" aria-label="Primary navigation">
-        {%- if menu != blank -%}
-          {%- render 'header-menu-desktop', menu: menu, section_id: section.id -%}
-        {%- else -%}
-          <ul class="header-nav-desktop__list header-nav-desktop__list--fallback list-unstyled">
-            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?sort_by=created-descending">New</a></div></li>
-            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}">Shop</a></div></li>
-            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.collections_url }}">Designers</a></div></li>
-            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Clothing">Clothing</a></div></li>
-            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="{{ routes.all_products_collection_url }}?filter.p.product_type=Footwear">Footwear</a></div></li>
-            <li class="header-nav-desktop__item"><div class="header-nav-desktop__item-row"><a class="header-nav-desktop__link" href="/pages/contact">Contact</a></div></li>
-          </ul>
-        {%- endif -%}
-      </nav>
 
       <div class="site-header__utility">
         <a class="site-header__reservation" href="https://waitwhile.com/locations/soleparadise" target="_blank" rel="noopener" aria-label="Make a reservation at Sole Paradise">Reservations</a>
@@ -137,7 +142,7 @@
     {"type":"url","id":"jewelry_menu_link","label":"Jewelry menu link","info":"Uses your Jewelry collection or catalog search when empty."},
     {"type":"url","id":"womens_menu_link","label":"Womens menu link","info":"Uses your Womens collection or catalog search when empty."},
     {"type":"url","id":"faq_menu_link","label":"FAQ menu link","info":"Uses your FAQ page or the included FAQ view when empty."},
-    {"type":"url","id":"refund_menu_link","label":"Refund Policy menu link","info":"Uses the Shopify refund policy or the included refund information view when empty."},
+    {"type":"url","id":"refund_menu_link","label":"Refund Policy menu link","info":"Uses the Refund Policy page view when empty."},
     {"type":"checkbox","id":"enable_sticky_header","label":"Enable sticky header","default":true},
     {"type":"checkbox","id":"show_utility_bar","label":"Show utility bar","default":true},
     {"type":"text","id":"utility_text","label":"Utility text","default":"Chicago / IL · Authenticated designer resale · Worldwide shipping"},

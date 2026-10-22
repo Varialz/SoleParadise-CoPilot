@@ -4,7 +4,8 @@
       "type": "main-store-help",
       "settings": {
         "heading": "Refund Policy",
-        "content_kind": "refund"
+        "content_kind": "refund",
+        "refund_policy_copy": "<p>Due to the unique and pre-owned nature of our inventory, all sales are generally final.</p>\n<h2>Returns and exchanges</h2>\n<p>We do not accept returns or exchanges for:</p>\n<ul><li>Buyer’s remorse</li><li>Incorrect sizing</li><li>Change of mind</li></ul>\n<h2>Problems with an order</h2>\n<p>However, if you receive:</p>\n<ul><li>The wrong item</li><li>An item that was materially different from its description</li><li>An item damaged during transit</li></ul>\n<p>Please contact us within <strong>48 hours of delivery</strong> at <a href=\"mailto:contact@shopsoleparadisechicago.com\">contact@shopsoleparadisechicago.com</a> so we can review the issue and work toward a resolution.</p>\n<h2>Authenticity</h2>\n<p>All merchandise sold by Sole Paradise is backed by our commitment to authenticity. If you have concerns regarding authenticity, please contact us immediately.</p>"
       }
     }
   },
