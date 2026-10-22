@@ -94,6 +94,48 @@
         {%- render 'product-form', product: product, selected_variant: selected_variant, section_id: section.id, show_quantity: section.settings.show_quantity_selector, show_dynamic_checkout: section.settings.enable_dynamic_checkout -%}
       </div>
 
+      <section class="product__information" aria-label="Product information" data-sp-product-reveal>
+        <details class="product__information-item">
+          <summary class="product__information-summary"><span>Item Description</span><span class="product__information-toggle" aria-hidden="true"></span></summary>
+          <div class="product__information-content rte">
+            {%- assign description_rendered = false -%}
+            {%- assign sku_rendered = false -%}
+            {%- for block in section.blocks -%}
+              {%- case block.type -%}
+                {%- when 'description' -%}<div class="product__description" {{ block.shopify_attributes }}>{%- if product.description != blank -%}{{ product.description }}{%- else -%}<p>Contact Sole Paradise for additional details about this piece.</p>{%- endif -%}</div>{%- assign description_rendered = true -%}
+                {%- when 'sku' -%}<p class="product__sku" data-product-sku {{ block.shopify_attributes }}>{%- if selected_variant.sku != blank -%}<span class="product__sku-label">{{ 'products.page.sku' | t }}</span> <span class="product__sku-value">{{ selected_variant.sku | escape }}</span>{%- endif -%}</p>{%- assign sku_rendered = true -%}
+              {%- endcase -%}
+            {%- endfor -%}
+            {%- unless description_rendered -%}<div class="product__description">{%- if product.description != blank -%}{{ product.description }}{%- else -%}<p>Contact Sole Paradise for additional details about this piece.</p>{%- endif -%}</div>{%- endunless -%}
+            {%- unless sku_rendered -%}<p class="product__sku" data-product-sku>{%- if selected_variant.sku != blank -%}<span class="product__sku-label">{{ 'products.page.sku' | t }}</span> <span class="product__sku-value">{{ selected_variant.sku | escape }}</span>{%- endif -%}</p>{%- endunless -%}
+          </div>
+        </details>
+        {%- if section.settings.authenticity_copy != blank -%}
+          <details class="product__information-item">
+            <summary class="product__information-summary"><span>Authenticity</span><span class="product__information-toggle" aria-hidden="true"></span></summary>
+            <div class="product__information-content rte">{{ section.settings.authenticity_copy }}</div>
+          </details>
+        {%- endif -%}
+        {%- if section.settings.faq_copy != blank -%}
+          <details class="product__information-item">
+            <summary class="product__information-summary"><span>FAQ</span><span class="product__information-toggle" aria-hidden="true"></span></summary>
+            <div class="product__information-content rte">{{ section.settings.faq_copy }}</div>
+          </details>
+        {%- endif -%}
+        {%- if section.settings.payment_copy != blank -%}
+          <details class="product__information-item">
+            <summary class="product__information-summary"><span>Payments</span><span class="product__information-toggle" aria-hidden="true"></span></summary>
+            <div class="product__information-content rte">{{ section.settings.payment_copy }}</div>
+          </details>
+        {%- endif -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'disclosure' -%}{%- if block.settings.heading != blank and block.settings.content != blank -%}<details class="product__disclosure" {{ block.shopify_attributes }}><summary class="product__disclosure-summary"><span>{{ block.settings.heading | escape }}</span>{%- render 'icon', name: 'chevron-down', size: 16 -%}</summary><div class="product__disclosure-content rte">{{ block.settings.content }}</div></details>{%- endif -%}
+            {%- when 'custom_text' -%}{%- if block.settings.content != blank -%}<div class="product__custom-text rte" {{ block.shopify_attributes }}>{{ block.settings.content }}</div>{%- endif -%}
+          {%- endcase -%}
+        {%- endfor -%}
+      </section>
+
       <div class="product__pickup" data-product-pickup data-sp-product-reveal>
         <div class="product__pickup-heading">
           {%- render 'icon', name: 'store', size: 19 -%}
@@ -144,37 +186,6 @@
 
     </div>
   </div>
-
-  <section class="product__details-shell" data-product-tabs data-sp-product-reveal aria-label="Product information">
-    <div class="product__tabs" role="tablist" aria-label="Product details">
-      <button id="ProductTabDescription-{{ section.id }}" class="product__tab is-active" type="button" role="tab" aria-selected="true" aria-controls="ProductPanelDescription-{{ section.id }}" data-product-tab="description">Description</button>
-      <button id="ProductTabAuthenticity-{{ section.id }}" class="product__tab" type="button" role="tab" aria-selected="false" aria-controls="ProductPanelAuthenticity-{{ section.id }}" tabindex="-1" data-product-tab="authenticity">Authenticity guarantee</button>
-      <button id="ProductTabFaq-{{ section.id }}" class="product__tab" type="button" role="tab" aria-selected="false" aria-controls="ProductPanelFaq-{{ section.id }}" tabindex="-1" data-product-tab="faq">FAQ</button>
-      <button id="ProductTabPayment-{{ section.id }}" class="product__tab" type="button" role="tab" aria-selected="false" aria-controls="ProductPanelPayment-{{ section.id }}" tabindex="-1" data-product-tab="payment">Payments</button>
-    </div>
-
-    <div id="ProductPanelDescription-{{ section.id }}" class="product__tab-panel rte" role="tabpanel" aria-labelledby="ProductTabDescription-{{ section.id }}" data-product-tab-panel="description">
-      {%- assign description_rendered = false -%}
-      {%- assign sku_rendered = false -%}
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'description' -%}<div class="product__description" {{ block.shopify_attributes }}>{%- if product.description != blank -%}{{ product.description }}{%- else -%}<p>Contact Sole Paradise for additional details about this piece.</p>{%- endif -%}</div>{%- assign description_rendered = true -%}
-          {%- when 'sku' -%}<p class="product__sku" data-product-sku {{ block.shopify_attributes }}>{%- if selected_variant.sku != blank -%}<span class="product__sku-label">{{ 'products.page.sku' | t }}</span> <span class="product__sku-value">{{ selected_variant.sku | escape }}</span>{%- endif -%}</p>{%- assign sku_rendered = true -%}
-        {%- endcase -%}
-      {%- endfor -%}
-      {%- unless description_rendered -%}<div class="product__description">{%- if product.description != blank -%}{{ product.description }}{%- else -%}<p>Contact Sole Paradise for additional details about this piece.</p>{%- endif -%}</div>{%- endunless -%}
-      {%- unless sku_rendered -%}<p class="product__sku" data-product-sku>{%- if selected_variant.sku != blank -%}<span class="product__sku-label">{{ 'products.page.sku' | t }}</span> <span class="product__sku-value">{{ selected_variant.sku | escape }}</span>{%- endif -%}</p>{%- endunless -%}
-      {%- for block in section.blocks -%}
-        {%- case block.type -%}
-          {%- when 'disclosure' -%}{%- if block.settings.heading != blank and block.settings.content != blank -%}<details class="product__disclosure" {{ block.shopify_attributes }}><summary class="product__disclosure-summary"><span>{{ block.settings.heading | escape }}</span>{%- render 'icon', name: 'chevron-down', size: 16 -%}</summary><div class="product__disclosure-content rte">{{ block.settings.content }}</div></details>{%- endif -%}
-          {%- when 'custom_text' -%}{%- if block.settings.content != blank -%}<div class="product__custom-text rte" {{ block.shopify_attributes }}>{{ block.settings.content }}</div>{%- endif -%}
-        {%- endcase -%}
-      {%- endfor -%}
-    </div>
-    <div id="ProductPanelAuthenticity-{{ section.id }}" class="product__tab-panel rte" role="tabpanel" aria-labelledby="ProductTabAuthenticity-{{ section.id }}" data-product-tab-panel="authenticity" hidden>{{ section.settings.authenticity_copy }}</div>
-    <div id="ProductPanelFaq-{{ section.id }}" class="product__tab-panel rte" role="tabpanel" aria-labelledby="ProductTabFaq-{{ section.id }}" data-product-tab-panel="faq" hidden>{{ section.settings.faq_copy }}</div>
-    <div id="ProductPanelPayment-{{ section.id }}" class="product__tab-panel rte" role="tabpanel" aria-labelledby="ProductTabPayment-{{ section.id }}" data-product-tab-panel="payment" hidden>{{ section.settings.payment_copy }}</div>
-  </section>
 
   <div class="product__service-grid" data-sp-product-reveal aria-label="Sole Paradise service standards">
     <div class="product__service-item">{%- render 'icon', name: 'package', size: 25 -%}<strong>Free shipping</strong><span>{{ section.settings.shipping_copy | escape }}</span></div>

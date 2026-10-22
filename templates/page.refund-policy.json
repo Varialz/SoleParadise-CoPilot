@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-store-help",
+      "settings": {
+        "heading": "Refund Policy",
+        "content_kind": "refund"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

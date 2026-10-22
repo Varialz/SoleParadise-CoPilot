@@ -1,0 +1,58 @@
+{{ 'page.css' | asset_url | stylesheet_tag }}
+{{ 'store-help.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign contact_url = pages['contact'].url | default: '/pages/contact'
+  assign refund_url = shop.refund_policy.url | default: pages['refund-policy'].url
+  if refund_url == blank
+    assign refund_url = contact_url | append: '?view=refund-policy'
+  endif
+-%}
+<section class="sp-page sp-help page-width section-spacing">
+  <header class="sp-page__head">
+    <div>
+      <p class="sp-kicker">Sole Paradise / Customer care</p>
+      <h1>{{ section.settings.heading | escape }}</h1>
+    </div>
+  </header>
+  <div class="sp-page__body sp-help__body">
+    {%- if section.settings.content_kind == 'refund' -%}
+      {%- if shop.refund_policy.body != blank -%}
+        <div class="rte">{{ shop.refund_policy.body }}</div>
+      {%- elsif page.handle == 'refund-policy' and page.content != blank -%}
+        <div class="rte">{{ page.content }}</div>
+      {%- else -%}
+        <div class="rte">{{ section.settings.refund_support_copy }}</div>
+      {%- endif -%}
+    {%- else -%}
+      {%- for block in section.blocks -%}
+        {%- if block.settings.question != blank and block.settings.answer != blank -%}
+          <details class="sp-help__question" {{ block.shopify_attributes }}>
+            <summary>{{ block.settings.question | escape }}<span aria-hidden="true"></span></summary>
+            <div class="sp-help__answer rte">{{ block.settings.answer }}</div>
+          </details>
+        {%- endif -%}
+      {%- endfor -%}
+      <details class="sp-help__question">
+        <summary>Where can I find the refund policy?<span aria-hidden="true"></span></summary>
+        <div class="sp-help__answer rte"><p><a href="{{ refund_url | escape }}">Read the Refund Policy</a> for information about returns and refunds, or contact the shop about an order.</p></div>
+      </details>
+    {%- endif -%}
+    <p class="sp-help__contact"><a href="{{ contact_url | escape }}">Contact Sole Paradise</a></p>
+  </div>
+</section>
+{% schema %}
+{
+  "name":"Store help",
+  "tag":"section",
+  "settings":[
+    {"type":"text","id":"heading","label":"Heading","default":"FAQ"},
+    {"type":"select","id":"content_kind","label":"Content","options":[{"value":"faq","label":"FAQ"},{"value":"refund","label":"Refund policy"}],"default":"faq"},
+    {"type":"richtext","id":"refund_support_copy","label":"Refund inquiry text","default":"<p>For return or refund questions about your order, contact Sole Paradise with your order number before sending an item back.</p>","info":"Used when no refund policy is published in Shopify Settings > Policies. Add the store's approved terms there."}
+  ],
+  "blocks":[
+    {"type":"question","name":"Question","settings":[{"type":"text","id":"question","label":"Question"},{"type":"richtext","id":"answer","label":"Answer"}]}
+  ],
+  "max_blocks":20,
+  "enabled_on":{"templates":["page"]}
+}
+{% endschema %}

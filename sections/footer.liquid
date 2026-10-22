@@ -110,6 +110,10 @@
     </div>
   {%- endif -%}
 
+  {%- if section.settings.show_payment_icons -%}
+    {%- render 'footer-payment-icons' -%}
+  {%- endif -%}
+
   <div class="site-footer__utility page-width">
     {%- capture policy_links -%}{%- for policy in shop.policies -%}{%- if policy != blank and policy.url != blank -%}<li><a href="{{ policy.url | escape }}" class="site-footer__policy-link">{{ policy.title | escape }}</a></li>{%- endif -%}{%- endfor -%}{%- endcapture -%}
     {%- if policy_links != blank -%}<nav class="site-footer__policies" aria-label="{{ 'footer.policies' | t }}"><ul class="site-footer__policies-list list-unstyled">{{ policy_links }}</ul></nav>{%- endif -%}
@@ -122,6 +126,7 @@
   "name":"Footer",
   "settings":[
     {"type":"checkbox","id":"show_logo","label":"Show logo","default":true},
+    {"type":"checkbox","id":"show_payment_icons","label":"Show payment icons","default":true,"info":"Displays payment methods enabled in Shopify."},
     {"type":"textarea","id":"reseller_disclaimer","label":"Reseller disclaimer","default":"Sole Paradise is an independent third-party reseller and is not affiliated with, endorsed by, or sponsored by Louis Vuitton or any other brand featured on this site. All trademarks and brand names are the property of their respective owners."}
   ],
   "blocks":[

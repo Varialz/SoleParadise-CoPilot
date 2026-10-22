@@ -1,5 +1,41 @@
 {%- comment -%}Native accordions stay usable without JavaScript. Vendors follow the live catalog.{%- endcomment -%}
 {%- liquid
+  assign contact_page_url = pages['contact'].url | default: '/pages/contact'
+  assign faq_menu_url = section.settings.faq_menu_link | default: pages['faq'].url | default: pages['faqs'].url
+  if faq_menu_url == blank
+    assign faq_menu_url = contact_page_url | append: '?view=faq'
+  endif
+  assign refund_menu_url = section.settings.refund_menu_link | default: shop.refund_policy.url | default: pages['refund-policy'].url
+  if refund_menu_url == blank
+    assign refund_menu_url = contact_page_url | append: '?view=refund-policy'
+  endif
+  assign collectibles_menu_url = section.settings.collectibles_menu_link | default: collections['collectibles'].url
+  assign jewelry_menu_url = section.settings.jewelry_menu_link | default: collections['jewelry'].url | default: collections['jewellery'].url
+  assign womens_menu_url = section.settings.womens_menu_link | default: collections['womens'].url | default: collections['women'].url
+  for link in menu.links
+    assign link_key = link.title | handleize
+    if collectibles_menu_url == blank and link_key == 'collectibles'
+      assign collectibles_menu_url = link.url
+    elsif jewelry_menu_url == blank
+      if link_key == 'jewelry' or link_key == 'jewellery'
+        assign jewelry_menu_url = link.url
+      endif
+    endif
+    if womens_menu_url == blank
+      if link_key == 'womens' or link_key == 'women-s' or link_key == 'women'
+        assign womens_menu_url = link.url
+      endif
+    endif
+  endfor
+  if collectibles_menu_url == blank
+    assign collectibles_menu_url = routes.search_url | append: '?q=collectible*&type=product'
+  endif
+  if jewelry_menu_url == blank
+    assign jewelry_menu_url = routes.search_url | append: '?q=jewelry+OR+jewellery+OR+necklace+OR+bracelet+OR+ring+OR+pendant+OR+earrings&type=product'
+  endif
+  if womens_menu_url == blank
+    assign womens_menu_url = routes.search_url | append: '?q=women*&type=product'
+  endif
   assign arrivals_menu_url = routes.all_products_collection_url | append: '?sort_by=created-descending'
   assign sale_menu_url = section.settings.sale_menu_link
   if sale_menu_url == blank
@@ -64,11 +100,14 @@
     <a class="sp-menu-child-link" href="{{ routes.all_products_collection_url }}">Shop all</a>
   </div>
 </details>
+<a class="sp-menu-group-link" href="{{ collectibles_menu_url | escape }}">Collectibles</a>
+<a class="sp-menu-group-link" href="{{ jewelry_menu_url | escape }}">Jewelry</a>
+<a class="sp-menu-group-link" href="{{ womens_menu_url | escape }}">Womens</a>
 {%- comment -%}Keep the store's configured navigation, including its nested links.{%- endcomment -%}
 {%- if menu != blank -%}
   {%- for link in menu.links -%}
     {%- assign link_key = link.title | handleize -%}
-    {%- if link_key == 'new-arrivals' or link_key == 'sale' -%}{%- continue -%}{%- endif -%}
+    {%- if link_key == 'new-arrivals' or link_key == 'sale' or link_key == 'collectibles' or link_key == 'jewelry' or link_key == 'jewellery' or link_key == 'womens' or link_key == 'women-s' or link_key == 'women' or link_key == 'faq' or link_key == 'faqs' or link_key == 'refund-policy' -%}{%- continue -%}{%- endif -%}
     {%- if link.links.size > 0 -%}
       <details class="sp-menu-group">
         <summary>{{ link.title | escape }} <span class="sp-menu-toggle" aria-hidden="true"></span></summary>
@@ -100,3 +139,6 @@
   <a class="sp-menu-group-link" href="/pages/contact">Contact</a>
 {%- endif -%}
 <a class="sp-menu-group-link" href="https://waitwhile.com/locations/soleparadise" target="_blank" rel="noopener">Reservations <span aria-hidden="true">↗</span></a>
+
+<a class="sp-menu-group-link" href="{{ faq_menu_url | escape }}">FAQ</a>
+<a class="sp-menu-group-link" href="{{ refund_menu_url | escape }}">Refund Policy</a>

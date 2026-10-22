@@ -1,0 +1,10 @@
+{%- if shop.enabled_payment_types.size > 0 -%}
+  <div class="site-footer__payments page-width">
+    <span class="visually-hidden">Accepted payment methods</span>
+    <ul class="site-footer__payment-list list-unstyled" role="list" aria-label="Accepted payment methods">
+      {%- for type in shop.enabled_payment_types -%}
+        <li>{{ type | payment_type_svg_tag: class: 'site-footer__payment-icon' }}</li>
+      {%- endfor -%}
+    </ul>
+  </div>
+{%- endif -%}

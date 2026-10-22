@@ -1,0 +1,58 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-store-help",
+      "settings": {
+        "heading": "FAQ",
+        "content_kind": "faq"
+      },
+      "blocks": {
+        "question_1": {
+          "type": "question",
+          "settings": {
+            "question": "How can I get more details about an item?",
+            "answer": "<p>Check Item Description on the product page for the listing details. For measurements, condition questions, or help with sizing, contact Sole Paradise before ordering.</p>"
+          }
+        },
+        "question_2": {
+          "type": "question",
+          "settings": {
+            "question": "How is authenticity checked?",
+            "answer": "<p>Every piece is individually inspected by Sole Paradise before it is listed. We stand behind the authenticity of every item we sell.</p>"
+          }
+        },
+        "question_3": {
+          "type": "question",
+          "settings": {
+            "question": "Which shipping options are available?",
+            "answer": "<p>UPS Next Day Air and UPS Ground are available for eligible orders. Shipping options and rates for your address appear at checkout.</p>"
+          }
+        },
+        "question_4": {
+          "type": "question",
+          "settings": {
+            "question": "Can I arrange pickup or same-day delivery?",
+            "answer": "<p>Contact the shop to confirm Chicago pickup or same-day delivery availability and coordinate a time.</p>"
+          }
+        },
+        "question_5": {
+          "type": "question",
+          "settings": {
+            "question": "Which payment methods can I use?",
+            "answer": "<p>The payment methods enabled for the store are shown in the footer. Available payment options for your order appear at checkout.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "question_1",
+        "question_2",
+        "question_3",
+        "question_4",
+        "question_5"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
